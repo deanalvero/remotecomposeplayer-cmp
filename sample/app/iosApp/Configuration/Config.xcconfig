@@ -1,0 +1,7 @@
+TEAM_ID=
+
+PRODUCT_NAME=RemoteComposePlayerCMP
+PRODUCT_BUNDLE_IDENTIFIER=io.github.deanalvero.remotecomposeplayer.demoapp.RemoteComposePlayerCMP$(TEAM_ID)
+
+CURRENT_PROJECT_VERSION=1
+MARKETING_VERSION=1.0
