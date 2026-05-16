@@ -14,7 +14,7 @@ kotlin {
         iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
-            baseName = "Shared"
+            baseName = "RemoteComposePlayer"
             isStatic = true
         }
     }
@@ -31,7 +31,7 @@ kotlin {
     }
     
     androidLibrary {
-       namespace = "io.github.deanalvero.remotecomposeplayer.demoapp.app.shared"
+       namespace = "io.github.deanalvero.remotecomposeplayer"
        compileSdk = libs.versions.android.compileSdk.get().toInt()
        minSdk = libs.versions.android.minSdk.get().toInt()
     

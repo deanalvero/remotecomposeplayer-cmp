@@ -22,27 +22,27 @@ This is a Kotlin Multiplatform project targeting Android, iOS, Web, Desktop (JVM
 
 Use the run configurations provided by the run widget in your IDE's toolbar. You can also use these commands and options:
 
-- Android app: `./gradlew :app:androidApp:assembleDebug`
+- Android app: `./gradlew :sample:app:androidApp:assembleDebug`
 - Desktop app:
-  - Hot reload: `./gradlew :app:desktopApp:hotRun --auto`
-  - Standard run: `./gradlew :app:desktopApp:run`
-- Server: `./gradlew :server:run`
+  - Hot reload: `./gradlew :sample:app:desktopApp:hotRun --auto`
+  - Standard run: `./gradlew :sample:app:desktopApp:run`
+- Server: `./gradlew :sample:server:run`
 - Web app:
-  - Wasm target (faster, modern browsers): `./gradlew :app:webApp:wasmJsBrowserDevelopmentRun`
-  - JS target (slower, supports older browsers): `./gradlew :app:webApp:jsBrowserDevelopmentRun`
+  - Wasm target (faster, modern browsers): `./gradlew :sample:app:webApp:wasmJsBrowserDevelopmentRun`
+  - JS target (slower, supports older browsers): `./gradlew :sample:app:webApp:jsBrowserDevelopmentRun`
 - iOS app: open the [/app/iosApp](./app/iosApp) directory in Xcode and run it from there.
 
 ### Running tests
 
 Use the run button in your IDE's editor gutter, or run tests using Gradle tasks:
 
-- Android tests: `./gradlew :app:shared:testAndroidHostTest`
-- Desktop tests: `./gradlew :app:shared:jvmTest`
-- Server tests: `./gradlew :server:test`
+- Android tests: `./gradlew :sample:app:shared:testAndroidHostTest`
+- Desktop tests: `./gradlew :sample:app:shared:jvmTest`
+- Server tests: `./gradlew :sample:server:test`
 - Web tests:
-  - Wasm target: `./gradlew :app:shared:wasmJsTest`
-  - JS target: `./gradlew :app:shared:jsTest`
-- iOS tests: `./gradlew :app:shared:iosSimulatorArm64Test`
+  - Wasm target: `./gradlew :sample:app:shared:wasmJsTest`
+  - JS target: `./gradlew :sample:app:shared:jsTest`
+- iOS tests: `./gradlew :sample:app:shared:iosSimulatorArm64Test`
 
 ---
 

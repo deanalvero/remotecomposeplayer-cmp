@@ -52,6 +52,7 @@ kotlin {
         }
         commonMain.dependencies {
             api(projects.sample.core)
+            api(projects.remotecomposeplayer)
             implementation(libs.compose.runtime)
             implementation(libs.compose.foundation)
             implementation(libs.compose.material3)

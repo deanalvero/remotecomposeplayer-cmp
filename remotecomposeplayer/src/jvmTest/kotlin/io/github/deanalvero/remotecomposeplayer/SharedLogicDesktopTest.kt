@@ -1,4 +1,4 @@
-package io.github.deanalvero.remotecomposeplayer.demoapp
+package io.github.deanalvero.remotecomposeplayer
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
