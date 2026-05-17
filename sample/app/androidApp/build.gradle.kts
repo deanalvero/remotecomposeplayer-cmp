@@ -18,6 +18,18 @@ dependencies {
 
     implementation(libs.compose.uiToolingPreview)
     debugImplementation(libs.compose.uiTooling)
+
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.10.0")
+    implementation("io.ktor:ktor-client-okhttp:3.5.0")
+
+    implementation(libs.compose.runtime)
+    implementation(libs.compose.foundation)
+    implementation(libs.compose.material3)
+    implementation(libs.compose.ui)
+
+    implementation("androidx.compose.remote:remote-core:1.0.0-alpha09")
+    implementation("androidx.compose.remote:remote-player-core:1.0.0-alpha09")
+    implementation("androidx.compose.remote:remote-player-view:1.0.0-alpha09")
 }
 
 android {
