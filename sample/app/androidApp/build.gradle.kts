@@ -27,9 +27,9 @@ dependencies {
     implementation(libs.compose.material3)
     implementation(libs.compose.ui)
 
-    implementation("androidx.compose.remote:remote-core:1.0.0-alpha09")
-    implementation("androidx.compose.remote:remote-player-core:1.0.0-alpha09")
-    implementation("androidx.compose.remote:remote-player-view:1.0.0-alpha09")
+    implementation("androidx.compose.remote:remote-core:1.0.0-alpha11")
+    implementation("androidx.compose.remote:remote-player-core:1.0.0-alpha11")
+    implementation("androidx.compose.remote:remote-player-view:1.0.0-alpha11")
 }
 
 android {
