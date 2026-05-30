@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import io.github.deanalvero.remotecomposeplayer.RemoteComposePlayer
 import io.github.deanalvero.remotecomposeplayer.RemoteComposeVisualizer
 
 @SuppressLint("RestrictedApi")
@@ -33,9 +34,13 @@ fun MainScreen(
                     },
                     modifier = Modifier.weight(0.25f)
                 )
+                RemoteComposePlayer(
+                    rcBytes = document,
+                    modifier = Modifier.weight(0.25f)
+                )
                 RemoteComposeVisualizer(
                     rcBytes = document,
-                    modifier = Modifier.weight(0.75f)
+                    modifier = Modifier.weight(0.50f)
                 )
             }
         }

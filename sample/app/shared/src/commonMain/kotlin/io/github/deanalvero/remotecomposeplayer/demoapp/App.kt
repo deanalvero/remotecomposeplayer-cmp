@@ -9,6 +9,6 @@ import io.github.deanalvero.remotecomposeplayer.RemoteComposePlayer
 @Preview
 fun App() {
     MaterialTheme {
-        RemoteComposePlayer()
+//        RemoteComposePlayer()
     }
 }

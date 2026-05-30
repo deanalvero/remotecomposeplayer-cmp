@@ -8,7 +8,6 @@ object RemoteComposeEngine {
         val operations = mutableListOf<RcOperation>()
 
         while (reader.hasRemaining) {
-            val currentPos = reader.currentPosition
             try {
                 val opCode = reader.readByte().toInt() and 0xFF
                 val decoder = RcParserRegistry.getDecoder(opCode)

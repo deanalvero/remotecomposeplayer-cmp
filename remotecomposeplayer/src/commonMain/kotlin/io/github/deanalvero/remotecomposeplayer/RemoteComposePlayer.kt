@@ -1,30 +1,28 @@
 package io.github.deanalvero.remotecomposeplayer
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.safeContentPadding
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import io.github.deanalvero.remotecomposeplayer.core.RemoteComposeContext
+import io.github.deanalvero.remotecomposeplayer.core.RemoteComposeEngine
+import io.github.deanalvero.remotecomposeplayer.ui.RemoteComposeRenderer
+import io.github.deanalvero.remotecomposeplayer.ui.buildRcTree
 
 @Composable
-@Preview
 fun RemoteComposePlayer(
+    rcBytes: ByteArray,
     modifier: Modifier = Modifier
 ) {
-    MaterialTheme {
-        Column(
-            modifier = modifier
-                .background(MaterialTheme.colorScheme.primaryContainer)
-                .safeContentPadding()
-                .fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Text("TODO")
-        }
+    val operations = remember(rcBytes) {
+        RemoteComposeEngine.parseStream(rcBytes)
     }
+    val nodes = remember(operations) {
+        listOf(buildRcTree(operations))
+    }
+    val context = remember(operations) { RemoteComposeContext(operations) }
+
+    RemoteComposeRenderer(
+        nodes = nodes,
+        context = context,
+        modifier = modifier
+    )
 }
