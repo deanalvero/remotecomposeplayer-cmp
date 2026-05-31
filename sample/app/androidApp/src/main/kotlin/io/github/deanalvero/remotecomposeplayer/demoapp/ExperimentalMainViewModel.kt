@@ -11,10 +11,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class MainViewModel : ViewModel() {
+class ExperimentalMainViewModel : ViewModel() {
     private val client = HttpClient()
 
-    private val _uiState = MutableStateFlow<MainUiState>(MainUiState.Loading)
+    private val _uiState = MutableStateFlow<ExperimentalMainUiState>(ExperimentalMainUiState.Loading)
     val uiState = _uiState.asStateFlow()
 
     init {
@@ -27,11 +27,11 @@ class MainViewModel : ViewModel() {
                 val response = client.get("http://10.0.2.2:8080/")
                 println(response)
                 _uiState.update {
-                    MainUiState.Loaded(response.bodyAsBytes())
+                    ExperimentalMainUiState.Loaded(response.bodyAsBytes())
                 }
             } catch (e: Exception) {
                 _uiState.update {
-                    MainUiState.Error(e.message)
+                    ExperimentalMainUiState.Error(e.message)
                 }
             }
         }

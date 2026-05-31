@@ -1,7 +1,7 @@
 package io.github.deanalvero.remotecomposeplayer.demoapp
 
-sealed class MainUiState {
-    data object Loading : MainUiState()
-    data class Loaded(val data: ByteArray) : MainUiState()
-    data class Error(val message: String?) : MainUiState()
+sealed class ExperimentalMainUiState {
+    data object Loading : ExperimentalMainUiState()
+    data class Loaded(val data: ByteArray) : ExperimentalMainUiState()
+    data class Error(val message: String?) : ExperimentalMainUiState()
 }

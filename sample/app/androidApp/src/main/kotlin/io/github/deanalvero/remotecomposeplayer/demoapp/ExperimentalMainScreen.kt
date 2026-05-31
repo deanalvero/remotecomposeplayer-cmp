@@ -18,13 +18,13 @@ import io.github.deanalvero.remotecomposeplayer.RemoteComposeVisualizer
 
 @SuppressLint("RestrictedApi")
 @Composable
-fun MainScreen(
-    viewModel: MainViewModel = viewModel()
+fun ExperimentalMainScreen(
+    viewModel: ExperimentalMainViewModel = viewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     when (uiState) {
-        is MainUiState.Loaded -> {
-            val document = (uiState as MainUiState.Loaded).data
+        is ExperimentalMainUiState.Loaded -> {
+            val document = (uiState as ExperimentalMainUiState.Loaded).data
             val remoteDocument = remember(document) {
                 RemoteDocument(document)
             }
@@ -49,10 +49,10 @@ fun MainScreen(
                 )
             }
         }
-        is MainUiState.Loading -> {
+        is ExperimentalMainUiState.Loading -> {
             Text(text = "Loading...")
         }
-        is MainUiState.Error -> {
+        is ExperimentalMainUiState.Error -> {
             Text(text = "Error!")
         }
     }
