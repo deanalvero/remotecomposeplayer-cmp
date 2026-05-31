@@ -1,10 +1,15 @@
 package io.github.deanalvero.remotecomposeplayer.operation.common
 
 enum class RcDimensionType(val id: Int) {
-    FIXED(0),
-    WRAP(1),
-    MATCH_PARENT(2),
+    EXACT(0),
+    FILL(1),
+    WRAP(2),
     WEIGHT(3),
+    INTRINSIC_MIN(4),
+    INTRINSIC_MAX(5),
+    EXACT_DP(6),
+    FILL_PARENT_MAX_WIDTH(7),
+    FILL_PARENT_MAX_HEIGHT(8),
     UNKNOWN(-1);
 
     companion object {

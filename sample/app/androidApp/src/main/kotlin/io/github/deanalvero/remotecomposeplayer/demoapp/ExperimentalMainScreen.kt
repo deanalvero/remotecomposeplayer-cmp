@@ -4,9 +4,11 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Text
+import androidx.compose.remote.player.core.RemoteDocument
 import androidx.compose.remote.player.view.RemoteComposePlayer
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -23,6 +25,9 @@ fun MainScreen(
     when (uiState) {
         is MainUiState.Loaded -> {
             val document = (uiState as MainUiState.Loaded).data
+            val remoteDocument = remember(document) {
+                RemoteDocument(document)
+            }
             Column(
                 modifier = Modifier.fillMaxSize()
             ) {

@@ -3,30 +3,35 @@ package io.github.deanalvero.remotecomposeplayer.ui
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import io.github.deanalvero.remotecomposeplayer.core.RemoteComposeContext
+import io.github.deanalvero.remotecomposeplayer.modifier.RcModifierRegistry
 
 @Composable
 fun RemoteComposeRenderer(
     nodes: List<RcNode>,
     context: RemoteComposeContext,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    scope: Any? = null
 ) {
     nodes.forEach { node ->
+        val resolvedModifier = RcModifierRegistry.applyAll(
+            operations = node.modifiers,
+            initial = modifier,
+            scope = scope,
+            context = context
+        )
+
         when (node) {
             is RcNode.Leaf -> RenderLeaf(
                 operation = node.operation,
                 context = context,
-                modifier = modifier
+                modifier = resolvedModifier
             )
             is RcNode.Layout -> {
                 RenderLayoutContainer(
-                    operation = node.operation,
-                    modifier = modifier
-                ) {
-                    RemoteComposeRenderer(
-                        nodes = node.children,
-                        context = context
-                    )
-                }
+                    node = node,
+                    context = context,
+                    modifier = resolvedModifier
+                )
             }
         }
     }

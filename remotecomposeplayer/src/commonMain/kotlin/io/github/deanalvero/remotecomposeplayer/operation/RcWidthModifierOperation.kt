@@ -20,10 +20,13 @@ data class RcWidthModifierOperation(
         val typeLabel = dimensionType.name
 
         val valueStr = when (dimensionType) {
-            RcDimensionType.FIXED -> "${value}dp"
+            RcDimensionType.EXACT -> "${value}px"
+            RcDimensionType.EXACT_DP -> "${value}dp"
             RcDimensionType.WEIGHT -> "${value}f"
             RcDimensionType.WRAP,
-            RcDimensionType.MATCH_PARENT -> "N/A"
+            RcDimensionType.FILL,
+            RcDimensionType.FILL_PARENT_MAX_WIDTH,
+            RcDimensionType.FILL_PARENT_MAX_HEIGHT -> "N/A"
             else -> value.toString()
         }
 
