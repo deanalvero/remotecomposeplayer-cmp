@@ -17,17 +17,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import io.github.deanalvero.remotecomposeplayer.playground.PlaygroundComponentKind
 import io.github.deanalvero.remotecomposeplayer.playground.PlaygroundDocumentState
-import io.github.deanalvero.remotecomposeplayer.playground.PlaygroundNode
 
 @Composable
 fun EditorSidebar(
     modifier: Modifier = Modifier,
     document: PlaygroundDocumentState,
-    selectedNode: PlaygroundNode?,
     onAddRoot: (PlaygroundComponentKind) -> Unit,
     onSelectNode: (String?) -> Unit,
     onAddChild: (String, PlaygroundComponentKind) -> Unit,
-    onUpdateNode: (String, (PlaygroundNode) -> PlaygroundNode) -> Unit,
     onDeleteNode: (String) -> Unit,
     onDownload: () -> Unit
 ) {
@@ -37,12 +34,6 @@ fun EditorSidebar(
     ) {
         Card {
             Column(modifier = Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text("Add component", style = MaterialTheme.typography.titleMedium)
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Button(onClick = { onAddRoot(PlaygroundComponentKind.Column) }) { Text("Column") }
-                    Button(onClick = { onAddRoot(PlaygroundComponentKind.Row) }) { Text("Row") }
-                    Button(onClick = { onAddRoot(PlaygroundComponentKind.Text) }) { Text("Text") }
-                }
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     Button(onClick = onDownload) { Text("Download .rc") }
                     Button(onClick = { onSelectNode(null) }) { Text("Clear selection") }
@@ -53,8 +44,13 @@ fun EditorSidebar(
         Card {
             Column(modifier = Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text("Editor tree", style = MaterialTheme.typography.titleMedium)
+
                 if (document.nodes.isEmpty()) {
                     Text("Empty playground. Add a component to start.", color = Color.Gray)
+                    ComponentAddMenu(
+                        buttonLabel = "Add component",
+                        onAdd = onAddRoot
+                    )
                 } else {
                     document.nodes.forEach { node ->
                         NodeRow(
@@ -66,24 +62,6 @@ fun EditorSidebar(
                             onDelete = onDeleteNode
                         )
                     }
-                }
-            }
-        }
-
-        Card {
-            Column(modifier = Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text("Inspector", style = MaterialTheme.typography.titleMedium)
-                if (selectedNode == null) {
-                    Text("Select a component to edit its fields.", color = Color.Gray)
-                } else {
-                    Inspector(
-                        node = selectedNode,
-                        onChange = { updated -> onUpdateNode(selectedNode.id, { updated }) },
-                        onDelete = {
-                            onDeleteNode(selectedNode.id)
-                            onSelectNode(null)
-                        }
-                    )
                 }
             }
         }

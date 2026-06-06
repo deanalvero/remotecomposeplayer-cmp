@@ -35,7 +35,13 @@ fun NodeRow(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(if (selected) MaterialTheme.colorScheme.primary.copy(alpha = 0.12f) else Color.Transparent)
+                .background(
+                    if (selected) {
+                        MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)
+                    } else {
+                        Color.Transparent
+                    }
+                )
                 .clickable { onSelect(node.id) }
                 .padding(start = (depth * 14).dp, top = 8.dp, bottom = 8.dp, end = 8.dp),
             verticalAlignment = Alignment.CenterVertically
@@ -50,6 +56,7 @@ fun NodeRow(
             }
             if (node is PlaygroundNode.Column || node is PlaygroundNode.Row) {
                 ComponentAddMenu(
+                    buttonLabel = "Add child",
                     onAdd = { onAddChild(node.id, it) }
                 )
                 Spacer(Modifier.width(8.dp))

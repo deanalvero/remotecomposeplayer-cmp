@@ -41,28 +41,19 @@ fun RemoteComposeVisualizer(
         RemoteComposeEngine.parseStream(rcBytes)
     }
 
-    Column(modifier = modifier.fillMaxSize().padding(16.dp)) {
-        Text(
-            text = "Remote Compose Visualizer",
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(bottom = 12.dp)
-        )
-
-        Text(
-            text = "Total Operations Tracked: ${discoveredOperations.size}",
-            fontSize = 14.sp,
-            color = Color.Gray,
-            modifier = Modifier.padding(bottom = 16.dp)
-        )
-
-        LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            modifier = Modifier.fillMaxSize()
-        ) {
-            items(discoveredOperations) { op ->
-                OperationRowItem(operation = op)
-            }
+    LazyColumn(
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        modifier = modifier.fillMaxSize()
+    ) {
+        item {
+            Text(
+                text = "Total Operations Tracked: ${discoveredOperations.size}",
+                fontSize = 14.sp,
+                color = Color.Gray
+            )
+        }
+        items(discoveredOperations) { op ->
+            OperationRowItem(operation = op)
         }
     }
 }

@@ -38,41 +38,59 @@ fun PlaygroundEditor(
         val wide = maxWidth >= 800.dp
 
         if (wide) {
-            Row(modifier = Modifier.fillMaxSize(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            Row(
+                modifier = Modifier.fillMaxSize(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
                 EditorSidebar(
                     modifier = Modifier.weight(0.38f),
                     document = document,
-                    selectedNode = selectedNode,
                     onAddRoot = onAddRoot,
                     onSelectNode = onSelectNode,
                     onAddChild = onAddChild,
-                    onUpdateNode = onUpdateNode,
                     onDeleteNode = onDeleteNode,
                     onDownload = { onDownload(bytes) }
                 )
+
                 PreviewPane(
                     bytes = bytes,
                     modifier = Modifier.weight(0.62f)
                 )
             }
         } else {
-            Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
                 EditorSidebar(
                     modifier = Modifier.fillMaxWidth(),
                     document = document,
-                    selectedNode = selectedNode,
                     onAddRoot = onAddRoot,
                     onSelectNode = onSelectNode,
                     onAddChild = onAddChild,
-                    onUpdateNode = onUpdateNode,
                     onDeleteNode = onDeleteNode,
                     onDownload = { onDownload(bytes) }
                 )
+
                 PreviewPane(
                     bytes = bytes,
                     modifier = Modifier.fillMaxWidth().weight(1f)
                 )
             }
         }
+    }
+
+    selectedNode?.let { node ->
+        InspectorDialog(
+            node = node,
+            onDismiss = { onSelectNode(null) },
+            onChange = { updated ->
+                onUpdateNode(node.id) { updated }
+            },
+            onDelete = {
+                onDeleteNode(node.id)
+                onSelectNode(null)
+            }
+        )
     }
 }
