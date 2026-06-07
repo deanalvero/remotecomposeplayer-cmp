@@ -8,6 +8,10 @@ import androidx.compose.ui.tooling.preview.Preview
 @Preview
 fun App() {
     MaterialTheme {
-        PlaygroundApp(onDownload = {})
+        PlaygroundApp(
+            onDownload = {
+                downloadDocument(it, "playground.rc")
+            }
+        )
     }
 }

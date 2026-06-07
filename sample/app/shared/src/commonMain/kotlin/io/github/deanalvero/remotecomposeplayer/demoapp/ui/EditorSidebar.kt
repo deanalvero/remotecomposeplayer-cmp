@@ -3,6 +3,7 @@ package io.github.deanalvero.remotecomposeplayer.demoapp.ui
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -16,6 +17,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -38,20 +40,15 @@ fun EditorSidebar(
     ) {
         Card {
             Column(modifier = Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text("Editor tree", style = MaterialTheme.typography.titleMedium)
+                    Spacer(Modifier.weight(1f))
                     IconButton(onClick = onDownload) {
                         Icon(Icons.Filled.Download, contentDescription = "Download .rc")
                     }
-                    IconButton(onClick = { onSelectNode(null) }) {
-                        Icon(Icons.Filled.Close, contentDescription = "Clear selection")
-                    }
                 }
-            }
-        }
-
-        Card {
-            Column(modifier = Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text("Editor tree", style = MaterialTheme.typography.titleMedium)
                 if (document.nodes.isEmpty()) {
                     Text("Empty playground. Add a component to start.", color = Color.Gray)
                     ComponentAddMenu(
