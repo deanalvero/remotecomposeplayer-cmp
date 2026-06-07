@@ -9,8 +9,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Download
+import androidx.compose.material.icons.filled.Upload
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -32,7 +32,8 @@ fun EditorSidebar(
     onSelectNode: (String?) -> Unit,
     onAddChild: (String, PlaygroundComponentKind) -> Unit,
     onDeleteNode: (String) -> Unit,
-    onDownload: () -> Unit
+    onDownload: () -> Unit,
+    onUpload: () -> Unit
 ) {
     Column(
         modifier = modifier.fillMaxHeight().verticalScroll(rememberScrollState()),
@@ -45,6 +46,9 @@ fun EditorSidebar(
                 ) {
                     Text("Editor tree", style = MaterialTheme.typography.titleMedium)
                     Spacer(Modifier.weight(1f))
+                    IconButton(onClick = onUpload) {
+                        Icon(Icons.Filled.Upload, contentDescription = "Upload .rc")
+                    }
                     IconButton(onClick = onDownload) {
                         Icon(Icons.Filled.Download, contentDescription = "Download .rc")
                     }
