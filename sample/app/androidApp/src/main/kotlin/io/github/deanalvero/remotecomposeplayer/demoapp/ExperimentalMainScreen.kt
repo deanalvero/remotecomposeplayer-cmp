@@ -25,9 +25,6 @@ fun ExperimentalMainScreen(
     when (uiState) {
         is ExperimentalMainUiState.Loaded -> {
             val document = (uiState as ExperimentalMainUiState.Loaded).data
-            val remoteDocument = remember(document) {
-                RemoteDocument(document)
-            }
             Column(
                 modifier = Modifier.fillMaxSize()
             ) {

@@ -7,6 +7,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SecondaryTabRow
+import androidx.compose.material3.Tab
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -14,6 +18,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import io.github.deanalvero.remotecomposeplayer.RemoteComposePlayer
+import io.github.deanalvero.remotecomposeplayer.RemoteComposeVisualizer
 import io.github.deanalvero.remotecomposeplayer.demoapp.FileUploader
 import io.github.deanalvero.remotecomposeplayer.playground.PlaygroundByteBuilder
 import io.github.deanalvero.remotecomposeplayer.playground.PlaygroundComponentKind
@@ -70,25 +76,50 @@ fun PlaygroundEditor(
                 )
             }
         } else {
+            var selectedTabIndex by remember {
+                mutableStateOf(0)
+            }
             Column(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
+                modifier = Modifier.fillMaxSize()
             ) {
-                EditorSidebar(
-                    modifier = Modifier.fillMaxWidth(),
-                    document = document,
-                    onAddRoot = onAddRoot,
-                    onSelectNode = onSelectNode,
-                    onAddChild = onAddChild,
-                    onDeleteNode = onDeleteNode,
-                    onDownload = { onDownload(bytes) },
-                    onUpload = { showUploader = true }
-                )
+                SecondaryTabRow(
+                    selectedTabIndex = selectedTabIndex
+                ) {
+                    listOf("Editor", "Operations", "Player").forEachIndexed { index, title ->
+                        Tab(
+                            selected = index == selectedTabIndex,
+                            onClick = {
+                                selectedTabIndex = index
+                            }
+                        ) {
+                            Text(
+                                text = title,
+                                modifier = Modifier.padding(16.dp)
+                            )
+                        }
+                    }
+                }
 
-                PreviewPane(
-                    bytes = bytes,
-                    modifier = Modifier.fillMaxWidth().weight(1f)
-                )
+                when (selectedTabIndex) {
+                    0 -> EditorSidebar(
+                        modifier = Modifier.fillMaxWidth(),
+                        document = document,
+                        onAddRoot = onAddRoot,
+                        onSelectNode = onSelectNode,
+                        onAddChild = onAddChild,
+                        onDeleteNode = onDeleteNode,
+                        onDownload = { onDownload(bytes) },
+                        onUpload = { showUploader = true }
+                    )
+                    1 -> RemoteComposeVisualizer(
+                        rcBytes = bytes,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    2 -> RemoteComposePlayer(
+                        rcBytes = bytes,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
             }
         }
     }
