@@ -11,9 +11,12 @@ import io.github.deanalvero.remotecomposeplayer.demoapp.ui.field.ColorField
 import io.github.deanalvero.remotecomposeplayer.demoapp.ui.field.FloatField
 import io.github.deanalvero.remotecomposeplayer.demoapp.ui.field.IntChoiceField
 import io.github.deanalvero.remotecomposeplayer.demoapp.ui.field.IntField
+import io.github.deanalvero.remotecomposeplayer.demoapp.ui.modifier.ModifierSection
 import io.github.deanalvero.remotecomposeplayer.operation.RcRowLayoutOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcTextLayoutOperation
+import io.github.deanalvero.remotecomposeplayer.playground.PlaygroundModifier
 import io.github.deanalvero.remotecomposeplayer.playground.PlaygroundNode
+import io.github.deanalvero.remotecomposeplayer.playground.defaultModifier
 
 @Composable
 fun Inspector(
@@ -23,6 +26,7 @@ fun Inspector(
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
         Text("Editing ${nodeLabel(node)}", style = MaterialTheme.typography.titleSmall)
+
         when (node) {
             is PlaygroundNode.Column -> {
                 IntChoiceField(
@@ -51,10 +55,7 @@ fun Inspector(
                     ),
                     onValueChange = { onChange(node.copy(vertical = it)) }
                 )
-                FloatField(
-                    label = "Spacing",
-                    value = node.spacedBy,
-                    onValueChange = { onChange(node.copy(spacedBy = it)) })
+                FloatField("Spaced by", node.spacedBy, onValueChange = { onChange(node.copy(spacedBy = it)) })
             }
 
             is PlaygroundNode.Row -> {
@@ -84,23 +85,14 @@ fun Inspector(
                     ),
                     onValueChange = { onChange(node.copy(vertical = it)) }
                 )
-                FloatField(
-                    label = "Spacing",
-                    value = node.spacedBy,
-                    onValueChange = { onChange(node.copy(spacedBy = it)) })
+                FloatField("Spaced by", node.spacedBy, onValueChange = { onChange(node.copy(spacedBy = it)) })
             }
 
             is PlaygroundNode.Text -> {
                 TextFieldValueEditor("Text", node.text) { onChange(node.copy(text = it)) }
                 ColorField("Color ARGB", node.color) { onChange(node.copy(color = it)) }
-                FloatField(
-                    label = "Font size",
-                    value = node.fontSize,
-                    onValueChange = { onChange(node.copy(fontSize = it)) })
-                FloatField(
-                    label = "Font weight",
-                    value = node.fontWeight,
-                    onValueChange = { onChange(node.copy(fontWeight = it)) })
+                FloatField("Font size", node.fontSize) { onChange(node.copy(fontSize = it)) }
+                FloatField("Font weight", node.fontWeight) { onChange(node.copy(fontWeight = it)) }
                 IntChoiceField(
                     label = "Text align",
                     value = node.textAlign,
@@ -126,24 +118,45 @@ fun Inspector(
                     ),
                     onValueChange = { onChange(node.copy(overflow = it)) }
                 )
-                IntField(
-                    label = "Max lines",
-                    value = node.maxLines,
-                    onValueChange = { onChange(node.copy(maxLines = it.coerceAtLeast(1))) }
-                )
-                IntField(
-                    label = "Font style",
-                    value = node.fontStyle,
-                    onValueChange = { onChange(node.copy(fontStyle = it)) }
-                )
-                IntField(
-                    label = "Font family id",
-                    value = node.fontFamilyId,
-                    onValueChange = { onChange(node.copy(fontFamilyId = it)) }
-                )
+                IntField("Max lines", node.maxLines) { onChange(node.copy(maxLines = it.coerceAtLeast(1))) }
+                IntField("Font style", node.fontStyle) { onChange(node.copy(fontStyle = it)) }
+                IntField("Font family id", node.fontFamilyId) { onChange(node.copy(fontFamilyId = it)) }
             }
         }
 
+        Text("Modifiers", style = MaterialTheme.typography.titleMedium)
+        ModifierSection(
+            modifiers = node.modifiers,
+            onAddModifier = { kind ->
+                val updated = node.withModifier(node.modifiers + defaultModifier(kind))
+                onChange(updated)
+            },
+            onUpdateModifier = { index, updatedModifier ->
+                onChange(node.replaceModifier(index, updatedModifier))
+            },
+            onDeleteModifier = { index ->
+                onChange(node.removeModifier(index))
+            }
+        )
+
         Button(onClick = onDelete) { Text("Delete node") }
     }
+}
+
+private fun PlaygroundNode.withModifier(updated: List<PlaygroundModifier>): PlaygroundNode {
+    return when (this) {
+        is PlaygroundNode.Column -> copy(modifiers = updated)
+        is PlaygroundNode.Row -> copy(modifiers = updated)
+        is PlaygroundNode.Text -> copy(modifiers = updated)
+    }
+}
+
+private fun PlaygroundNode.replaceModifier(index: Int, updated: PlaygroundModifier): PlaygroundNode {
+    val newModifiers = modifiers.toMutableList().apply { this[index] = updated }
+    return withModifier(newModifiers)
+}
+
+private fun PlaygroundNode.removeModifier(index: Int): PlaygroundNode {
+    val newModifiers = modifiers.toMutableList().apply { removeAt(index) }
+    return withModifier(newModifiers)
 }

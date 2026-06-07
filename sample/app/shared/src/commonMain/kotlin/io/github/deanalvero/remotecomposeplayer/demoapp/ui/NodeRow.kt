@@ -8,7 +8,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.Button
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -36,11 +39,8 @@ fun NodeRow(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(
-                    if (selected) {
-                        MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)
-                    } else {
-                        Color.Transparent
-                    }
+                    if (selected) MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)
+                    else Color.Transparent
                 )
                 .clickable { onSelect(node.id) }
                 .padding(start = (depth * 14).dp, top = 8.dp, bottom = 8.dp, end = 8.dp),
@@ -54,6 +54,7 @@ fun NodeRow(
                     color = Color.Gray
                 )
             }
+
             if (node is PlaygroundNode.Column || node is PlaygroundNode.Row) {
                 ComponentAddMenu(
                     buttonLabel = "Add child",
@@ -61,16 +62,21 @@ fun NodeRow(
                 )
                 Spacer(Modifier.width(8.dp))
             }
-            Button(onClick = { onDelete(node.id) }) { Text("Delete") }
+
+            IconButton(onClick = { onDelete(node.id) }) {
+                Icon(Icons.Filled.Delete, contentDescription = "Delete node")
+            }
         }
 
         when (node) {
             is PlaygroundNode.Column -> node.children.forEach { child ->
                 NodeRow(child, depth + 1, selectedId, onSelect, onAddChild, onDelete)
             }
+
             is PlaygroundNode.Row -> node.children.forEach { child ->
                 NodeRow(child, depth + 1, selectedId, onSelect, onAddChild, onDelete)
             }
+
             is PlaygroundNode.Text -> Unit
         }
     }

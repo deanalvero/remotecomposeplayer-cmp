@@ -4,8 +4,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -24,8 +28,8 @@ fun ComponentAddMenu(
 ) {
     var expanded by remember { mutableStateOf(false) }
 
-    Button(onClick = { expanded = true }) {
-        Text(buttonLabel)
+    IconButton(onClick = { expanded = true }) {
+        Icon(Icons.Filled.Add, contentDescription = buttonLabel)
     }
 
     if (expanded) {

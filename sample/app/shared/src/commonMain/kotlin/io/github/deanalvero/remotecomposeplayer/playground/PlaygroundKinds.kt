@@ -5,3 +5,9 @@ enum class PlaygroundComponentKind {
     Row,
     Text
 }
+
+enum class PlaygroundModifierKind {
+    Padding,
+    Background,
+    Width
+}

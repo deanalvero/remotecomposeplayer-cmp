@@ -1,13 +1,16 @@
 package io.github.deanalvero.remotecomposeplayer.playground
 
 import io.github.deanalvero.remotecomposeplayer.core.RcOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcBackgroundModifierOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcColumnLayoutOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcContainerEndOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcHeaderOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcPaddingModifierOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcRootLayoutOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcRowLayoutOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcTextDataOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcTextLayoutOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcWidthModifierOperation
 import io.github.deanalvero.remotecomposeplayer.writer.RcByteWriter
 
 object PlaygroundByteBuilder {
@@ -49,6 +52,11 @@ object PlaygroundByteBuilder {
                         spacedBy = node.spacedBy
                     )
                 )
+
+                node.modifiers.forEach { modifier ->
+                    writeOperation(writer, modifier.toOperation())
+                }
+
                 node.children.forEach { child -> writeNode(writer, child) }
                 writeOperation(writer, RcContainerEndOperation())
             }
@@ -64,6 +72,11 @@ object PlaygroundByteBuilder {
                         spacedBy = node.spacedBy
                     )
                 )
+
+                node.modifiers.forEach { modifier ->
+                    writeOperation(writer, modifier.toOperation())
+                }
+
                 node.children.forEach { child -> writeNode(writer, child) }
                 writeOperation(writer, RcContainerEndOperation())
             }
@@ -92,6 +105,10 @@ object PlaygroundByteBuilder {
                         maxLines = node.maxLines
                     )
                 )
+
+                node.modifiers.forEach { modifier ->
+                    writeOperation(writer, modifier.toOperation())
+                }
             }
         }
     }
@@ -100,12 +117,16 @@ object PlaygroundByteBuilder {
         when (op) {
             is RcHeaderOperation -> {
                 writer.writeByte(op.opCode)
-                writer.writeInt(op.majorVersion)
-                writer.writeInt(op.minorVersion)
-                writer.writeInt(op.patchVersion)
-                writer.writeInt(op.legacyWidth ?: 0)
-                writer.writeInt(op.legacyHeight ?: 0)
-                writer.writeLong(op.legacyCapabilities ?: 0L)
+                if (op.properties.isEmpty()) {
+                    writer.writeInt(op.majorVersion)
+                    writer.writeInt(op.minorVersion)
+                    writer.writeInt(op.patchVersion)
+                    writer.writeInt(op.legacyWidth ?: 0)
+                    writer.writeInt(op.legacyHeight ?: 0)
+                    writer.writeLong(op.legacyCapabilities ?: 0L)
+                } else {
+                    error("Dynamic header serialization is not supported in the playground builder.")
+                }
             }
 
             is RcRootLayoutOperation -> {
@@ -150,6 +171,33 @@ object PlaygroundByteBuilder {
                 writer.writeInt(op.textAlign)
                 writer.writeInt(op.overflow)
                 writer.writeInt(op.maxLines)
+            }
+
+            is RcPaddingModifierOperation -> {
+                writer.writeByte(op.opCode)
+                writer.writeFloat(op.left)
+                writer.writeFloat(op.top)
+                writer.writeFloat(op.right)
+                writer.writeFloat(op.bottom)
+            }
+
+            is RcBackgroundModifierOperation -> {
+                writer.writeByte(op.opCode)
+                writer.writeInt(op.flags)
+                writer.writeInt(op.colorId)
+                writer.writeInt(0)
+                writer.writeInt(0)
+                writer.writeFloat(op.r)
+                writer.writeFloat(op.g)
+                writer.writeFloat(op.b)
+                writer.writeFloat(op.a)
+                writer.writeInt(op.shapeType)
+            }
+
+            is RcWidthModifierOperation -> {
+                writer.writeByte(op.opCode)
+                writer.writeInt(op.typeId)
+                writer.writeFloat(op.value)
             }
 
             is RcContainerEndOperation -> {

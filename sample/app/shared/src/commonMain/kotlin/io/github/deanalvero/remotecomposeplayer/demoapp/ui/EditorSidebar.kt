@@ -7,8 +7,12 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Download
 import androidx.compose.material3.Card
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -35,8 +39,12 @@ fun EditorSidebar(
         Card {
             Column(modifier = Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Button(onClick = onDownload) { Text("Download .rc") }
-                    Button(onClick = { onSelectNode(null) }) { Text("Clear selection") }
+                    IconButton(onClick = onDownload) {
+                        Icon(Icons.Filled.Download, contentDescription = "Download .rc")
+                    }
+                    IconButton(onClick = { onSelectNode(null) }) {
+                        Icon(Icons.Filled.Close, contentDescription = "Clear selection")
+                    }
                 }
             }
         }
@@ -44,7 +52,6 @@ fun EditorSidebar(
         Card {
             Column(modifier = Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text("Editor tree", style = MaterialTheme.typography.titleMedium)
-
                 if (document.nodes.isEmpty()) {
                     Text("Empty playground. Add a component to start.", color = Color.Gray)
                     ComponentAddMenu(

@@ -6,10 +6,12 @@ import io.github.deanalvero.remotecomposeplayer.operation.RcTextLayoutOperation
 sealed class PlaygroundNode {
     abstract val id: String
     abstract val componentId: Int
+    abstract val modifiers: List<PlaygroundModifier>
 
     data class Column(
         override val id: String,
         override val componentId: Int,
+        override val modifiers: List<PlaygroundModifier> = emptyList(),
         val horizontal: Int = RcRowLayoutOperation.START,
         val vertical: Int = RcRowLayoutOperation.TOP,
         val spacedBy: Float = 0f,
@@ -19,6 +21,7 @@ sealed class PlaygroundNode {
     data class Row(
         override val id: String,
         override val componentId: Int,
+        override val modifiers: List<PlaygroundModifier> = emptyList(),
         val horizontal: Int = RcRowLayoutOperation.START,
         val vertical: Int = RcRowLayoutOperation.TOP,
         val spacedBy: Float = 0f,
@@ -28,6 +31,7 @@ sealed class PlaygroundNode {
     data class Text(
         override val id: String,
         override val componentId: Int,
+        override val modifiers: List<PlaygroundModifier> = emptyList(),
         val text: String = "Hello, Remote Compose!",
         val color: Int = 0xFF000000.toInt(),
         val fontSize: Float = 16f,
