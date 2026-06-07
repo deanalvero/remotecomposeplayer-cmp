@@ -12,14 +12,16 @@ import io.github.deanalvero.remotecomposeplayer.operation.RcWidthModifierOperati
 
 fun buildRcTree(operations: List<RcOperation>): RcNode.Layout {
     val root = RcNode.Layout(RcRootLayoutOperation(0, 0))
-    val stack = mutableListOf<RcNode.Layout>().apply { add(root) }
+    val stack = mutableListOf(root)
 
     var lastAddedNode: RcNode = root
 
     for (op in operations) {
         when (op) {
             is RcContainerEndOperation -> {
-                if (stack.size > 1) stack.removeAt(stack.lastIndex)
+                if (stack.size > 1) {
+                    stack.removeAt(stack.lastIndex)
+                }
                 lastAddedNode = stack.last()
             }
             is RcPaddingModifierOperation,
@@ -27,7 +29,10 @@ fun buildRcTree(operations: List<RcOperation>): RcNode.Layout {
             is RcWidthModifierOperation -> {
                 lastAddedNode.modifiers.add(op)
             }
-            is RcLayoutContentOperation, is RcRowLayoutOperation, is RcColumnLayoutOperation -> {
+            is RcRootLayoutOperation,
+            is RcLayoutContentOperation,
+            is RcRowLayoutOperation,
+            is RcColumnLayoutOperation -> {
                 val newNode = RcNode.Layout(op)
                 stack.last().children.add(newNode)
                 stack.add(newNode)

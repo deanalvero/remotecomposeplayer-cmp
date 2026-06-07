@@ -3,9 +3,18 @@ package io.github.deanalvero.remotecomposeplayer.playground
 import io.github.deanalvero.remotecomposeplayer.core.RcOperation
 import io.github.deanalvero.remotecomposeplayer.core.RemoteComposeContext
 import io.github.deanalvero.remotecomposeplayer.core.RemoteComposeEngine
-import io.github.deanalvero.remotecomposeplayer.operation.*
+import io.github.deanalvero.remotecomposeplayer.operation.RcBackgroundModifierOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcColumnLayoutOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcContainerEndOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcLayoutContentOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcPaddingModifierOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcRootLayoutOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcRowLayoutOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcTextLayoutOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcWidthModifierOperation
 import io.github.deanalvero.remotecomposeplayer.ui.RcNode
 import io.github.deanalvero.remotecomposeplayer.ui.buildRcTree
+import kotlin.math.roundToInt
 
 object PlaygroundDocumentParser {
     fun parse(bytes: ByteArray): PlaygroundDocumentState {
@@ -13,81 +22,145 @@ object PlaygroundDocumentParser {
         val rcRoot = buildRcTree(operations)
         val context = RemoteComposeContext(operations)
 
-        var maxComponentId = 0
+        var nextComponentId = 1
 
-        fun mapModifiers(rcModifiers: List<RcOperation>): List<PlaygroundModifier> {
-            return rcModifiers.mapNotNull { op ->
-                when (op) {
-                    is RcPaddingModifierOperation -> PlaygroundModifier.Padding(op.left, op.top, op.right, op.bottom)
-                    is RcWidthModifierOperation -> PlaygroundModifier.Width(op.typeId, op.value)
-                    is RcBackgroundModifierOperation -> {
-                        val alpha = (op.a * 255).toInt() and 0xFF
-                        val red = (op.r * 255).toInt() and 0xFF
-                        val green = (op.g * 255).toInt() and 0xFF
-                        val blue = (op.b * 255).toInt() and 0xFF
-                        val argb = (alpha shl 24) or (red shl 16) or (green shl 8) or blue
-                        PlaygroundModifier.Background(argb, op.shapeType)
-                    }
-                    else -> null
-                }
-            }
+        val nodes = rcRoot.children.flatMap { node ->
+            node.toPlaygroundNodes(
+                context = context,
+                allocateComponentId = { nextComponentId++ }
+            )
         }
-
-        fun mapNode(rcNode: RcNode): PlaygroundNode? {
-            val modifiers = mapModifiers(rcNode.modifiers)
-
-            return when (val op = rcNode.operation) {
-                is RcColumnLayoutOperation -> {
-                    maxComponentId = maxOf(maxComponentId, op.componentId)
-                    PlaygroundNode.Column(
-                        id = "node-${op.componentId}",
-                        componentId = op.componentId,
-                        modifiers = modifiers,
-                        horizontal = op.horizontalPositioning,
-                        vertical = op.verticalPositioning,
-                        spacedBy = op.spacedBy,
-                        children = (rcNode as? RcNode.Layout)?.children?.mapNotNull { mapNode(it) } ?: emptyList()
-                    )
-                }
-                is RcRowLayoutOperation -> {
-                    maxComponentId = maxOf(maxComponentId, op.componentId)
-                    PlaygroundNode.Row(
-                        id = "node-${op.componentId}",
-                        componentId = op.componentId,
-                        modifiers = modifiers,
-                        horizontal = op.horizontalPositioning,
-                        vertical = op.verticalPositioning,
-                        spacedBy = op.spacedBy,
-                        children = (rcNode as? RcNode.Layout)?.children?.mapNotNull { mapNode(it) } ?: emptyList()
-                    )
-                }
-                is RcTextLayoutOperation -> {
-                    maxComponentId = maxOf(maxComponentId, op.componentId)
-                    PlaygroundNode.Text(
-                        id = "node-${op.componentId}",
-                        componentId = op.componentId,
-                        modifiers = modifiers,
-                        text = context.getText(op.textId),
-                        color = op.color,
-                        fontSize = op.fontSize,
-                        fontStyle = op.fontStyle,
-                        fontWeight = op.fontWeight,
-                        fontFamilyId = op.fontFamilyId,
-                        textAlign = op.textAlign,
-                        overflow = op.overflow,
-                        maxLines = op.maxLines
-                    )
-                }
-                else -> null
-            }
-        }
-
-        val playgroundNodes = rcRoot.children.mapNotNull { mapNode(it) }
 
         return PlaygroundDocumentState(
-            nodes = playgroundNodes,
+            nodes = nodes,
             selectedId = null,
-            nextComponentId = maxComponentId + 1
+            nextComponentId = nextComponentId
         )
     }
 }
+
+private fun RcNode.toPlaygroundNodes(
+    context: RemoteComposeContext,
+    allocateComponentId: () -> Int
+): List<PlaygroundNode> {
+    return when (val op = operation) {
+        is RcRootLayoutOperation,
+        is RcLayoutContentOperation -> {
+            when (this) {
+                is RcNode.Layout -> children.flatMap { it.toPlaygroundNodes(context, allocateComponentId) }
+                is RcNode.Leaf -> emptyList()
+            }
+        }
+
+        is RcColumnLayoutOperation -> {
+            val componentId = allocateComponentId()
+            val children = (this as RcNode.Layout).children.flatMap { it.toPlaygroundNodes(context, allocateComponentId) }
+
+            listOf(
+                PlaygroundNode.Column(
+                    id = "node-$componentId",
+                    componentId = componentId,
+                    modifiers = modifiers.toPlaygroundModifiers(context),
+                    horizontal = op.horizontalPositioning,
+                    vertical = op.verticalPositioning,
+                    spacedBy = op.spacedBy,
+                    children = children
+                )
+            )
+        }
+
+        is RcRowLayoutOperation -> {
+            val componentId = allocateComponentId()
+            val children = (this as RcNode.Layout).children.flatMap { it.toPlaygroundNodes(context, allocateComponentId) }
+
+            listOf(
+                PlaygroundNode.Row(
+                    id = "node-$componentId",
+                    componentId = componentId,
+                    modifiers = modifiers.toPlaygroundModifiers(context),
+                    horizontal = op.horizontalPositioning,
+                    vertical = op.verticalPositioning,
+                    spacedBy = op.spacedBy,
+                    children = children
+                )
+            )
+        }
+
+        is RcTextLayoutOperation -> {
+            val componentId = allocateComponentId()
+
+            listOf(
+                PlaygroundNode.Text(
+                    id = "node-$componentId",
+                    componentId = componentId,
+                    modifiers = modifiers.toPlaygroundModifiers(context),
+                    text = context.getText(op.textId),
+                    color = op.color,
+                    fontSize = op.fontSize,
+                    fontStyle = op.fontStyle,
+                    fontWeight = op.fontWeight,
+                    fontFamilyId = op.fontFamilyId,
+                    textAlign = op.textAlign,
+                    overflow = op.overflow,
+                    maxLines = op.maxLines
+                )
+            )
+        }
+
+        is RcContainerEndOperation -> emptyList()
+
+        else -> when (this) {
+            is RcNode.Layout -> children.flatMap { it.toPlaygroundNodes(context, allocateComponentId) }
+            is RcNode.Leaf -> emptyList()
+        }
+    }
+}
+
+private fun List<RcOperation>.toPlaygroundModifiers(
+    context: RemoteComposeContext
+): List<PlaygroundModifier> {
+    return mapNotNull { op ->
+        when (op) {
+            is RcPaddingModifierOperation -> {
+                PlaygroundModifier.Padding(
+                    left = op.left,
+                    top = op.top,
+                    right = op.right,
+                    bottom = op.bottom
+                )
+            }
+
+            is RcWidthModifierOperation -> {
+                PlaygroundModifier.Width(
+                    typeId = op.typeId,
+                    value = op.value
+                )
+            }
+
+            is RcBackgroundModifierOperation -> {
+                val argb = if (op.usesColorId) {
+                    context.getColor(op.colorId)
+                } else {
+                    rgbaToArgb(op.r, op.g, op.b, op.a)
+                }
+
+                PlaygroundModifier.Background(
+                    argb = argb,
+                    shapeType = op.shapeType
+                )
+            }
+
+            else -> null
+        }
+    }
+}
+
+private fun rgbaToArgb(r: Float, g: Float, b: Float, a: Float): Int {
+    val alpha = channel(a)
+    val red = channel(r)
+    val green = channel(g)
+    val blue = channel(b)
+    return (alpha shl 24) or (red shl 16) or (green shl 8) or blue
+}
+
+private fun channel(value: Float): Int = (value * 255f).roundToInt().coerceIn(0, 255)
