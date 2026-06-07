@@ -6,6 +6,8 @@ plugins {
     alias(libs.plugins.androidMultiplatformLibrary)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
+    id("com.vanniktech.maven.publish") version "0.30.0"
+    signing
 }
 
 kotlin {
@@ -72,4 +74,44 @@ kotlin {
 
 dependencies {
     androidRuntimeClasspath(libs.compose.uiTooling)
+}
+
+mavenPublishing {
+    pom {
+        name.set("Remote Compose Player")
+        description.set("A Remote Compose player for Android, iOS, Web, and Desktop powered by Kotlin Multiplatform and Compose Multiplatform.")
+        url.set("https://github.com/deanalvero/remotecomposeplayer-cmp")
+        licenses {
+            license {
+                name.set("The Apache License, Version 2.0")
+                url.set("https://www.apache.org/licenses/LICENSE-2.0.txt")
+            }
+        }
+        developers {
+            developer {
+                id.set("deanalvero")
+                name.set("Dean Vernon Alvero")
+                email.set((findProperty("email") as String?).orEmpty())
+            }
+        }
+        scm {
+            connection.set("scm:git:git://github.com/deanalvero/remotecomposeplayer-cmp.git")
+            developerConnection.set("scm:git:ssh://git@github.com:deanalvero/remotecomposeplayer-cmp.git")
+            url.set("https://github.com/deanalvero/remotecomposeplayer-cmp")
+        }
+    }
+
+    publishToMavenCentral(com.vanniktech.maven.publish.SonatypeHost.CENTRAL_PORTAL)
+    signAllPublications()
+}
+
+signing {
+    val signingKey = providers.environmentVariable("ORG_GRADLE_PROJECT_signingInMemoryKey")
+    val signingPassword = providers.environmentVariable("ORG_GRADLE_PROJECT_signingInMemoryKeyPassword")
+
+    if (signingKey.isPresent && signingPassword.isPresent) {
+        useInMemoryPgpKeys(signingKey.get(), signingPassword.get())
+    } else {
+        useGpgCmd()
+    }
 }
