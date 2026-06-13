@@ -27,13 +27,6 @@ fun ModifierSection(
     var showPicker by remember { mutableStateOf(false) }
 
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            Button(onClick = { showPicker = true }) {
-                Icon(Icons.Filled.Add, contentDescription = null)
-                Text("Add modifier")
-            }
-        }
-
         if (modifiers.isEmpty()) {
             Text("No modifiers applied.")
         } else {
@@ -43,6 +36,12 @@ fun ModifierSection(
                     onChange = { updated -> onUpdateModifier(index, updated) },
                     onDelete = { onDeleteModifier(index) }
                 )
+            }
+        }
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Button(onClick = { showPicker = true }) {
+                Icon(Icons.Filled.Add, contentDescription = null)
+                Text("Add modifier")
             }
         }
     }

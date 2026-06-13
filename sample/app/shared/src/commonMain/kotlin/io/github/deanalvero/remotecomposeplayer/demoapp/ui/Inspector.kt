@@ -2,7 +2,6 @@ package io.github.deanalvero.remotecomposeplayer.demoapp.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,8 +20,7 @@ import io.github.deanalvero.remotecomposeplayer.playground.defaultModifier
 @Composable
 fun Inspector(
     node: PlaygroundNode,
-    onChange: (PlaygroundNode) -> Unit,
-    onDelete: () -> Unit
+    onChange: (PlaygroundNode) -> Unit
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
         Text("Editing ${nodeLabel(node)}", style = MaterialTheme.typography.titleSmall)
@@ -138,8 +136,6 @@ fun Inspector(
                 onChange(node.removeModifier(index))
             }
         )
-
-        Button(onClick = onDelete) { Text("Delete node") }
     }
 }
 
