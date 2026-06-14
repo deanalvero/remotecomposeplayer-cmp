@@ -1,3 +1,4 @@
+
 package io.github.deanalvero.remotecomposeplayer.demoapp.ui
 
 import androidx.compose.foundation.background
@@ -8,7 +9,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -24,18 +24,16 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.DragIndicator
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -146,8 +144,10 @@ fun NodeRow(
         ModifierPickerDialog(
             onDismiss = { showModifierPicker = false },
             onPick = { kind ->
+                val newIndex = node.modifiers.size
                 showModifierPicker = false
                 onUpdateNode(node.id) { n -> n.addModifier(defaultModifier(kind)) }
+                editingModifierIndex = newIndex
             }
         )
     }
@@ -188,38 +188,41 @@ fun NodeRow(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
-                        Text(
-                            text = "⠿",
-                            color = if (isDragging)
+                        Icon(
+                            imageVector = Icons.Default.DragIndicator,
+                            contentDescription = "Reorder",
+                            tint = if (isDragging) {
                                 MaterialTheme.colorScheme.primary
-                            else
-                                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.35f),
-                            fontSize = 14.sp,
-                            modifier = Modifier.pointerInput(node.id) {
-                                detectDragGesturesAfterLongPress(
-                                    onDragStart = {
-                                        isDragging = true
-                                        dragOffsetY = 0f
-                                    },
-                                    onDrag = { _, delta ->
-                                        dragOffsetY += delta.y
-                                    },
-                                    onDragEnd = {
-                                        isDragging = false
-                                        commitDrag(
-                                            dragOffsetY = dragOffsetY,
-                                            density = density,
-                                            onMoveUp = onMoveUp,
-                                            onMoveDown = onMoveDown,
-                                        )
-                                        dragOffsetY = 0f
-                                    },
-                                    onDragCancel = {
-                                        isDragging = false
-                                        dragOffsetY = 0f
-                                    }
-                                )
-                            }
+                            } else {
+                                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.35f)
+                            },
+                            modifier = Modifier
+                                .size(14.dp)
+                                .pointerInput(node.id) {
+                                    detectDragGesturesAfterLongPress(
+                                        onDragStart = {
+                                            isDragging = true
+                                            dragOffsetY = 0f
+                                        },
+                                        onDrag = { _, delta ->
+                                            dragOffsetY += delta.y
+                                        },
+                                        onDragEnd = {
+                                            isDragging = false
+                                            commitDrag(
+                                                dragOffsetY = dragOffsetY,
+                                                density = density,
+                                                onMoveUp = onMoveUp,
+                                                onMoveDown = onMoveDown,
+                                            )
+                                            dragOffsetY = 0f
+                                        },
+                                        onDragCancel = {
+                                            isDragging = false
+                                            dragOffsetY = 0f
+                                        }
+                                    )
+                                }
                         )
                         Column(verticalArrangement = Arrangement.spacedBy(0.dp)) {
                             SmallIconButton(
@@ -320,7 +323,7 @@ fun NodeRow(
                         modifier = Modifier
                             .fillMaxWidth()
                             .horizontalScroll(rememberScrollState())
-                            .padding(horizontal = 10.dp, vertical = 6.dp),
+                            .padding(horizontal = 10.dp),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(5.dp)
                     ) {
@@ -362,6 +365,17 @@ fun NodeRow(
                             }
                         }
                     }
+
+                    if (isContainer) {
+                        ComponentAddMenu(
+                            buttonLabel = "Add child",
+                            modifier = Modifier.padding(horizontal = 10.dp),
+                            onAdd = { kind ->
+                                onAddChild(node.id, kind)
+                            }
+                        )
+                        Spacer(Modifier.height(6.dp))
+                    }
                 }
             }
         }
@@ -392,54 +406,6 @@ fun NodeRow(
                     )
                 }
 
-                var showAddChildMenu by remember { mutableStateOf(false) }
-                Box(
-                    modifier = Modifier.padding(
-                        start = ((depth + 1) * 16 + 4).dp,
-                        top = 2.dp,
-                        bottom = 4.dp
-                    )
-                ) {
-                    OutlinedButton(
-                        onClick = { showAddChildMenu = true },
-                        contentPadding = PaddingValues(horizontal = 10.dp, vertical = 4.dp)
-                    ) {
-                        Icon(
-                            Icons.Default.Add,
-                            contentDescription = null,
-                            modifier = Modifier.size(14.dp)
-                        )
-                        Spacer(Modifier.width(4.dp))
-                        Text("Add child", style = MaterialTheme.typography.bodySmall)
-                    }
-
-                    DropdownMenu(
-                        expanded = showAddChildMenu,
-                        onDismissRequest = { showAddChildMenu = false }
-                    ) {
-                        DropdownMenuItem(
-                            text = { Text("Column") },
-                            onClick = {
-                                showAddChildMenu = false
-                                onAddChild(node.id, PlaygroundComponentKind.Column)
-                            }
-                        )
-                        DropdownMenuItem(
-                            text = { Text("Row") },
-                            onClick = {
-                                showAddChildMenu = false
-                                onAddChild(node.id, PlaygroundComponentKind.Row)
-                            }
-                        )
-                        DropdownMenuItem(
-                            text = { Text("Text") },
-                            onClick = {
-                                showAddChildMenu = false
-                                onAddChild(node.id, PlaygroundComponentKind.Text)
-                            }
-                        )
-                    }
-                }
             }
         }
     }

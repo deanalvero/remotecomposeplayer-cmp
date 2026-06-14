@@ -1,3 +1,4 @@
+
 package io.github.deanalvero.remotecomposeplayer.demoapp.ui
 
 import androidx.compose.foundation.layout.Arrangement
@@ -34,12 +35,14 @@ import io.github.deanalvero.remotecomposeplayer.playground.PlaygroundComponentKi
 
 @Composable
 fun ComponentAddMenu(
-    buttonLabel: String = "Add child",
+    buttonLabel: String = "Add component",
+    modifier: Modifier = Modifier,
     onAdd: (PlaygroundComponentKind) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
     OutlinedButton(
         onClick = { expanded = true },
+        modifier = modifier,
         contentPadding = PaddingValues(horizontal = 10.dp, vertical = 4.dp)
     ) {
         Icon(
@@ -48,7 +51,7 @@ fun ComponentAddMenu(
             modifier = Modifier.size(14.dp)
         )
         Spacer(Modifier.width(4.dp))
-        Text("Add component", style = MaterialTheme.typography.bodySmall)
+        Text(buttonLabel, style = MaterialTheme.typography.bodySmall)
     }
 
     if (expanded) {

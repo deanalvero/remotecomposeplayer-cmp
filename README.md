@@ -15,6 +15,14 @@ Add the dependency to your build.gradle. Replace version with what is available 
 implementation("io.github.deanalvero:remotecomposeplayer:<version>")
 ```
 
+## Usage
+```
+val bytes: ByteArray = ... // read from .rc file or from other sources
+RemoteComposePlayer(
+    rcBytes = bytes
+)
+```
+
 ## Supported operations
 - See the classes in the package: `io.github.deanalvero.remotecomposeplayer.operation`
 - (more to be added)
