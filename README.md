@@ -9,6 +9,8 @@ For maximum compatibility, generate the Remote Compose document (ByteArray) usin
 
 Try out the WASM build of the sample app at https://deanalvero.github.io/remotecomposeplayer-cmp/.
 
+![Playground sample](./doc/remote-compose-playground.png)
+
 ## Dependency
 Add the dependency to your build.gradle. Replace version with what is available [here](https://central.sonatype.com/artifact/io.github.deanalvero/remotecomposeplayer/versions).
 ```
