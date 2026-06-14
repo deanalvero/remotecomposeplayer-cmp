@@ -36,6 +36,7 @@ fun PlaygroundEditor(
     onDeleteNode: (String) -> Unit,
     onDownload: (ByteArray) -> Unit,
     onUpload: (ByteArray) -> Unit,
+    onMoveNode: (nodeId: String, direction: Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val bytes = remember(document) {
@@ -45,6 +46,7 @@ fun PlaygroundEditor(
         document.findNode(document.selectedId)
     }
     var showUploader by remember { mutableStateOf(false) }
+
     FileUploader(
         show = showUploader,
         onDismiss = { showUploader = false },
@@ -66,6 +68,8 @@ fun PlaygroundEditor(
                     onSelectNode = onSelectNode,
                     onAddChild = onAddChild,
                     onDeleteNode = onDeleteNode,
+                    onUpdateNode = onUpdateNode,
+                    onMoveNode = onMoveNode,
                     onDownload = { onDownload(bytes) },
                     onUpload = { showUploader = true }
                 )
@@ -76,21 +80,14 @@ fun PlaygroundEditor(
                 )
             }
         } else {
-            var selectedTabIndex by remember {
-                mutableStateOf(0)
-            }
-            Column(
-                modifier = Modifier.fillMaxSize()
-            ) {
-                SecondaryTabRow(
-                    selectedTabIndex = selectedTabIndex
-                ) {
+            var selectedTabIndex by remember { mutableStateOf(0) }
+
+            Column(modifier = Modifier.fillMaxSize()) {
+                SecondaryTabRow(selectedTabIndex = selectedTabIndex) {
                     listOf("Editor", "Operations", "Player").forEachIndexed { index, title ->
                         Tab(
                             selected = index == selectedTabIndex,
-                            onClick = {
-                                selectedTabIndex = index
-                            }
+                            onClick = { selectedTabIndex = index }
                         ) {
                             Text(
                                 text = title,
@@ -108,6 +105,8 @@ fun PlaygroundEditor(
                         onSelectNode = onSelectNode,
                         onAddChild = onAddChild,
                         onDeleteNode = onDeleteNode,
+                        onUpdateNode = onUpdateNode,
+                        onMoveNode = onMoveNode,
                         onDownload = { onDownload(bytes) },
                         onUpload = { showUploader = true }
                     )

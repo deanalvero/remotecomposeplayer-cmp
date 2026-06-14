@@ -42,6 +42,10 @@ class MainViewModel(
         setDocument(document.deleteNode(nodeId))
     }
 
+    fun moveNode(nodeId: String, direction: Int) {
+        setDocument(document.moveNode(nodeId, direction))
+    }
+
     fun currentBytes(): ByteArray = PlaygroundByteBuilder.serialize(document)
 
     private fun setDocument(updated: PlaygroundDocumentState) {

@@ -31,9 +31,7 @@ fun MainScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = {
-                    Text("Remote Compose Playground")
-                },
+                title = { Text("Remote Compose Playground") },
                 actions = {
                     IconButton(
                         onClick = {
@@ -62,6 +60,7 @@ fun MainScreen(
                         onDeleteNode = viewModel::deleteNode,
                         onDownload = onDownload,
                         onUpload = viewModel::importDocument,
+                        onMoveNode = viewModel::moveNode,
                         modifier = Modifier.fillMaxSize()
                     )
                 }
