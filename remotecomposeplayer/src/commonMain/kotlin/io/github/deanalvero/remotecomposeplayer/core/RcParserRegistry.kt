@@ -20,21 +20,25 @@ object RcParserRegistry {
     private val decoders = mutableMapOf<Int, RcOpDecoder>()
 
     init {
-        register(RcHeaderOperation)
-        register(RcRootLayoutOperation)
-        register(RcRowLayoutOperation)
-        register(RcColumnLayoutOperation)
-        register(RcCanvasLayoutOperation)
-        register(RcCanvasContentOperation)
-        register(RcBackgroundModifierOperation)
-        register(RcWidthModifierOperation)
-        register(RcPaddingModifierOperation)
-        register(RcLayoutContentOperation)
-        register(RcTextDataOperation)
-        register(RcTextLayoutOperation)
-        register(RcDrawCircleOperation)
-        register(RcDrawLineOperation)
-        register(RcContainerEndOperation)
+        listOf(
+            RcHeaderOperation,
+            RcRootLayoutOperation,
+            RcRowLayoutOperation,
+            RcColumnLayoutOperation,
+            RcCanvasLayoutOperation,
+            RcCanvasContentOperation,
+            RcBackgroundModifierOperation,
+            RcWidthModifierOperation,
+            RcPaddingModifierOperation,
+            RcLayoutContentOperation,
+            RcTextDataOperation,
+            RcTextLayoutOperation,
+            RcDrawCircleOperation,
+            RcDrawLineOperation,
+            RcContainerEndOperation
+        ).forEach {
+            register(it)
+        }
     }
 
     fun register(decoder: RcOpDecoder) {

@@ -17,6 +17,6 @@ dependencies {
     testImplementation(libs.ktor.serverTestHost)
     testImplementation(libs.kotlin.testJunit)
 
-    implementation("androidx.compose.remote:remote-core:1.0.0-alpha12")
-    implementation("androidx.compose.remote:remote-creation-jvm:1.0.0-alpha12")
+    implementation("androidx.compose.remote:remote-core:1.0.0-alpha13")
+    implementation("androidx.compose.remote:remote-creation-jvm:1.0.0-alpha13")
 }
