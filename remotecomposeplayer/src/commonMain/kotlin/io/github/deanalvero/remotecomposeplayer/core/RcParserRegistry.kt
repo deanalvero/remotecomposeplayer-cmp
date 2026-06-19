@@ -1,8 +1,12 @@
 package io.github.deanalvero.remotecomposeplayer.core
 
 import io.github.deanalvero.remotecomposeplayer.operation.RcBackgroundModifierOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcCanvasContentOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcCanvasLayoutOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcColumnLayoutOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcContainerEndOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcDrawCircleOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcDrawLineOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcHeaderOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcLayoutContentOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcPaddingModifierOperation
@@ -20,14 +24,17 @@ object RcParserRegistry {
         register(RcRootLayoutOperation)
         register(RcRowLayoutOperation)
         register(RcColumnLayoutOperation)
+        register(RcCanvasLayoutOperation)
+        register(RcCanvasContentOperation)
         register(RcBackgroundModifierOperation)
         register(RcWidthModifierOperation)
         register(RcPaddingModifierOperation)
         register(RcLayoutContentOperation)
         register(RcTextDataOperation)
         register(RcTextLayoutOperation)
+        register(RcDrawCircleOperation)
+        register(RcDrawLineOperation)
         register(RcContainerEndOperation)
-
     }
 
     fun register(decoder: RcOpDecoder) {

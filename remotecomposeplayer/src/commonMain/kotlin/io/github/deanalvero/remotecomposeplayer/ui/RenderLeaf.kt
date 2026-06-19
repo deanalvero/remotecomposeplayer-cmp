@@ -19,7 +19,7 @@ import io.github.deanalvero.remotecomposeplayer.operation.RcTextLayoutOperation
 fun RenderLeaf(
     operation: RcOperation,
     context: RemoteComposeContext,
-    modifier: Modifier =  Modifier
+    modifier: Modifier = Modifier
 ) {
     when (operation) {
         is RcTextLayoutOperation -> {
@@ -65,5 +65,6 @@ fun RenderLeaf(
                 maxLines = operation.maxLines
             )
         }
+        else -> Unit
     }
 }

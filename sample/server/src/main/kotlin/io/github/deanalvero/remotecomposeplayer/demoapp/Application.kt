@@ -59,7 +59,19 @@ fun Application.module() {
                     vertical = RcColumnVerticalPositioning.Top,
                 ) {
                     Text("Sample text!", fontSize = 48.rsp, color = 0xFFFF3333.toInt())
+
+                    Canvas {
+                        drawCircle(
+                            25f, 25f, 50f
+                        )
+                    }
                 }
+
+
+                drawCircle(
+                    25f, 25f, 50f
+                )
+
             }
 
             call.respondBytes(bytes)

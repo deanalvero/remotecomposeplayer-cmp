@@ -28,6 +28,13 @@ sealed class PlaygroundNode {
         val children: List<PlaygroundNode> = emptyList()
     ) : PlaygroundNode()
 
+    data class Canvas(
+        override val id: String,
+        override val componentId: Int,
+        override val modifiers: List<PlaygroundModifier> = emptyList(),
+        val drawOperations: List<PlaygroundDrawOperation> = emptyList()
+    ) : PlaygroundNode()
+
     data class Text(
         override val id: String,
         override val componentId: Int,

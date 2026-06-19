@@ -1,13 +1,21 @@
 package io.github.deanalvero.remotecomposeplayer.ui
 
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import io.github.deanalvero.remotecomposeplayer.core.RemoteComposeContext
+import io.github.deanalvero.remotecomposeplayer.operation.CanvasScopedOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcCanvasContentOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcCanvasLayoutOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcColumnLayoutOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcDrawCircleOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcDrawLineOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcLayoutContentOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcRootLayoutOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcRowLayoutOperation
@@ -28,6 +36,7 @@ fun RenderLayoutContainer(
                 RemoteComposeRenderer(node.children, context, Modifier, this)
             }
         }
+
         is RcRowLayoutOperation -> {
             Row(
                 modifier = modifier,
@@ -37,16 +46,64 @@ fun RenderLayoutContainer(
                 RemoteComposeRenderer(node.children, context, Modifier, this)
             }
         }
+
         is RcRootLayoutOperation -> {
             Box(modifier = modifier.fillMaxSize()) {
                 RemoteComposeRenderer(node.children, context, Modifier, this)
             }
         }
+
         is RcLayoutContentOperation -> {
             Box(modifier = modifier) {
                 RemoteComposeRenderer(node.children, context, Modifier, this)
             }
         }
+
+        is RcCanvasLayoutOperation -> {
+            Box(modifier = modifier) {
+                RemoteComposeRenderer(node.children, context, Modifier, this)
+            }
+        }
+
+        is RcCanvasContentOperation -> {
+            val drawNodes = node.children.filter { child ->
+                child is RcNode.Leaf && child.operation is CanvasScopedOperation
+            }
+            val contentNodes = node.children.filterNot { child ->
+                child is RcNode.Leaf && child.operation is CanvasScopedOperation
+            }
+
+            Box(modifier = modifier) {
+                if (drawNodes.isNotEmpty()) {
+                    Canvas(modifier = Modifier.matchParentSize()) {
+                        drawNodes.forEach { child ->
+                            when (val op = child.operation) {
+                                is RcDrawCircleOperation -> {
+                                    drawCircle(
+                                        color = Color.Black,
+                                        radius = op.radius,
+                                        center = Offset(op.centerX, op.centerY)
+                                    )
+                                }
+
+                                is RcDrawLineOperation -> {
+                                    drawLine(
+                                        color = Color.Black,
+                                        start = Offset(op.startX, op.startY),
+                                        end = Offset(op.endX, op.endY)
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (contentNodes.isNotEmpty()) {
+                    RemoteComposeRenderer(contentNodes, context, Modifier, this)
+                }
+            }
+        }
+
         else -> {
             Box(modifier = modifier) {
                 RemoteComposeRenderer(node.children, context, Modifier, this)

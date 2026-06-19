@@ -2,9 +2,14 @@ package io.github.deanalvero.remotecomposeplayer.playground
 
 import io.github.deanalvero.remotecomposeplayer.core.RcOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcBackgroundModifierOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcCanvasContentOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcCanvasLayoutOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcColumnLayoutOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcContainerEndOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcDrawCircleOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcDrawLineOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcHeaderOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcLayoutContentOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcPaddingModifierOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcRootLayoutOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcRowLayoutOperation
@@ -81,6 +86,31 @@ object PlaygroundByteBuilder {
                 writeOperation(writer, RcContainerEndOperation())
             }
 
+            is PlaygroundNode.Canvas -> {
+                writeOperation(
+                    writer,
+                    RcCanvasLayoutOperation(
+                        componentId = node.componentId,
+                        animationId = 0
+                    )
+                )
+
+                node.modifiers.forEach { modifier ->
+                    writeOperation(writer, modifier.toOperation())
+                }
+
+                writeOperation(writer, RcLayoutContentOperation(componentId = node.componentId))
+                writeOperation(writer, RcCanvasContentOperation(componentId = node.componentId))
+
+                node.drawOperations.forEach { drawOp ->
+                    writeOperation(writer, drawOp.toOperation())
+                }
+
+                writeOperation(writer, RcContainerEndOperation())
+                writeOperation(writer, RcContainerEndOperation())
+                writeOperation(writer, RcContainerEndOperation())
+            }
+
             is PlaygroundNode.Text -> {
                 writeOperation(
                     writer,
@@ -152,6 +182,22 @@ object PlaygroundByteBuilder {
                 writer.writeFloat(op.spacedBy)
             }
 
+            is RcCanvasLayoutOperation -> {
+                writer.writeByte(op.opCode)
+                writer.writeInt(op.componentId)
+                writer.writeInt(op.animationId)
+            }
+
+            is RcLayoutContentOperation -> {
+                writer.writeByte(op.opCode)
+                writer.writeInt(op.componentId)
+            }
+
+            is RcCanvasContentOperation -> {
+                writer.writeByte(op.opCode)
+                writer.writeInt(op.componentId)
+            }
+
             is RcTextDataOperation -> {
                 writer.writeByte(op.opCode)
                 writer.writeInt(op.textId)
@@ -202,6 +248,21 @@ object PlaygroundByteBuilder {
 
             is RcContainerEndOperation -> {
                 writer.writeByte(op.opCode)
+            }
+
+            is RcDrawCircleOperation -> {
+                writer.writeByte(op.opCode)
+                writer.writeFloat(op.centerX)
+                writer.writeFloat(op.centerY)
+                writer.writeFloat(op.radius)
+            }
+
+            is RcDrawLineOperation -> {
+                writer.writeByte(op.opCode)
+                writer.writeFloat(op.startX)
+                writer.writeFloat(op.startY)
+                writer.writeFloat(op.endX)
+                writer.writeFloat(op.endY)
             }
 
             else -> error("Unsupported operation for serialization: " + op::class.simpleName)

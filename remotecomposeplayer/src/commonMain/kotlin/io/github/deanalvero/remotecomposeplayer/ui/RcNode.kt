@@ -11,6 +11,7 @@ sealed class RcNode {
         override val modifiers: MutableList<RcOperation> = mutableListOf(),
         val children: MutableList<RcNode> = mutableListOf()
     ) : RcNode()
+
     data class Leaf(
         override val operation: RcOperation,
         override val modifiers: MutableList<RcOperation> = mutableListOf()

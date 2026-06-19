@@ -4,8 +4,12 @@ import io.github.deanalvero.remotecomposeplayer.core.RcOperation
 import io.github.deanalvero.remotecomposeplayer.core.RemoteComposeContext
 import io.github.deanalvero.remotecomposeplayer.core.RemoteComposeEngine
 import io.github.deanalvero.remotecomposeplayer.operation.RcBackgroundModifierOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcCanvasContentOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcCanvasLayoutOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcColumnLayoutOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcContainerEndOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcDrawCircleOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcDrawLineOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcLayoutContentOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcPaddingModifierOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcRootLayoutOperation
@@ -45,11 +49,25 @@ private fun RcNode.toPlaygroundNodes(
 ): List<PlaygroundNode> {
     return when (val op = operation) {
         is RcRootLayoutOperation,
-        is RcLayoutContentOperation -> {
+        is RcLayoutContentOperation,
+        is RcCanvasContentOperation -> {
             when (this) {
                 is RcNode.Layout -> children.flatMap { it.toPlaygroundNodes(context, allocateComponentId) }
                 is RcNode.Leaf -> emptyList()
             }
+        }
+
+        is RcCanvasLayoutOperation -> {
+            val componentId = allocateComponentId()
+            val drawOperations = (this as RcNode.Layout).collectDrawOperations()
+            listOf(
+                PlaygroundNode.Canvas(
+                    id = "node-$componentId",
+                    componentId = componentId,
+                    modifiers = modifiers.toPlaygroundModifiers(context),
+                    drawOperations = drawOperations
+                )
+            )
         }
 
         is RcColumnLayoutOperation -> {
@@ -112,6 +130,44 @@ private fun RcNode.toPlaygroundNodes(
         else -> when (this) {
             is RcNode.Layout -> children.flatMap { it.toPlaygroundNodes(context, allocateComponentId) }
             is RcNode.Leaf -> emptyList()
+        }
+    }
+}
+
+private fun RcNode.Layout.collectDrawOperations(): List<PlaygroundDrawOperation> {
+    return children.flatMap { child ->
+        when (val op = child.operation) {
+            is RcDrawCircleOperation -> listOf(
+                PlaygroundDrawOperation.Circle(
+                    centerX = op.centerX,
+                    centerY = op.centerY,
+                    radius = op.radius
+                )
+            )
+
+            is RcDrawLineOperation -> listOf(
+                PlaygroundDrawOperation.Line(
+                    startX = op.startX,
+                    startY = op.startY,
+                    endX = op.endX,
+                    endY = op.endY
+                )
+            )
+
+            is RcLayoutContentOperation,
+            is RcCanvasContentOperation -> {
+                when (child) {
+                    is RcNode.Layout -> child.collectDrawOperations()
+                    is RcNode.Leaf -> emptyList()
+                }
+            }
+
+            else -> {
+                when (child) {
+                    is RcNode.Layout -> child.collectDrawOperations()
+                    is RcNode.Leaf -> emptyList()
+                }
+            }
         }
     }
 }

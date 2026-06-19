@@ -29,7 +29,7 @@ fun EditorTreeNodeRow(
                 .clickable { onSelectNode(node.id) }
                 .padding(vertical = 8.dp, horizontal = 8.dp),
             color = if (isSelected) MaterialTheme.colorScheme.primary else Color.Unspecified,
-            style = if (isSelected) MaterialTheme.typography.bodyMedium else MaterialTheme.typography.bodyMedium
+            style = MaterialTheme.typography.bodyMedium
         )
 
         when (node) {
@@ -51,6 +51,7 @@ fun EditorTreeNodeRow(
                 )
             }
 
+            is PlaygroundNode.Canvas -> Unit
             is PlaygroundNode.Text -> Unit
         }
     }
