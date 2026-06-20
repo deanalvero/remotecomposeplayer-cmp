@@ -112,7 +112,7 @@ private fun RcNode.toPlaygroundNodes(
                     id = "node-$componentId",
                     componentId = componentId,
                     modifiers = modifiers.toPlaygroundModifiers(context),
-                    text = context.getText(op.textId),
+                    text = context.getStaticText(op.textId),
                     color = op.color,
                     fontSize = op.fontSize,
                     fontStyle = op.fontStyle,

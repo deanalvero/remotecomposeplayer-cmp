@@ -23,7 +23,7 @@ fun RenderLeaf(
 ) {
     when (operation) {
         is RcTextLayoutOperation -> {
-            val resolvedText = context.getText(operation.textId)
+            val resolvedText = context.resolveText(operation.textId)
 
             val composeTextAlign = when (operation.textAlign and 0xFFFF) {
                 RcTextLayoutOperation.TEXT_ALIGN_LEFT -> TextAlign.Left

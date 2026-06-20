@@ -13,6 +13,7 @@ import io.github.deanalvero.remotecomposeplayer.operation.RcPaddingModifierOpera
 import io.github.deanalvero.remotecomposeplayer.operation.RcRootLayoutOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcRowLayoutOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcTextDataOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcTextFromFloatOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcTextLayoutOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcWidthModifierOperation
 
@@ -35,7 +36,8 @@ object RcParserRegistry {
             RcTextLayoutOperation,
             RcDrawCircleOperation,
             RcDrawLineOperation,
-            RcContainerEndOperation
+            RcContainerEndOperation,
+            RcTextFromFloatOperation
         ).forEach {
             register(it)
         }
