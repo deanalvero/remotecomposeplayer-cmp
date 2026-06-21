@@ -11,6 +11,7 @@ import io.github.deanalvero.remotecomposeplayer.operation.RcColumnLayoutOperatio
 import io.github.deanalvero.remotecomposeplayer.operation.RcContainerEndOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcDrawCircleOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcDrawLineOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcHeightModifierOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcLayoutContentOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcPaddingModifierOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcRootLayoutOperation
@@ -218,6 +219,13 @@ private fun List<RcOperation>.toPlaygroundModifiers(
 
             is RcWidthModifierOperation -> {
                 PlaygroundModifier.Width(
+                    typeId = op.typeId,
+                    value = op.value
+                )
+            }
+
+            is RcHeightModifierOperation -> {
+                PlaygroundModifier.Height(
                     typeId = op.typeId,
                     value = op.value
                 )

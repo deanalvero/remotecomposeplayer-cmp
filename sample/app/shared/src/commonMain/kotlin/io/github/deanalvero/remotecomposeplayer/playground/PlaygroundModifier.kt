@@ -2,6 +2,7 @@ package io.github.deanalvero.remotecomposeplayer.playground
 
 import io.github.deanalvero.remotecomposeplayer.core.RcOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcBackgroundModifierOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcHeightModifierOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcPaddingModifierOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcWidthModifierOperation
 import io.github.deanalvero.remotecomposeplayer.operation.common.RcDimensionType
@@ -58,6 +59,18 @@ sealed interface PlaygroundModifier {
             )
         }
     }
+
+    data class Height(
+        val typeId: Int = RcDimensionType.WRAP.id,
+        val value: Float = 0f
+    ) : PlaygroundModifier {
+        override fun toOperation(): RcOperation {
+            return RcHeightModifierOperation(
+                typeId = typeId,
+                value = value
+            )
+        }
+    }
 }
 
 fun defaultModifier(kind: PlaygroundModifierKind): PlaygroundModifier {
@@ -65,6 +78,7 @@ fun defaultModifier(kind: PlaygroundModifierKind): PlaygroundModifier {
         PlaygroundModifierKind.Padding -> PlaygroundModifier.Padding()
         PlaygroundModifierKind.Background -> PlaygroundModifier.Background()
         PlaygroundModifierKind.Width -> PlaygroundModifier.Width()
+        PlaygroundModifierKind.Height -> PlaygroundModifier.Height()
     }
 }
 
@@ -75,5 +89,6 @@ fun PlaygroundModifier.label(): String {
         is PlaygroundModifier.Padding -> "Padding"
         is PlaygroundModifier.Background -> "Background"
         is PlaygroundModifier.Width -> "Width"
+        is PlaygroundModifier.Height -> "Height"
     }
 }

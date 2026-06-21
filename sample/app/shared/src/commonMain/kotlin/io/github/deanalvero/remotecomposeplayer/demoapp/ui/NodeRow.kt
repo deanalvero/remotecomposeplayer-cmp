@@ -470,6 +470,19 @@ fun PlaygroundModifier.chipLabel(): String = when (this) {
         }
         "w $type"
     }
+
+    is PlaygroundModifier.Height -> {
+        val type = when (typeId) {
+            RcDimensionType.FILL.id -> "fill"
+            RcDimensionType.FILL_PARENT_MAX_HEIGHT.id -> "fillMax"
+            RcDimensionType.WRAP.id -> "wrap"
+            RcDimensionType.WEIGHT.id -> "wt ${value.fmt()}"
+            RcDimensionType.EXACT.id,
+            RcDimensionType.EXACT_DP.id -> "${value.fmt()}dp"
+            else -> "h:$typeId"
+        }
+        "h $type"
+    }
 }
 
 private fun Float.fmt(): String =

@@ -12,7 +12,8 @@ enum class PlaygroundComponentKind {
 enum class PlaygroundModifierKind {
     Padding,
     Background,
-    Width
+    Width,
+    Height
 }
 
 enum class PlaygroundDrawOperationKind {

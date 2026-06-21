@@ -28,6 +28,7 @@ import io.github.deanalvero.remotecomposeplayer.operation.RcContainerEndOperatio
 import io.github.deanalvero.remotecomposeplayer.operation.RcDrawCircleOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcDrawLineOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcHeaderOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcHeightModifierOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcLayoutContentOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcPaddingModifierOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcRootLayoutOperation
@@ -78,6 +79,7 @@ private fun OperationRowItem(operation: RcOperation) {
         is RcBoxLayoutOperation -> Color(0xFF4CAF50)
         is RcTextLayoutOperation -> Color(0xFFFFC107)
         is RcWidthModifierOperation,
+        is RcHeightModifierOperation,
         is RcBackgroundModifierOperation,
         is RcPaddingModifierOperation -> Color(0xFF9C27B0)
         is RcDrawCircleOperation,
@@ -88,7 +90,7 @@ private fun OperationRowItem(operation: RcOperation) {
 
     Card(
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFFF9F9F9)),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
     ) {
         Row(

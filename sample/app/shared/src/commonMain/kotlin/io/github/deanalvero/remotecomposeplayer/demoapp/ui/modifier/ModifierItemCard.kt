@@ -77,6 +77,23 @@ fun ModifierItemCard(
                     )
                     FloatField("Value", modifier.value) { onChange(modifier.copy(value = it)) }
                 }
+
+                is PlaygroundModifier.Height -> {
+                    IntChoiceField(
+                        label = "Height strategy",
+                        value = modifier.typeId,
+                        options = listOf(
+                            RcDimensionType.EXACT.id to "EXACT",
+                            RcDimensionType.FILL.id to "FILL",
+                            RcDimensionType.WRAP.id to "WRAP",
+                            RcDimensionType.WEIGHT.id to "WEIGHT",
+                            RcDimensionType.EXACT_DP.id to "EXACT_DP",
+                            RcDimensionType.FILL_PARENT_MAX_HEIGHT.id to "FILL_PARENT_MAX_HEIGHT"
+                        ),
+                        onValueChange = { onChange(modifier.copy(typeId = it)) }
+                    )
+                    FloatField("Value", modifier.value) { onChange(modifier.copy(value = it)) }
+                }
             }
         }
     }

@@ -27,6 +27,8 @@ private val BackgroundChipBg = Color(0xFFCCFBF1)
 private val BackgroundChipFg = Color(0xFF0F766E)
 private val WidthChipBg = Color(0xFFEDE9FE)
 private val WidthChipFg = Color(0xFF6D28D9)
+private val HeightChipBg = Color(0xFFFCE7F3)
+private val HeightChipFg = Color(0xFFBE185D)
 
 @Composable
 fun ModifierChip(
@@ -38,6 +40,7 @@ fun ModifierChip(
         is PlaygroundModifier.Padding -> PaddingChipBg to PaddingChipFg
         is PlaygroundModifier.Background -> BackgroundChipBg to BackgroundChipFg
         is PlaygroundModifier.Width -> WidthChipBg to WidthChipFg
+        is PlaygroundModifier.Height -> HeightChipBg to HeightChipFg
     }
 
     Surface(

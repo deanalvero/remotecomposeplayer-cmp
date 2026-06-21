@@ -10,6 +10,7 @@ import io.github.deanalvero.remotecomposeplayer.operation.RcContainerEndOperatio
 import io.github.deanalvero.remotecomposeplayer.operation.RcDrawCircleOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcDrawLineOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcHeaderOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcHeightModifierOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcLayoutContentOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcPaddingModifierOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcRootLayoutOperation
@@ -297,6 +298,12 @@ object PlaygroundByteBuilder {
             }
 
             is RcWidthModifierOperation -> {
+                writer.writeByte(op.opCode)
+                writer.writeInt(op.typeId)
+                writer.writeFloat(op.value)
+            }
+
+            is RcHeightModifierOperation -> {
                 writer.writeByte(op.opCode)
                 writer.writeInt(op.typeId)
                 writer.writeFloat(op.value)
