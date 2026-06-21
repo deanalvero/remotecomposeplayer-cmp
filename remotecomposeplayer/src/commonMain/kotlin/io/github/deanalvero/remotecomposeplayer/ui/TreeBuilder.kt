@@ -12,6 +12,7 @@ import io.github.deanalvero.remotecomposeplayer.operation.RcLayoutContentOperati
 import io.github.deanalvero.remotecomposeplayer.operation.RcPaddingModifierOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcRootLayoutOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcRowLayoutOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcTextLayoutOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcWidthModifierOperation
 
 fun buildRcTree(operations: List<RcOperation>): RcNode.Layout {
@@ -40,7 +41,8 @@ fun buildRcTree(operations: List<RcOperation>): RcNode.Layout {
             is RcCanvasLayoutOperation,
             is RcCanvasContentOperation,
             is RcRowLayoutOperation,
-            is RcColumnLayoutOperation -> {
+            is RcColumnLayoutOperation,
+            is RcTextLayoutOperation -> {
                 val newNode = RcNode.Layout(op)
                 stack.last().children.add(newNode)
                 stack.add(newNode)
@@ -49,7 +51,10 @@ fun buildRcTree(operations: List<RcOperation>): RcNode.Layout {
 
             is RcDrawCircleOperation,
             is RcDrawLineOperation -> {
-                if (isInsideCanvasContent(stack)) {
+                if (stack.last().operation is RcLayoutContentOperation &&
+                    stack.size >= 2 &&
+                    stack[stack.lastIndex - 1].operation is RcCanvasLayoutOperation
+                ) {
                     val leaf = RcNode.Leaf(op)
                     stack.last().children.add(leaf)
                     lastAddedNode = leaf
@@ -64,11 +69,4 @@ fun buildRcTree(operations: List<RcOperation>): RcNode.Layout {
         }
     }
     return root
-}
-
-private fun isInsideCanvasContent(stack: List<RcNode.Layout>): Boolean {
-    if (stack.size < 3) return false
-    return stack[stack.lastIndex].operation is RcCanvasContentOperation &&
-            stack[stack.lastIndex - 1].operation is RcLayoutContentOperation &&
-            stack[stack.lastIndex - 2].operation is RcCanvasLayoutOperation
 }

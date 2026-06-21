@@ -11,7 +11,6 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import io.github.deanalvero.remotecomposeplayer.core.RemoteComposeContext
 import io.github.deanalvero.remotecomposeplayer.operation.CanvasScopedOperation
-import io.github.deanalvero.remotecomposeplayer.operation.RcCanvasContentOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcCanvasLayoutOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcColumnLayoutOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcDrawCircleOperation
@@ -19,12 +18,14 @@ import io.github.deanalvero.remotecomposeplayer.operation.RcDrawLineOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcLayoutContentOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcRootLayoutOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcRowLayoutOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcTextLayoutOperation
 
 @Composable
 fun RenderLayoutContainer(
     node: RcNode.Layout,
     context: RemoteComposeContext,
-    modifier: Modifier
+    modifier: Modifier = Modifier,
+    scope: Any? = null
 ) {
     when (val operation = node.operation) {
         is RcColumnLayoutOperation -> {
@@ -54,8 +55,39 @@ fun RenderLayoutContainer(
         }
 
         is RcLayoutContentOperation -> {
-            Box(modifier = modifier) {
-                RemoteComposeRenderer(node.children, context, Modifier, this)
+            val drawNodes = node.children.filter { child ->
+                child is RcNode.Leaf && child.operation is CanvasScopedOperation
+            }
+            val contentNodes = node.children.filterNot { child ->
+                child is RcNode.Leaf && child.operation is CanvasScopedOperation
+            }
+
+            if (contentNodes.isNotEmpty()) {
+                RemoteComposeRenderer(contentNodes, context, modifier, scope)
+            }
+
+            if (drawNodes.isNotEmpty()) {
+                Canvas(modifier = modifier) {
+                    drawNodes.forEach { child ->
+                        when (val op = child.operation) {
+                            is RcDrawCircleOperation -> {
+                                drawCircle(
+                                    color = Color.Black,
+                                    radius = op.radius,
+                                    center = Offset(op.centerX, op.centerY)
+                                )
+                            }
+
+                            is RcDrawLineOperation -> {
+                                drawLine(
+                                    color = Color.Black,
+                                    start = Offset(op.startX, op.startY),
+                                    end = Offset(op.endX, op.endY)
+                                )
+                            }
+                        }
+                    }
+                }
             }
         }
 
@@ -65,42 +97,20 @@ fun RenderLayoutContainer(
             }
         }
 
-        is RcCanvasContentOperation -> {
-            val drawNodes = node.children.filter { child ->
-                child is RcNode.Leaf && child.operation is CanvasScopedOperation
-            }
-            val contentNodes = node.children.filterNot { child ->
-                child is RcNode.Leaf && child.operation is CanvasScopedOperation
-            }
+        is RcTextLayoutOperation -> {
+            RenderText(
+                operation = operation,
+                context = context,
+                modifier = modifier
+            )
 
-            Box(modifier = modifier) {
-                if (drawNodes.isNotEmpty()) {
-                    Canvas(modifier = Modifier.matchParentSize()) {
-                        drawNodes.forEach { child ->
-                            when (val op = child.operation) {
-                                is RcDrawCircleOperation -> {
-                                    drawCircle(
-                                        color = Color.Black,
-                                        radius = op.radius,
-                                        center = Offset(op.centerX, op.centerY)
-                                    )
-                                }
-
-                                is RcDrawLineOperation -> {
-                                    drawLine(
-                                        color = Color.Black,
-                                        start = Offset(op.startX, op.startY),
-                                        end = Offset(op.endX, op.endY)
-                                    )
-                                }
-                            }
-                        }
-                    }
-                }
-
-                if (contentNodes.isNotEmpty()) {
-                    RemoteComposeRenderer(contentNodes, context, Modifier, this)
-                }
+            if (node.children.isNotEmpty()) {
+                RemoteComposeRenderer(
+                    nodes = node.children,
+                    context = context,
+                    modifier = Modifier,
+                    scope = scope
+                )
             }
         }
 

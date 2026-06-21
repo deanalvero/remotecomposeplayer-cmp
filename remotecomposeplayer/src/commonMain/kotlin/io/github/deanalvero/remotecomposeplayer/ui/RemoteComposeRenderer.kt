@@ -30,7 +30,8 @@ fun RemoteComposeRenderer(
                 RenderLayoutContainer(
                     node = node,
                     context = context,
-                    modifier = resolvedModifier
+                    modifier = resolvedModifier,
+                    scope = scope
                 )
             }
         }

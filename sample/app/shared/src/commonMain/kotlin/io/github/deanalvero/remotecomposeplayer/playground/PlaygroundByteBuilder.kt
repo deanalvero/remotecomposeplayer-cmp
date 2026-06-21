@@ -27,6 +27,7 @@ object PlaygroundByteBuilder {
         document.nodes.forEach { node ->
             writeNode(writer, node)
         }
+        writeOperation(writer, RcContainerEndOperation())
         return writer.toByteArray()
     }
 
@@ -62,7 +63,9 @@ object PlaygroundByteBuilder {
                     writeOperation(writer, modifier.toOperation())
                 }
 
+                writeOperation(writer, RcLayoutContentOperation(componentId = node.componentId))
                 node.children.forEach { child -> writeNode(writer, child) }
+                writeOperation(writer, RcContainerEndOperation())
                 writeOperation(writer, RcContainerEndOperation())
             }
 
@@ -82,7 +85,9 @@ object PlaygroundByteBuilder {
                     writeOperation(writer, modifier.toOperation())
                 }
 
+                writeOperation(writer, RcLayoutContentOperation(componentId = node.componentId))
                 node.children.forEach { child -> writeNode(writer, child) }
+                writeOperation(writer, RcContainerEndOperation())
                 writeOperation(writer, RcContainerEndOperation())
             }
 
@@ -100,13 +105,11 @@ object PlaygroundByteBuilder {
                 }
 
                 writeOperation(writer, RcLayoutContentOperation(componentId = node.componentId))
-                writeOperation(writer, RcCanvasContentOperation(componentId = node.componentId))
 
                 node.drawOperations.forEach { drawOp ->
                     writeOperation(writer, drawOp.toOperation())
                 }
 
-                writeOperation(writer, RcContainerEndOperation())
                 writeOperation(writer, RcContainerEndOperation())
                 writeOperation(writer, RcContainerEndOperation())
             }
@@ -139,6 +142,9 @@ object PlaygroundByteBuilder {
                 node.modifiers.forEach { modifier ->
                     writeOperation(writer, modifier.toOperation())
                 }
+                writeOperation(writer, RcLayoutContentOperation(componentId = node.componentId))
+                writeOperation(writer, RcContainerEndOperation())
+                writeOperation(writer, RcContainerEndOperation())
             }
         }
     }
