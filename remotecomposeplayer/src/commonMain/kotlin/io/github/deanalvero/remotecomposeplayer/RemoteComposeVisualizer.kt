@@ -20,9 +20,15 @@ import androidx.compose.ui.unit.sp
 import io.github.deanalvero.remotecomposeplayer.core.RcOperation
 import io.github.deanalvero.remotecomposeplayer.core.RemoteComposeEngine
 import io.github.deanalvero.remotecomposeplayer.operation.RcBackgroundModifierOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcBoxLayoutOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcCanvasContentOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcCanvasLayoutOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcColumnLayoutOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcContainerEndOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcDrawCircleOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcDrawLineOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcHeaderOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcHeightModifierOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcLayoutContentOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcPaddingModifierOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcRootLayoutOperation
@@ -64,21 +70,27 @@ private fun OperationRowItem(operation: RcOperation) {
         is RcHeaderOperation -> Color(0xFF2196F3)
         is RcTextDataOperation -> Color(0xFFFF9800)
         is RcRootLayoutOperation,
-        is RcLayoutContentOperation -> Color(0xFF00BCD4)
+        is RcLayoutContentOperation,
+        is RcCanvasLayoutOperation,
+        is RcCanvasContentOperation -> Color(0xFF00BCD4)
         is RcContainerEndOperation -> Color(0xFF607D8B)
         is RcRowLayoutOperation,
-        is RcColumnLayoutOperation -> Color(0xFF4CAF50)
+        is RcColumnLayoutOperation,
+        is RcBoxLayoutOperation -> Color(0xFF4CAF50)
         is RcTextLayoutOperation -> Color(0xFFFFC107)
         is RcWidthModifierOperation,
+        is RcHeightModifierOperation,
         is RcBackgroundModifierOperation,
         is RcPaddingModifierOperation -> Color(0xFF9C27B0)
+        is RcDrawCircleOperation,
+        is RcDrawLineOperation -> Color(0xFF7C3AED)
         is UnknownOperation -> Color(0xFFE91E63)
         else -> Color(0xFFE91E63)
     }
 
     Card(
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFFF9F9F9)),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
     ) {
         Row(

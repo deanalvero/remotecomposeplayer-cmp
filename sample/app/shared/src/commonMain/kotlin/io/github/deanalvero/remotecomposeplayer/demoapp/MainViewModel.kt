@@ -2,6 +2,7 @@ package io.github.deanalvero.remotecomposeplayer.demoapp
 
 import io.github.deanalvero.remotecomposeplayer.playground.PlaygroundByteBuilder
 import io.github.deanalvero.remotecomposeplayer.playground.PlaygroundComponentKind
+import io.github.deanalvero.remotecomposeplayer.playground.PlaygroundDocumentParser
 import io.github.deanalvero.remotecomposeplayer.playground.PlaygroundDocumentState
 import io.github.deanalvero.remotecomposeplayer.playground.PlaygroundNode
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -41,9 +42,22 @@ class MainViewModel(
         setDocument(document.deleteNode(nodeId))
     }
 
+    fun moveNode(nodeId: String, direction: Int) {
+        setDocument(document.moveNode(nodeId, direction))
+    }
+
     fun currentBytes(): ByteArray = PlaygroundByteBuilder.serialize(document)
 
     private fun setDocument(updated: PlaygroundDocumentState) {
         _uiState.value = MainUiState.Playground(updated)
+    }
+
+    fun importDocument(bytes: ByteArray) {
+        try {
+            val parsedDocument = PlaygroundDocumentParser.parse(bytes)
+            setDocument(parsedDocument)
+        } catch (e: Exception) {
+            _uiState.value = MainUiState.Error("Failed to parse document: ${e.message}")
+        }
     }
 }

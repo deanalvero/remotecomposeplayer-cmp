@@ -53,7 +53,6 @@ kotlin {
             implementation(libs.compose.uiToolingPreview)
         }
         commonMain.dependencies {
-            api(projects.sample.core)
             implementation(libs.compose.runtime)
             implementation(libs.compose.foundation)
             implementation(libs.compose.material3)
@@ -62,6 +61,8 @@ kotlin {
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
+
+            implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.8.0")
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

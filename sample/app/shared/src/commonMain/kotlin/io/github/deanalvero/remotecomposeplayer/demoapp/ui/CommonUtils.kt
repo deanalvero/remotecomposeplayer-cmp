@@ -6,6 +6,9 @@ fun nodeLabel(node: PlaygroundNode): String {
     return when (node) {
         is PlaygroundNode.Column -> "Column"
         is PlaygroundNode.Row -> "Row"
+        is PlaygroundNode.Box -> "Box"
+        is PlaygroundNode.Spacer -> "Spacer"
+        is PlaygroundNode.Canvas -> "Canvas"
         is PlaygroundNode.Text -> "Text"
     }
 }

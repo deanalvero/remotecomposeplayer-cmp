@@ -53,12 +53,17 @@ fun Application.module() {
                 RemoteComposeWriter.hTag(Header.DOC_CONTENT_DESCRIPTION, ""),
                 RemoteComposeWriter.hTag(Header.DOC_PROFILES, 0),
             ) {
+                val s = continuousSeconds()
                 Column(
                     modifier = Modifier.fillMaxWidth().background(0xFFEEEEEE.toInt()).padding(20f),
                     horizontal = RcHorizontalPositioning.Center,
                     vertical = RcColumnVerticalPositioning.Top,
                 ) {
-                    Text("Sample text!", fontSize = 48.rsp, color = 0xFFFF3333.toInt())
+//                    Text("Sample text!", fontSize = 48.rsp, color = 0xFFFF3333.toInt())
+//                    Text("Sample text!", fontSize = 12.rsp, color = 0xFFFF3333.toInt())
+//                    Text("Sample text!", fontSize = 12.rsp, color = 0xFFFF3333.toInt())
+//                    Text(s.format(8, 1), fontSize = 24.rsp, color = 0xFFFF3333.toInt())
+                    Text(s.format(2, 1), fontSize = 24.rsp, color = 0xFFFF3333.toInt())
                 }
             }
 

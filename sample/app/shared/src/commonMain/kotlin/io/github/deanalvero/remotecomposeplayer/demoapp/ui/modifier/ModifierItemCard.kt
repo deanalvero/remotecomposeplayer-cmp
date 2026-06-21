@@ -11,6 +11,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import io.github.deanalvero.remotecomposeplayer.demoapp.ui.field.ColorField
@@ -29,7 +30,10 @@ fun ModifierItemCard(
 ) {
     Card {
         Column(modifier = Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Text(modifier.label())
                 IconButton(onClick = onDelete) {
                     Icon(Icons.Filled.Delete, contentDescription = "Delete modifier")
@@ -68,6 +72,23 @@ fun ModifierItemCard(
                             RcDimensionType.WEIGHT.id to "WEIGHT",
                             RcDimensionType.EXACT_DP.id to "EXACT_DP",
                             RcDimensionType.FILL_PARENT_MAX_WIDTH.id to "FILL_PARENT_MAX_WIDTH"
+                        ),
+                        onValueChange = { onChange(modifier.copy(typeId = it)) }
+                    )
+                    FloatField("Value", modifier.value) { onChange(modifier.copy(value = it)) }
+                }
+
+                is PlaygroundModifier.Height -> {
+                    IntChoiceField(
+                        label = "Height strategy",
+                        value = modifier.typeId,
+                        options = listOf(
+                            RcDimensionType.EXACT.id to "EXACT",
+                            RcDimensionType.FILL.id to "FILL",
+                            RcDimensionType.WRAP.id to "WRAP",
+                            RcDimensionType.WEIGHT.id to "WEIGHT",
+                            RcDimensionType.EXACT_DP.id to "EXACT_DP",
+                            RcDimensionType.FILL_PARENT_MAX_HEIGHT.id to "FILL_PARENT_MAX_HEIGHT"
                         ),
                         onValueChange = { onChange(modifier.copy(typeId = it)) }
                     )

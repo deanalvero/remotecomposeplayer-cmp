@@ -33,6 +33,9 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
 
+      - name: Actualize Yarn Lock
+        run: ./gradlew kotlinWasmUpgradeYarnLock
+
       - name: Build with Gradle (Wasm)
         run: ./gradlew :sample:app:webApp:wasmJsBrowserDistribution
 

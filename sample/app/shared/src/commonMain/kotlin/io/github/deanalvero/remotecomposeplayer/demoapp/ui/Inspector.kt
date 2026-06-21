@@ -2,27 +2,28 @@ package io.github.deanalvero.remotecomposeplayer.demoapp.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
+import io.github.deanalvero.remotecomposeplayer.demoapp.ui.draw.DrawOperationSection
 import io.github.deanalvero.remotecomposeplayer.demoapp.ui.field.ColorField
 import io.github.deanalvero.remotecomposeplayer.demoapp.ui.field.FloatField
 import io.github.deanalvero.remotecomposeplayer.demoapp.ui.field.IntChoiceField
 import io.github.deanalvero.remotecomposeplayer.demoapp.ui.field.IntField
 import io.github.deanalvero.remotecomposeplayer.demoapp.ui.modifier.ModifierSection
+import io.github.deanalvero.remotecomposeplayer.operation.RcBoxLayoutOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcRowLayoutOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcTextLayoutOperation
 import io.github.deanalvero.remotecomposeplayer.playground.PlaygroundModifier
 import io.github.deanalvero.remotecomposeplayer.playground.PlaygroundNode
+import io.github.deanalvero.remotecomposeplayer.playground.defaultDrawOperation
 import io.github.deanalvero.remotecomposeplayer.playground.defaultModifier
 
 @Composable
 fun Inspector(
     node: PlaygroundNode,
-    onChange: (PlaygroundNode) -> Unit,
-    onDelete: () -> Unit
+    onChange: (PlaygroundNode) -> Unit
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
         Text("Editing ${nodeLabel(node)}", style = MaterialTheme.typography.titleSmall)
@@ -55,7 +56,7 @@ fun Inspector(
                     ),
                     onValueChange = { onChange(node.copy(vertical = it)) }
                 )
-                FloatField("Spaced by", node.spacedBy, onValueChange = { onChange(node.copy(spacedBy = it)) })
+                FloatField("Spaced by", node.spacedBy) { onChange(node.copy(spacedBy = it)) }
             }
 
             is PlaygroundNode.Row -> {
@@ -85,7 +86,37 @@ fun Inspector(
                     ),
                     onValueChange = { onChange(node.copy(vertical = it)) }
                 )
-                FloatField("Spaced by", node.spacedBy, onValueChange = { onChange(node.copy(spacedBy = it)) })
+                FloatField("Spaced by", node.spacedBy) { onChange(node.copy(spacedBy = it)) }
+            }
+
+            is PlaygroundNode.Box -> {
+                IntChoiceField(
+                    label = "Horizontal",
+                    value = node.horizontal,
+                    options = listOf(
+                        RcBoxLayoutOperation.START to "START",
+                        RcBoxLayoutOperation.CENTER to "CENTER",
+                        RcBoxLayoutOperation.END to "END"
+                    ),
+                    onValueChange = { onChange(node.copy(horizontal = it)) }
+                )
+                IntChoiceField(
+                    label = "Vertical",
+                    value = node.vertical,
+                    options = listOf(
+                        RcBoxLayoutOperation.TOP to "TOP",
+                        RcBoxLayoutOperation.CENTER to "CENTER",
+                        RcBoxLayoutOperation.BOTTOM to "BOTTOM"
+                    ),
+                    onValueChange = { onChange(node.copy(vertical = it)) }
+                )
+            }
+
+            is PlaygroundNode.Canvas -> {
+                Text(
+                    text = "Canvas draw operations are edited from the tree item.",
+                    style = MaterialTheme.typography.bodySmall
+                )
             }
 
             is PlaygroundNode.Text -> {
@@ -122,6 +153,12 @@ fun Inspector(
                 IntField("Font style", node.fontStyle) { onChange(node.copy(fontStyle = it)) }
                 IntField("Font family id", node.fontFamilyId) { onChange(node.copy(fontFamilyId = it)) }
             }
+            is PlaygroundNode.Spacer -> {
+                Text(
+                    text = "Spacer has no layout properties of its own. Add a Width modifier below to give it size.",
+                    style = MaterialTheme.typography.bodySmall
+                )
+            }
         }
 
         Text("Modifiers", style = MaterialTheme.typography.titleMedium)
@@ -139,7 +176,29 @@ fun Inspector(
             }
         )
 
-        Button(onClick = onDelete) { Text("Delete node") }
+        if (node is PlaygroundNode.Canvas) {
+            Text("Draw operations", style = MaterialTheme.typography.titleMedium)
+            DrawOperationSection(
+                operations = node.drawOperations,
+                onAddOperation = { kind ->
+                    onChange(node.copy(drawOperations = node.drawOperations + defaultDrawOperation(kind)))
+                },
+                onUpdateOperation = { index, updated ->
+                    onChange(
+                        node.copy(
+                            drawOperations = node.drawOperations.toMutableList().also { it[index] = updated }
+                        )
+                    )
+                },
+                onDeleteOperation = { index ->
+                    onChange(
+                        node.copy(
+                            drawOperations = node.drawOperations.toMutableList().also { it.removeAt(index) }
+                        )
+                    )
+                }
+            )
+        }
     }
 }
 
@@ -147,16 +206,32 @@ private fun PlaygroundNode.withModifier(updated: List<PlaygroundModifier>): Play
     return when (this) {
         is PlaygroundNode.Column -> copy(modifiers = updated)
         is PlaygroundNode.Row -> copy(modifiers = updated)
+        is PlaygroundNode.Box -> copy(modifiers = updated)
+        is PlaygroundNode.Spacer -> copy(modifiers = updated)
+        is PlaygroundNode.Canvas -> copy(modifiers = updated)
         is PlaygroundNode.Text -> copy(modifiers = updated)
     }
 }
 
-private fun PlaygroundNode.replaceModifier(index: Int, updated: PlaygroundModifier): PlaygroundNode {
+fun PlaygroundNode.addModifier(mod: PlaygroundModifier): PlaygroundNode =
+    updateModifiers(modifiers + mod)
+
+fun PlaygroundNode.replaceModifier(index: Int, updated: PlaygroundModifier): PlaygroundNode {
     val newModifiers = modifiers.toMutableList().apply { this[index] = updated }
     return withModifier(newModifiers)
 }
 
-private fun PlaygroundNode.removeModifier(index: Int): PlaygroundNode {
+fun PlaygroundNode.removeModifier(index: Int): PlaygroundNode {
     val newModifiers = modifiers.toMutableList().apply { removeAt(index) }
     return withModifier(newModifiers)
 }
+
+private fun PlaygroundNode.updateModifiers(new: List<PlaygroundModifier>): PlaygroundNode =
+    when (this) {
+        is PlaygroundNode.Column -> copy(modifiers = new)
+        is PlaygroundNode.Row -> copy(modifiers = new)
+        is PlaygroundNode.Box -> copy(modifiers = new)
+        is PlaygroundNode.Spacer -> copy(modifiers = new)
+        is PlaygroundNode.Canvas -> copy(modifiers = new)
+        is PlaygroundNode.Text -> copy(modifiers = new)
+    }
