@@ -66,6 +66,7 @@ import kotlin.math.roundToInt
 private val ColumnAccent = Color(0xFF10B981)
 private val RowAccent = Color(0xFF3B82F6)
 private val BoxAccent = Color(0xFFEC4899)
+private val SpacerAccent = Color(0xFF6B7280)
 private val CanvasAccent = Color(0xFF8B5CF6)
 private val TextAccent = Color(0xFFD97706)
 
@@ -98,6 +99,7 @@ fun NodeRow(
         is PlaygroundNode.Column -> ColumnAccent
         is PlaygroundNode.Row -> RowAccent
         is PlaygroundNode.Box -> BoxAccent
+        is PlaygroundNode.Spacer -> SpacerAccent
         is PlaygroundNode.Canvas -> CanvasAccent
         is PlaygroundNode.Text -> TextAccent
     }

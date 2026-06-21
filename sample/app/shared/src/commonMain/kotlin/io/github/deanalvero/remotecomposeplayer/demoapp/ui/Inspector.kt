@@ -153,6 +153,12 @@ fun Inspector(
                 IntField("Font style", node.fontStyle) { onChange(node.copy(fontStyle = it)) }
                 IntField("Font family id", node.fontFamilyId) { onChange(node.copy(fontFamilyId = it)) }
             }
+            is PlaygroundNode.Spacer -> {
+                Text(
+                    text = "Spacer has no layout properties of its own. Add a Width modifier below to give it size.",
+                    style = MaterialTheme.typography.bodySmall
+                )
+            }
         }
 
         Text("Modifiers", style = MaterialTheme.typography.titleMedium)
@@ -201,6 +207,7 @@ private fun PlaygroundNode.withModifier(updated: List<PlaygroundModifier>): Play
         is PlaygroundNode.Column -> copy(modifiers = updated)
         is PlaygroundNode.Row -> copy(modifiers = updated)
         is PlaygroundNode.Box -> copy(modifiers = updated)
+        is PlaygroundNode.Spacer -> copy(modifiers = updated)
         is PlaygroundNode.Canvas -> copy(modifiers = updated)
         is PlaygroundNode.Text -> copy(modifiers = updated)
     }
@@ -224,6 +231,7 @@ private fun PlaygroundNode.updateModifiers(new: List<PlaygroundModifier>): Playg
         is PlaygroundNode.Column -> copy(modifiers = new)
         is PlaygroundNode.Row -> copy(modifiers = new)
         is PlaygroundNode.Box -> copy(modifiers = new)
+        is PlaygroundNode.Spacer -> copy(modifiers = new)
         is PlaygroundNode.Canvas -> copy(modifiers = new)
         is PlaygroundNode.Text -> copy(modifiers = new)
     }

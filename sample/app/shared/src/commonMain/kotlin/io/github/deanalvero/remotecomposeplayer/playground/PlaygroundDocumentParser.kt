@@ -107,18 +107,31 @@ private fun RcNode.toPlaygroundNodes(
 
         is RcBoxLayoutOperation -> {
             val componentId = allocateComponentId()
-            val children = (this as RcNode.Layout).children.flatMap { it.toPlaygroundNodes(context, allocateComponentId) }
+            val isSpacer = op.horizontalPositioning == 0 && op.verticalPositioning == 0
 
-            listOf(
-                PlaygroundNode.Box(
-                    id = "node-$componentId",
-                    componentId = componentId,
-                    modifiers = modifiers.toPlaygroundModifiers(context),
-                    horizontal = op.horizontalPositioning,
-                    vertical = op.verticalPositioning,
-                    children = children
+            if (isSpacer) {
+                listOf(
+                    PlaygroundNode.Spacer(
+                        id = "node-$componentId",
+                        componentId = componentId,
+                        modifiers = modifiers.toPlaygroundModifiers(context)
+                    )
                 )
-            )
+            } else {
+                val layoutNode = this as RcNode.Layout
+                val children = layoutNode.children.flatMap { it.toPlaygroundNodes(context, allocateComponentId) }
+
+                listOf(
+                    PlaygroundNode.Box(
+                        id = "node-$componentId",
+                        componentId = componentId,
+                        modifiers = modifiers.toPlaygroundModifiers(context),
+                        horizontal = op.horizontalPositioning,
+                        vertical = op.verticalPositioning,
+                        children = children
+                    )
+                )
+            }
         }
 
         is RcTextLayoutOperation -> {

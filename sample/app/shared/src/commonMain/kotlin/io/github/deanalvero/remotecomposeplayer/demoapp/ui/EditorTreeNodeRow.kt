@@ -62,6 +62,7 @@ fun EditorTreeNodeRow(
 
             is PlaygroundNode.Canvas -> Unit
             is PlaygroundNode.Text -> Unit
+            is PlaygroundNode.Spacer -> Unit
         }
     }
 }

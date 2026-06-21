@@ -4,6 +4,7 @@ enum class PlaygroundComponentKind {
     Column,
     Row,
     Box,
+    Spacer,
     Canvas,
     Text
 }

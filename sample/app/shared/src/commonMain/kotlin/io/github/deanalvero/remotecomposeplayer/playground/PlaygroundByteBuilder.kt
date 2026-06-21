@@ -113,6 +113,26 @@ object PlaygroundByteBuilder {
                 writeOperation(writer, RcContainerEndOperation())
             }
 
+            is PlaygroundNode.Spacer -> {
+                writeOperation(
+                    writer,
+                    RcBoxLayoutOperation(
+                        componentId = node.componentId,
+                        animationId = 0,
+                        horizontalPositioning = 0,
+                        verticalPositioning = 0
+                    )
+                )
+
+                node.modifiers.forEach { modifier ->
+                    writeOperation(writer, modifier.toOperation())
+                }
+
+                writeOperation(writer, RcLayoutContentOperation(componentId = node.componentId))
+                writeOperation(writer, RcContainerEndOperation())
+                writeOperation(writer, RcContainerEndOperation())
+            }
+
             is PlaygroundNode.Canvas -> {
                 writeOperation(
                     writer,

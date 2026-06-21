@@ -59,4 +59,10 @@ sealed class PlaygroundNode {
         val overflow: Int = RcTextLayoutOperation.OVERFLOW_CLIP,
         val maxLines: Int = 1
     ) : PlaygroundNode()
+
+    data class Spacer(
+        override val id: String,
+        override val componentId: Int,
+        override val modifiers: List<PlaygroundModifier> = emptyList()
+    ) : PlaygroundNode()
 }
