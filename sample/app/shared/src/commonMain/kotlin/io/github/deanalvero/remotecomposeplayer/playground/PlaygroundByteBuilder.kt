@@ -2,6 +2,7 @@ package io.github.deanalvero.remotecomposeplayer.playground
 
 import io.github.deanalvero.remotecomposeplayer.core.RcOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcBackgroundModifierOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcBoxLayoutOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcCanvasContentOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcCanvasLayoutOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcColumnLayoutOperation
@@ -78,6 +79,27 @@ object PlaygroundByteBuilder {
                         horizontalPositioning = node.horizontal,
                         verticalPositioning = node.vertical,
                         spacedBy = node.spacedBy
+                    )
+                )
+
+                node.modifiers.forEach { modifier ->
+                    writeOperation(writer, modifier.toOperation())
+                }
+
+                writeOperation(writer, RcLayoutContentOperation(componentId = node.componentId))
+                node.children.forEach { child -> writeNode(writer, child) }
+                writeOperation(writer, RcContainerEndOperation())
+                writeOperation(writer, RcContainerEndOperation())
+            }
+
+            is PlaygroundNode.Box -> {
+                writeOperation(
+                    writer,
+                    RcBoxLayoutOperation(
+                        componentId = node.componentId,
+                        animationId = 0,
+                        horizontalPositioning = node.horizontal,
+                        verticalPositioning = node.vertical
                     )
                 )
 
@@ -186,6 +208,14 @@ object PlaygroundByteBuilder {
                 writer.writeInt(op.horizontalPositioning)
                 writer.writeInt(op.verticalPositioning)
                 writer.writeFloat(op.spacedBy)
+            }
+
+            is RcBoxLayoutOperation -> {
+                writer.writeByte(op.opCode)
+                writer.writeInt(op.componentId)
+                writer.writeInt(op.animationId)
+                writer.writeInt(op.horizontalPositioning)
+                writer.writeInt(op.verticalPositioning)
             }
 
             is RcCanvasLayoutOperation -> {

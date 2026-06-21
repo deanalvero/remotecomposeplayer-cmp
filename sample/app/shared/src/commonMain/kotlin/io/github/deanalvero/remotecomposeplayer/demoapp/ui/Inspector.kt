@@ -12,6 +12,7 @@ import io.github.deanalvero.remotecomposeplayer.demoapp.ui.field.FloatField
 import io.github.deanalvero.remotecomposeplayer.demoapp.ui.field.IntChoiceField
 import io.github.deanalvero.remotecomposeplayer.demoapp.ui.field.IntField
 import io.github.deanalvero.remotecomposeplayer.demoapp.ui.modifier.ModifierSection
+import io.github.deanalvero.remotecomposeplayer.operation.RcBoxLayoutOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcRowLayoutOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcTextLayoutOperation
 import io.github.deanalvero.remotecomposeplayer.playground.PlaygroundModifier
@@ -86,6 +87,29 @@ fun Inspector(
                     onValueChange = { onChange(node.copy(vertical = it)) }
                 )
                 FloatField("Spaced by", node.spacedBy) { onChange(node.copy(spacedBy = it)) }
+            }
+
+            is PlaygroundNode.Box -> {
+                IntChoiceField(
+                    label = "Horizontal",
+                    value = node.horizontal,
+                    options = listOf(
+                        RcBoxLayoutOperation.START to "START",
+                        RcBoxLayoutOperation.CENTER to "CENTER",
+                        RcBoxLayoutOperation.END to "END"
+                    ),
+                    onValueChange = { onChange(node.copy(horizontal = it)) }
+                )
+                IntChoiceField(
+                    label = "Vertical",
+                    value = node.vertical,
+                    options = listOf(
+                        RcBoxLayoutOperation.TOP to "TOP",
+                        RcBoxLayoutOperation.CENTER to "CENTER",
+                        RcBoxLayoutOperation.BOTTOM to "BOTTOM"
+                    ),
+                    onValueChange = { onChange(node.copy(vertical = it)) }
+                )
             }
 
             is PlaygroundNode.Canvas -> {
@@ -176,6 +200,7 @@ private fun PlaygroundNode.withModifier(updated: List<PlaygroundModifier>): Play
     return when (this) {
         is PlaygroundNode.Column -> copy(modifiers = updated)
         is PlaygroundNode.Row -> copy(modifiers = updated)
+        is PlaygroundNode.Box -> copy(modifiers = updated)
         is PlaygroundNode.Canvas -> copy(modifiers = updated)
         is PlaygroundNode.Text -> copy(modifiers = updated)
     }
@@ -198,6 +223,7 @@ private fun PlaygroundNode.updateModifiers(new: List<PlaygroundModifier>): Playg
     when (this) {
         is PlaygroundNode.Column -> copy(modifiers = new)
         is PlaygroundNode.Row -> copy(modifiers = new)
+        is PlaygroundNode.Box -> copy(modifiers = new)
         is PlaygroundNode.Canvas -> copy(modifiers = new)
         is PlaygroundNode.Text -> copy(modifiers = new)
     }

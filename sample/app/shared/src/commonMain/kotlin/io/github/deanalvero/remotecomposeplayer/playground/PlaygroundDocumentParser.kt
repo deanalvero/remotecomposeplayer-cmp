@@ -4,6 +4,7 @@ import io.github.deanalvero.remotecomposeplayer.core.RcOperation
 import io.github.deanalvero.remotecomposeplayer.core.RemoteComposeContext
 import io.github.deanalvero.remotecomposeplayer.core.RemoteComposeEngine
 import io.github.deanalvero.remotecomposeplayer.operation.RcBackgroundModifierOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcBoxLayoutOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcCanvasContentOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcCanvasLayoutOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcColumnLayoutOperation
@@ -99,6 +100,22 @@ private fun RcNode.toPlaygroundNodes(
                     horizontal = op.horizontalPositioning,
                     vertical = op.verticalPositioning,
                     spacedBy = op.spacedBy,
+                    children = children
+                )
+            )
+        }
+
+        is RcBoxLayoutOperation -> {
+            val componentId = allocateComponentId()
+            val children = (this as RcNode.Layout).children.flatMap { it.toPlaygroundNodes(context, allocateComponentId) }
+
+            listOf(
+                PlaygroundNode.Box(
+                    id = "node-$componentId",
+                    componentId = componentId,
+                    modifiers = modifiers.toPlaygroundModifiers(context),
+                    horizontal = op.horizontalPositioning,
+                    vertical = op.verticalPositioning,
                     children = children
                 )
             )

@@ -1,5 +1,6 @@
 package io.github.deanalvero.remotecomposeplayer.playground
 
+import io.github.deanalvero.remotecomposeplayer.operation.RcBoxLayoutOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcRowLayoutOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcTextLayoutOperation
 
@@ -16,7 +17,7 @@ sealed class PlaygroundNode {
         val vertical: Int = RcRowLayoutOperation.TOP,
         val spacedBy: Float = 0f,
         val children: List<PlaygroundNode> = emptyList()
-    ) : PlaygroundNode()
+    ) : PlaygroundNode(), PlaygroundParentNode
 
     data class Row(
         override val id: String,
@@ -26,7 +27,16 @@ sealed class PlaygroundNode {
         val vertical: Int = RcRowLayoutOperation.TOP,
         val spacedBy: Float = 0f,
         val children: List<PlaygroundNode> = emptyList()
-    ) : PlaygroundNode()
+    ) : PlaygroundNode(), PlaygroundParentNode
+
+    data class Box(
+        override val id: String,
+        override val componentId: Int,
+        override val modifiers: List<PlaygroundModifier> = emptyList(),
+        val horizontal: Int = RcBoxLayoutOperation.START,
+        val vertical: Int = RcBoxLayoutOperation.TOP,
+        val children: List<PlaygroundNode> = emptyList()
+    ) : PlaygroundNode(), PlaygroundParentNode
 
     data class Canvas(
         override val id: String,

@@ -1,5 +1,6 @@
 package io.github.deanalvero.remotecomposeplayer.operation
 
+import androidx.compose.ui.Alignment
 import io.github.deanalvero.remotecomposeplayer.core.RcBufferReader
 import io.github.deanalvero.remotecomposeplayer.core.RcOpDecoder
 import io.github.deanalvero.remotecomposeplayer.core.RcOperation
@@ -51,6 +52,26 @@ data class RcBoxLayoutOperation(
                 horizontalPositioning = horizontalPositioning,
                 verticalPositioning = verticalPositioning
             )
+        }
+    }
+}
+
+fun mapBoxAlignment(horizontalPos: Int, verticalPos: Int): Alignment {
+    return when (verticalPos) {
+        RcBoxLayoutOperation.CENTER -> when (horizontalPos) {
+            RcBoxLayoutOperation.CENTER -> Alignment.Center
+            RcBoxLayoutOperation.END -> Alignment.CenterEnd
+            else -> Alignment.CenterStart
+        }
+        RcBoxLayoutOperation.BOTTOM -> when (horizontalPos) {
+            RcBoxLayoutOperation.CENTER -> Alignment.BottomCenter
+            RcBoxLayoutOperation.END -> Alignment.BottomEnd
+            else -> Alignment.BottomStart
+        }
+        else -> when (horizontalPos) {
+            RcBoxLayoutOperation.CENTER -> Alignment.TopCenter
+            RcBoxLayoutOperation.END -> Alignment.TopEnd
+            else -> Alignment.TopStart
         }
     }
 }

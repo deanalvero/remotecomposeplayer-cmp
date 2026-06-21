@@ -55,6 +55,7 @@ private fun createNode(kind: PlaygroundComponentKind, componentId: Int): Playgro
     return when (kind) {
         PlaygroundComponentKind.Column -> PlaygroundNode.Column(id = id, componentId = componentId)
         PlaygroundComponentKind.Row -> PlaygroundNode.Row(id = id, componentId = componentId)
+        PlaygroundComponentKind.Box -> PlaygroundNode.Box(id = id, componentId = componentId)
         PlaygroundComponentKind.Canvas -> PlaygroundNode.Canvas(id = id, componentId = componentId)
         PlaygroundComponentKind.Text -> PlaygroundNode.Text(id = id, componentId = componentId)
     }
@@ -66,6 +67,7 @@ private fun List<PlaygroundNode>.findNode(nodeId: String): PlaygroundNode? {
         when (node) {
             is PlaygroundNode.Column -> node.children.findNode(nodeId)?.let { return it }
             is PlaygroundNode.Row -> node.children.findNode(nodeId)?.let { return it }
+            is PlaygroundNode.Box -> node.children.findNode(nodeId)?.let { return it }
             is PlaygroundNode.Canvas -> Unit
             is PlaygroundNode.Text -> Unit
         }
@@ -88,6 +90,16 @@ private fun List<PlaygroundNode>.addChild(parentId: String, child: PlaygroundNod
                 }
             }
             is PlaygroundNode.Row -> {
+                if (node.id == parentId) {
+                    changed = true
+                    node.copy(children = node.children + child)
+                } else {
+                    val children = node.children.addChild(parentId, child)
+                    if (children !== node.children) changed = true
+                    node.copy(children = children)
+                }
+            }
+            is PlaygroundNode.Box -> {
                 if (node.id == parentId) {
                     changed = true
                     node.copy(children = node.children + child)
@@ -127,6 +139,16 @@ private fun List<PlaygroundNode>.updateNode(
                 }
             }
             is PlaygroundNode.Row -> {
+                if (node.id == nodeId) {
+                    changed = true
+                    transform(node)
+                } else {
+                    val children = node.children.updateNode(nodeId, transform)
+                    if (children !== node.children) changed = true
+                    node.copy(children = children)
+                }
+            }
+            is PlaygroundNode.Box -> {
                 if (node.id == nodeId) {
                     changed = true
                     transform(node)
@@ -176,6 +198,15 @@ private fun List<PlaygroundNode>.deleteNode(nodeId: String): List<PlaygroundNode
                     if (children !== node.children) changed = true
                     add(node.copy(children = children))
                 }
+                is PlaygroundNode.Box -> {
+                    if (node.id == nodeId) {
+                        changed = true
+                        continue
+                    }
+                    val children = node.children.deleteNode(nodeId)
+                    if (children !== node.children) changed = true
+                    add(node.copy(children = children))
+                }
                 is PlaygroundNode.Canvas -> {
                     if (node.id == nodeId) {
                         changed = true
@@ -217,6 +248,13 @@ private fun List<PlaygroundNode>.moveNode(nodeId: String, direction: Int): List<
                 } else node
             }
             is PlaygroundNode.Row -> {
+                val children = node.children.moveNode(nodeId, direction)
+                if (children !== node.children) {
+                    changed = true
+                    node.copy(children = children)
+                } else node
+            }
+            is PlaygroundNode.Box -> {
                 val children = node.children.moveNode(nodeId, direction)
                 if (children !== node.children) {
                     changed = true

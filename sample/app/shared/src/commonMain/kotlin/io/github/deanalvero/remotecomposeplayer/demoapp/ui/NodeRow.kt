@@ -57,6 +57,7 @@ import io.github.deanalvero.remotecomposeplayer.operation.common.RcDimensionType
 import io.github.deanalvero.remotecomposeplayer.playground.PlaygroundComponentKind
 import io.github.deanalvero.remotecomposeplayer.playground.PlaygroundModifier
 import io.github.deanalvero.remotecomposeplayer.playground.PlaygroundNode
+import io.github.deanalvero.remotecomposeplayer.playground.PlaygroundParentNode
 import io.github.deanalvero.remotecomposeplayer.playground.defaultDrawOperation
 import io.github.deanalvero.remotecomposeplayer.playground.defaultModifier
 import kotlin.math.abs
@@ -64,6 +65,7 @@ import kotlin.math.roundToInt
 
 private val ColumnAccent = Color(0xFF10B981)
 private val RowAccent = Color(0xFF3B82F6)
+private val BoxAccent = Color(0xFFEC4899)
 private val CanvasAccent = Color(0xFF8B5CF6)
 private val TextAccent = Color(0xFFD97706)
 
@@ -82,11 +84,12 @@ fun NodeRow(
     onMoveDown: (() -> Unit)? = null,
     onMoveNode: ((nodeId: String, direction: Int) -> Unit)? = null
 ) {
-    val isContainerWithChildren = node is PlaygroundNode.Column || node is PlaygroundNode.Row
+    val isContainerWithChildren = node is PlaygroundParentNode
     val isCanvas = node is PlaygroundNode.Canvas
     val children: List<PlaygroundNode> = when (node) {
         is PlaygroundNode.Column -> node.children
         is PlaygroundNode.Row -> node.children
+        is PlaygroundNode.Box -> node.children
         else -> emptyList()
     }
     val selected = node.id == selectedId
@@ -94,6 +97,7 @@ fun NodeRow(
     val accentColor = when (node) {
         is PlaygroundNode.Column -> ColumnAccent
         is PlaygroundNode.Row -> RowAccent
+        is PlaygroundNode.Box -> BoxAccent
         is PlaygroundNode.Canvas -> CanvasAccent
         is PlaygroundNode.Text -> TextAccent
     }

@@ -1,0 +1,3 @@
+package io.github.deanalvero.remotecomposeplayer.playground
+
+interface PlaygroundParentNode

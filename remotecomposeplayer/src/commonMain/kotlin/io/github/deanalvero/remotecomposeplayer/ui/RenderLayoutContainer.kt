@@ -11,6 +11,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import io.github.deanalvero.remotecomposeplayer.core.RemoteComposeContext
 import io.github.deanalvero.remotecomposeplayer.operation.CanvasScopedOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcBoxLayoutOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcCanvasLayoutOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcColumnLayoutOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcDrawCircleOperation
@@ -19,6 +20,7 @@ import io.github.deanalvero.remotecomposeplayer.operation.RcLayoutContentOperati
 import io.github.deanalvero.remotecomposeplayer.operation.RcRootLayoutOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcRowLayoutOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcTextLayoutOperation
+import io.github.deanalvero.remotecomposeplayer.operation.mapBoxAlignment
 
 @Composable
 fun RenderLayoutContainer(
@@ -111,6 +113,15 @@ fun RenderLayoutContainer(
                     modifier = Modifier,
                     scope = scope
                 )
+            }
+        }
+
+        is RcBoxLayoutOperation -> {
+            Box(
+                modifier = modifier,
+                contentAlignment = mapBoxAlignment(operation.horizontalPositioning, operation.verticalPositioning)
+            ) {
+                RemoteComposeRenderer(node.children, context, Modifier, this)
             }
         }
 

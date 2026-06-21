@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.sp
 import io.github.deanalvero.remotecomposeplayer.core.RcOperation
 import io.github.deanalvero.remotecomposeplayer.core.RemoteComposeEngine
 import io.github.deanalvero.remotecomposeplayer.operation.RcBackgroundModifierOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcBoxLayoutOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcCanvasContentOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcCanvasLayoutOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcColumnLayoutOperation
@@ -73,7 +74,8 @@ private fun OperationRowItem(operation: RcOperation) {
         is RcCanvasContentOperation -> Color(0xFF00BCD4)
         is RcContainerEndOperation -> Color(0xFF607D8B)
         is RcRowLayoutOperation,
-        is RcColumnLayoutOperation -> Color(0xFF4CAF50)
+        is RcColumnLayoutOperation,
+        is RcBoxLayoutOperation -> Color(0xFF4CAF50)
         is RcTextLayoutOperation -> Color(0xFFFFC107)
         is RcWidthModifierOperation,
         is RcBackgroundModifierOperation,

@@ -51,6 +51,15 @@ fun EditorTreeNodeRow(
                 )
             }
 
+            is PlaygroundNode.Box -> node.children.forEach { child ->
+                EditorTreeNodeRow(
+                    node = child,
+                    depth = depth + 1,
+                    selectedId = selectedId,
+                    onSelectNode = onSelectNode
+                )
+            }
+
             is PlaygroundNode.Canvas -> Unit
             is PlaygroundNode.Text -> Unit
         }
