@@ -12,9 +12,9 @@ import io.github.deanalvero.remotecomposeplayer.operation.RcContainerEndOperatio
 import io.github.deanalvero.remotecomposeplayer.operation.RcDataListIdsOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcDrawCircleOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcDrawLineOperation
-import io.github.deanalvero.remotecomposeplayer.operation.RcDrawTextAnchoredOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcFloatExpressionOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcHeaderOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcHeightInModifierOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcHeightModifierOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcLayoutContentOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcLoopOperation
@@ -34,6 +34,7 @@ import io.github.deanalvero.remotecomposeplayer.operation.RcTextLayoutOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcTextLookupOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcTextMergeOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcThemeOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcWidthInModifierOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcWidthModifierOperation
 
 object RcParserRegistry {
@@ -75,7 +76,8 @@ object RcParserRegistry {
             RcBoxLayoutOperation,
             RcHeightModifierOperation,
             RcComponentValueOperation,
-            RcDrawTextAnchoredOperation
+            RcWidthInModifierOperation,
+            RcHeightInModifierOperation
         ).forEach {
             register(it)
         }
