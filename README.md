@@ -1,4 +1,4 @@
-# Remote Compose Player - Compose Multiplatform
+# KMP/CMP Remote Compose Player
 
 An unofficial Kotlin Multiplatform (KMP) + Compose Multiplatform (CMP) Remote Compose player that works across Android, iOS, Web, and Desktop targets.
 
