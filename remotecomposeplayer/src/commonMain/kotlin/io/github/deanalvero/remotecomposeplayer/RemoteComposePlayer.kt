@@ -1,5 +1,6 @@
 package io.github.deanalvero.remotecomposeplayer
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import io.github.deanalvero.remotecomposeplayer.core.RemoteComposeContext
@@ -18,7 +19,9 @@ fun RemoteComposePlayer(
     val nodes = remember(operations) {
         listOf(buildRcTree(operations))
     }
-    val context = remember(operations) { RemoteComposeContext(operations) }
+    val isDark = isSystemInDarkTheme()
+    val context = remember(operations, isDark) { RemoteComposeContext(operations, isDark) }
+    context.Ticker()
 
     RemoteComposeRenderer(
         nodes = nodes,

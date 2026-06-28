@@ -1,6 +1,7 @@
 package io.github.deanalvero.remotecomposeplayer.ui
 
 import io.github.deanalvero.remotecomposeplayer.core.RcOperation
+import io.github.deanalvero.remotecomposeplayer.operation.CanvasScopedOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcBackgroundModifierOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcBoxLayoutOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcCanvasContentOperation
@@ -53,8 +54,7 @@ fun buildRcTree(operations: List<RcOperation>): RcNode.Layout {
                 lastAddedNode = newNode
             }
 
-            is RcDrawCircleOperation,
-            is RcDrawLineOperation -> {
+            is CanvasScopedOperation -> {
                 if (stack.last().operation is RcLayoutContentOperation &&
                     stack.size >= 2 &&
                     stack[stack.lastIndex - 1].operation is RcCanvasLayoutOperation

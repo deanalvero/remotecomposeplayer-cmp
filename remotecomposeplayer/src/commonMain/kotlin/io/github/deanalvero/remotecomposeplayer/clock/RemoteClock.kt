@@ -5,5 +5,7 @@ interface RemoteClock {
 
     interface TimeSnapshot {
         val continuousSeconds: Float
+        val dayOfWeek: Int
+        val dayOfMonth: Int
     }
 }

@@ -16,6 +16,10 @@ data class RcDrawTextAnchoredOperation(
 
     override val name: String = "DrawTextAnchored"
 
+    override fun toString(): String {
+        return "$name -> TextRef: [$textId] | pos: ($x, $y) | pan: ($panX, $panY) | flags: $flags"
+    }
+
     companion object : RcOpDecoder {
         const val OP_CODE: Int = 133
         override val opCode: Int = OP_CODE

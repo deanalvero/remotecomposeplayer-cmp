@@ -1,6 +1,7 @@
 package io.github.deanalvero.remotecomposeplayer.clock
 
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.isoDayNumber
 import kotlinx.datetime.toLocalDateTime
 import kotlin.time.Clock
 
@@ -21,6 +22,8 @@ class KtxRemoteClock(
 
         return object : RemoteClock.TimeSnapshot {
             override val continuousSeconds: Float = continuousSeconds
+            override val dayOfWeek: Int = localDateTime.dayOfWeek.isoDayNumber
+            override val dayOfMonth: Int = localDateTime.dayOfMonth
         }
     }
 }
