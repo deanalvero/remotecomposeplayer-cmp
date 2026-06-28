@@ -9,8 +9,8 @@ import androidx.compose.ui.tooling.preview.Preview
 fun App() {
     MaterialTheme {
         ExamplesApp(
-            onDownload = {
-                downloadDocument(it, "playground.rc")
+            onDownload = { filename, bytes ->
+                downloadDocument(bytes, filename)
             }
         )
     }

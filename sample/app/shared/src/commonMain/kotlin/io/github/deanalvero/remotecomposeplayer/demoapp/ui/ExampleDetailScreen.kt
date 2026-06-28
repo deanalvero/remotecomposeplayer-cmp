@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Download
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -35,8 +36,9 @@ import io.github.deanalvero.remotecomposeplayer.demoapp.examples.ExampleCatalog
 @Composable
 fun ExampleDetailScreen(
     example: Example.Document,
-    onBack: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onDownload: (ByteArray) -> Unit,
+    onBack: () -> Unit
 ) {
     val bytes = remember(example) { ExampleCatalog.bytesFor(example) }
 
@@ -49,6 +51,14 @@ fun ExampleDetailScreen(
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Back to examples"
+                        )
+                    }
+                },
+                actions = {
+                    IconButton(onClick = { onDownload(bytes) }) {
+                        Icon(
+                            imageVector = Icons.Filled.Download,
+                            contentDescription = "Download ${example.id}.rc"
                         )
                     }
                 }

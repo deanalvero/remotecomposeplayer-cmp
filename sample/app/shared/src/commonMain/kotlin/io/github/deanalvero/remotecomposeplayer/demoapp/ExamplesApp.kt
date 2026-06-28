@@ -14,7 +14,7 @@ import io.github.deanalvero.remotecomposeplayer.demoapp.ui.ExamplesListScreen
 @Composable
 fun ExamplesApp(
     modifier: Modifier = Modifier,
-    onDownload: (ByteArray) -> Unit = {}
+    onDownload: (filename: String, bytes: ByteArray) -> Unit = { _, _ -> }
 ) {
     var selected by remember { mutableStateOf<Example?>(null) }
 
@@ -27,14 +27,15 @@ fun ExamplesApp(
 
         Example.Playground -> PlaygroundApp(
             modifier = modifier,
-            onDownload = onDownload,
+            onDownload = { onDownload("playground.rc", it) },
             onBack = { selected = null }
         )
 
         is Example.Document -> ExampleDetailScreen(
             example = example,
-            onBack = { selected = null },
-            modifier = modifier
+            modifier = modifier,
+            onDownload = { onDownload("${example.id}.rc", it) },
+            onBack = { selected = null }
         )
     }
 }
