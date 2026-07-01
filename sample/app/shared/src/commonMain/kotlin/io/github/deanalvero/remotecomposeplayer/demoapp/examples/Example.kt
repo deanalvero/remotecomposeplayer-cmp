@@ -14,6 +14,7 @@ sealed interface Example {
     data class Document(
         override val id: String,
         override val title: String,
-        override val subtitle: String
+        override val subtitle: String,
+        val creatorDslCode: String
     ) : Example
 }

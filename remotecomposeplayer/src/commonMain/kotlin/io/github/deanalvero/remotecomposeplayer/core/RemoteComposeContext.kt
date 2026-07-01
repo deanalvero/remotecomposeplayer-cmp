@@ -12,6 +12,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.withFrameNanos
 import io.github.deanalvero.remotecomposeplayer.clock.KtxRemoteClock
 import io.github.deanalvero.remotecomposeplayer.clock.RemoteClock
+import io.github.deanalvero.remotecomposeplayer.clock.timeInMin
+import io.github.deanalvero.remotecomposeplayer.clock.timeInSec
 import io.github.deanalvero.remotecomposeplayer.format
 import io.github.deanalvero.remotecomposeplayer.operation.RcColorConstantOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcColorExpressionOperation
@@ -122,12 +124,15 @@ class RemoteComposeContext(
     fun resolveDynamicFloat(id: Int): Float {
         val cleanId = id and 0x3FFFFF
         when (cleanId) {
-            1 -> return currentSnapshot.continuousSeconds
-            2 -> return currentSnapshot.continuousSeconds % 60f
-            3 -> return (currentSnapshot.continuousSeconds / 60f) % 60f
-            4 -> return (currentSnapshot.continuousSeconds / 3600f) % 24f
-            5 -> return currentSnapshot.dayOfWeek.toFloat()
-            6 -> return currentSnapshot.dayOfMonth.toFloat()
+            ID_CONTINUOUS_SEC -> return currentSnapshot.continuousSeconds
+            ID_TIME_IN_SEC -> return currentSnapshot.timeInSec()
+            ID_TIME_IN_MIN -> return currentSnapshot.timeInMin()
+            ID_TIME_IN_HR -> return currentSnapshot.hour.toFloat()
+            ID_CALENDAR_MONTH -> return currentSnapshot.month.toFloat()
+            ID_WEEK_DAY -> return currentSnapshot.dayOfWeek.toFloat()
+            ID_DAY_OF_MONTH -> return currentSnapshot.dayOfMonth.toFloat()
+            ID_DAY_OF_YEAR -> return currentSnapshot.dayOfYear.toFloat()
+            ID_YEAR -> return currentSnapshot.year.toFloat()
         }
         floatExpressions[id]?.let { expr ->
             return evaluator.evaluate(expr.srcValues)
@@ -170,30 +175,6 @@ class RemoteComposeContext(
         return "Error: Text ID [$textId] not found"
     }
 
-    @Composable
-    private fun extractDynamicFloat(rawValue: Float, clock: RemoteClock): Float {
-        if (!rawValue.isNaN()) return rawValue
-
-        val variableId = rawValue.toRawBits() and 0x3FFFFF
-
-        return when (variableId) {
-            ID_CONTINUOUS_SEC -> {
-                var currentSeconds by remember {
-                    mutableFloatStateOf(clock.snapshot().continuousSeconds)
-                }
-                LaunchedEffect(clock) {
-                    while (true) {
-                        withFrameNanos {
-                            currentSeconds = clock.snapshot().continuousSeconds
-                        }
-                    }
-                }
-                currentSeconds % 3600f
-            }
-            else -> resolveDynamicFloat(variableId)
-        }
-    }
-
     fun getStaticText(textId: Int): String {
         textRegistry[textId]?.let { return it }
         textFromFloatRegistry[textId]?.let { op ->
@@ -213,5 +194,13 @@ class RemoteComposeContext(
 
     companion object {
         private const val ID_CONTINUOUS_SEC = 1
+        private const val ID_TIME_IN_SEC = 2
+        private const val ID_TIME_IN_MIN = 3
+        private const val ID_TIME_IN_HR = 4
+        private const val ID_CALENDAR_MONTH = 9
+        private const val ID_WEEK_DAY = 11
+        private const val ID_DAY_OF_MONTH = 12
+        private const val ID_DAY_OF_YEAR = 34
+        private const val ID_YEAR = 35
     }
 }

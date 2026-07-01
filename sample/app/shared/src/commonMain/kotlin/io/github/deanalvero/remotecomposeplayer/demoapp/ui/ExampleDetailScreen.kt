@@ -36,9 +36,9 @@ import io.github.deanalvero.remotecomposeplayer.demoapp.examples.ExampleCatalog
 @Composable
 fun ExampleDetailScreen(
     example: Example.Document,
-    modifier: Modifier = Modifier,
+    onBack: () -> Unit,
     onDownload: (ByteArray) -> Unit,
-    onBack: () -> Unit
+    modifier: Modifier = Modifier
 ) {
     val bytes = remember(example) { ExampleCatalog.bytesFor(example) }
 
@@ -57,7 +57,7 @@ fun ExampleDetailScreen(
                 actions = {
                     IconButton(onClick = { onDownload(bytes) }) {
                         Icon(
-                            imageVector = Icons.Filled.Download,
+                            imageVector = Icons.Default.Download,
                             contentDescription = "Download ${example.id}.rc"
                         )
                     }
@@ -85,11 +85,39 @@ fun ExampleDetailScreen(
                             modifier = Modifier.fillMaxSize()
                         )
                     }
-                    LabeledPane(title = "Operations", modifier = Modifier.weight(1f)) {
-                        RemoteComposeVisualizer(
-                            rcBytes = bytes,
-                            modifier = Modifier.fillMaxSize()
-                        )
+
+                    Card(modifier = Modifier.weight(1f).fillMaxHeight()) {
+                        Column(modifier = Modifier.fillMaxSize()) {
+                            var rightTabIndex by remember { mutableStateOf(0) }
+                            val rightTabs = listOf("Creator", "Operations")
+
+                            SecondaryTabRow(selectedTabIndex = rightTabIndex) {
+                                rightTabs.forEachIndexed { index, title ->
+                                    Tab(
+                                        selected = index == rightTabIndex,
+                                        onClick = { rightTabIndex = index }
+                                    ) {
+                                        Text(
+                                            text = title,
+                                            modifier = Modifier.padding(16.dp)
+                                        )
+                                    }
+                                }
+                            }
+
+                            Box(modifier = Modifier.weight(1f).fillMaxWidth().padding(12.dp)) {
+                                when (rightTabIndex) {
+                                    0 -> CreatorCodeScreen(
+                                        code = example.creatorDslCode,
+                                        modifier = Modifier.fillMaxSize()
+                                    )
+                                    1 -> RemoteComposeVisualizer(
+                                        rcBytes = bytes,
+                                        modifier = Modifier.fillMaxSize()
+                                    )
+                                }
+                            }
+                        }
                     }
                 }
             } else {
@@ -97,7 +125,7 @@ fun ExampleDetailScreen(
 
                 Column(modifier = Modifier.fillMaxSize()) {
                     SecondaryTabRow(selectedTabIndex = selectedTabIndex) {
-                        listOf("Player", "Operations").forEachIndexed { index, title ->
+                        listOf("Player", "Creator", "Operations").forEachIndexed { index, title ->
                             Tab(
                                 selected = index == selectedTabIndex,
                                 onClick = { selectedTabIndex = index }
@@ -110,15 +138,21 @@ fun ExampleDetailScreen(
                         }
                     }
 
-                    when (selectedTabIndex) {
-                        0 -> RemoteComposePlayer(
-                            rcBytes = bytes,
-                            modifier = Modifier.fillMaxSize()
-                        )
-                        1 -> RemoteComposeVisualizer(
-                            rcBytes = bytes,
-                            modifier = Modifier.fillMaxSize()
-                        )
+                    Box(modifier = Modifier.weight(1f).fillMaxWidth().padding(top = 12.dp)) {
+                        when (selectedTabIndex) {
+                            0 -> RemoteComposePlayer(
+                                rcBytes = bytes,
+                                modifier = Modifier.fillMaxSize()
+                            )
+                            1 -> CreatorCodeScreen(
+                                code = example.creatorDslCode,
+                                modifier = Modifier.fillMaxSize()
+                            )
+                            2 -> RemoteComposeVisualizer(
+                                rcBytes = bytes,
+                                modifier = Modifier.fillMaxSize()
+                            )
+                        }
                     }
                 }
             }
