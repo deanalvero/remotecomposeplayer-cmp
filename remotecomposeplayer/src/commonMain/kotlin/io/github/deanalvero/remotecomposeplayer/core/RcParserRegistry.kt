@@ -16,8 +16,10 @@ import io.github.deanalvero.remotecomposeplayer.operation.RcDataFloatOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcDataIntOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcDataListIdsOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcDataLongOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcDrawArcOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcDrawCircleOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcDrawLineOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcDrawRectOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcDrawTextAnchoredOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcFloatExpressionOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcHeaderOperation
@@ -103,7 +105,9 @@ object RcParserRegistry {
             RcValueIntegerExpressionChangeActionOperation,
             RcRoundedClipRectModifierOperation,
             RcClipRectModifierOperation,
-            RcTextLookupIntOperation
+            RcTextLookupIntOperation,
+            RcDrawArcOperation,
+            RcDrawRectOperation
         ).forEach {
             register(it)
         }

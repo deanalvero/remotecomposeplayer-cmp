@@ -98,6 +98,63 @@ fun DrawOperationEditDialog(
                                 onValueChange = { onChange(operation.copy(endY = it)) }
                             )
                         }
+
+                        is PlaygroundDrawOperation.Rect -> {
+                            FloatField(
+                                label = "Left",
+                                value = operation.left,
+                                onValueChange = { onChange(operation.copy(left = it)) }
+                            )
+                            FloatField(
+                                label = "Top",
+                                value = operation.top,
+                                onValueChange = { onChange(operation.copy(top = it)) }
+                            )
+                            FloatField(
+                                label = "Right",
+                                value = operation.right,
+                                onValueChange = { onChange(operation.copy(right = it)) }
+                            )
+                            FloatField(
+                                label = "Bottom",
+                                value = operation.bottom,
+                                onValueChange = { onChange(operation.copy(bottom = it)) }
+                            )
+                        }
+
+
+                        is PlaygroundDrawOperation.Arc -> {
+                            FloatField(
+                                label = "Left",
+                                value = operation.left,
+                                onValueChange = { onChange(operation.copy(left = it)) }
+                            )
+                            FloatField(
+                                label = "Top",
+                                value = operation.top,
+                                onValueChange = { onChange(operation.copy(top = it)) }
+                            )
+                            FloatField(
+                                label = "Right",
+                                value = operation.right,
+                                onValueChange = { onChange(operation.copy(right = it)) }
+                            )
+                            FloatField(
+                                label = "Bottom",
+                                value = operation.bottom,
+                                onValueChange = { onChange(operation.copy(bottom = it)) }
+                            )
+                            FloatField(
+                                label = "Start Angle",
+                                value = operation.startAngle,
+                                onValueChange = { onChange(operation.copy(startAngle = it)) }
+                            )
+                            FloatField(
+                                label = "Sweep Angle",
+                                value = operation.sweepAngle,
+                                onValueChange = { onChange(operation.copy(sweepAngle = it)) }
+                            )
+                        }
                     }
 
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {

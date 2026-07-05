@@ -9,8 +9,10 @@ import io.github.deanalvero.remotecomposeplayer.operation.RcCanvasContentOperati
 import io.github.deanalvero.remotecomposeplayer.operation.RcCanvasLayoutOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcColumnLayoutOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcContainerEndOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcDrawArcOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcDrawCircleOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcDrawLineOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcDrawRectOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcHeightModifierOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcLayoutContentOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcPaddingModifierOperation
@@ -175,13 +177,30 @@ private fun RcNode.Layout.collectDrawOperations(): List<PlaygroundDrawOperation>
                     radius = op.radius
                 )
             )
-
             is RcDrawLineOperation -> listOf(
                 PlaygroundDrawOperation.Line(
                     startX = op.startX,
                     startY = op.startY,
                     endX = op.endX,
                     endY = op.endY
+                )
+            )
+            is RcDrawArcOperation -> listOf(
+                PlaygroundDrawOperation.Arc(
+                    left = op.left,
+                    top = op.top,
+                    right = op.right,
+                    bottom = op.bottom,
+                    startAngle = op.startAngle,
+                    sweepAngle = op.sweepAngle
+                )
+            )
+            is RcDrawRectOperation -> listOf(
+                PlaygroundDrawOperation.Rect(
+                    left = op.left,
+                    top = op.top,
+                    right = op.right,
+                    bottom = op.bottom
                 )
             )
 

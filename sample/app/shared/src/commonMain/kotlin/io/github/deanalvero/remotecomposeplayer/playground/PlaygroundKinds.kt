@@ -17,6 +17,8 @@ enum class PlaygroundModifierKind {
 }
 
 enum class PlaygroundDrawOperationKind {
+    Arc,
     Circle,
-    Line
+    Line,
+    Rect
 }

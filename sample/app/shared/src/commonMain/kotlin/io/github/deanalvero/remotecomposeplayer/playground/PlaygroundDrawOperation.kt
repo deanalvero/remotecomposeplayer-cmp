@@ -1,8 +1,10 @@
 package io.github.deanalvero.remotecomposeplayer.playground
 
 import io.github.deanalvero.remotecomposeplayer.core.RcOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcDrawArcOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcDrawCircleOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcDrawLineOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcDrawRectOperation
 
 sealed interface PlaygroundDrawOperation {
     fun toOperation(): RcOperation
@@ -36,18 +38,58 @@ sealed interface PlaygroundDrawOperation {
             )
         }
     }
+
+    data class Rect(
+        val left: Float = 0f,
+        val top: Float = 0f,
+        val right: Float = 100f,
+        val bottom: Float = 100f
+    ) : PlaygroundDrawOperation {
+        override fun toOperation(): RcOperation {
+            return RcDrawRectOperation(
+                left = left,
+                top = top,
+                right = right,
+                bottom = bottom
+            )
+        }
+    }
+
+    data class Arc(
+        val left: Float = 0f,
+        val top: Float = 0f,
+        val right: Float = 100f,
+        val bottom: Float = 100f,
+        val startAngle: Float = 0f,
+        val sweepAngle: Float = 90f
+    ) : PlaygroundDrawOperation {
+        override fun toOperation(): RcOperation {
+            return RcDrawArcOperation(
+                left = left,
+                top = top,
+                right = right,
+                bottom = bottom,
+                startAngle = startAngle,
+                sweepAngle = sweepAngle
+            )
+        }
+    }
 }
 
 fun defaultDrawOperation(kind: PlaygroundDrawOperationKind): PlaygroundDrawOperation {
     return when (kind) {
+        PlaygroundDrawOperationKind.Arc -> PlaygroundDrawOperation.Arc()
         PlaygroundDrawOperationKind.Circle -> PlaygroundDrawOperation.Circle()
         PlaygroundDrawOperationKind.Line -> PlaygroundDrawOperation.Line()
+        PlaygroundDrawOperationKind.Rect -> PlaygroundDrawOperation.Rect()
     }
 }
 
 fun PlaygroundDrawOperation.label(): String {
     return when (this) {
+        is PlaygroundDrawOperation.Arc -> "Draw Arc"
         is PlaygroundDrawOperation.Circle -> "Draw Circle"
         is PlaygroundDrawOperation.Line -> "Draw Line"
+        is PlaygroundDrawOperation.Rect -> "Draw Rect"
     }
 }
