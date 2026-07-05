@@ -12,7 +12,10 @@ import io.github.deanalvero.remotecomposeplayer.operation.RcContainerEndOperatio
 import io.github.deanalvero.remotecomposeplayer.operation.RcDrawArcOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcDrawCircleOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcDrawLineOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcDrawOvalOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcDrawRectOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcDrawRoundRectOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcDrawSectorOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcHeightModifierOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcLayoutContentOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcPaddingModifierOperation
@@ -201,6 +204,31 @@ private fun RcNode.Layout.collectDrawOperations(): List<PlaygroundDrawOperation>
                     top = op.top,
                     right = op.right,
                     bottom = op.bottom
+                )
+            )
+
+            is RcDrawOvalOperation -> listOf(
+                PlaygroundDrawOperation.Oval(
+                    left = op.left, top = op.top, right = op.right, bottom = op.bottom
+                )
+            )
+            is RcDrawSectorOperation -> listOf(
+                PlaygroundDrawOperation.Sector(
+                    left = op.left,
+                    top = op.top,
+                    right = op.right,
+                    bottom = op.bottom,
+                    startAngle = op.startAngle,
+                    sweepAngle = op.sweepAngle
+                )
+            )
+            is RcDrawRoundRectOperation -> listOf(
+                PlaygroundDrawOperation.RoundRect(
+                    left = op.left,
+                    top = op.top,
+                    right = op.right,
+                    bottom = op.bottom,
+                    rx = op.rx, ry = op.ry
                 )
             )
 

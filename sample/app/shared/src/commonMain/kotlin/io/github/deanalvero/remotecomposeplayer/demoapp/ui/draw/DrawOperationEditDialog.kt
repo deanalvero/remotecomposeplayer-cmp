@@ -155,6 +155,29 @@ fun DrawOperationEditDialog(
                                 onValueChange = { onChange(operation.copy(sweepAngle = it)) }
                             )
                         }
+
+                        is PlaygroundDrawOperation.Oval -> {
+                            FloatField("Left", operation.left) { onChange(operation.copy(left = it)) }
+                            FloatField("Top", operation.top) { onChange(operation.copy(top = it)) }
+                            FloatField("Right", operation.right) { onChange(operation.copy(right = it)) }
+                            FloatField("Bottom", operation.bottom) { onChange(operation.copy(bottom = it)) }
+                        }
+                        is PlaygroundDrawOperation.Sector -> {
+                            FloatField("Left", operation.left) { onChange(operation.copy(left = it)) }
+                            FloatField("Top", operation.top) { onChange(operation.copy(top = it)) }
+                            FloatField("Right", operation.right) { onChange(operation.copy(right = it)) }
+                            FloatField("Bottom", operation.bottom) { onChange(operation.copy(bottom = it)) }
+                            FloatField("Start Angle", operation.startAngle) { onChange(operation.copy(startAngle = it)) }
+                            FloatField("Sweep Angle", operation.sweepAngle) { onChange(operation.copy(sweepAngle = it)) }
+                        }
+                        is PlaygroundDrawOperation.RoundRect -> {
+                            FloatField("Left", operation.left) { onChange(operation.copy(left = it)) }
+                            FloatField("Top", operation.top) { onChange(operation.copy(top = it)) }
+                            FloatField("Right", operation.right) { onChange(operation.copy(right = it)) }
+                            FloatField("Bottom", operation.bottom) { onChange(operation.copy(bottom = it)) }
+                            FloatField("Corner Radius X", operation.rx) { onChange(operation.copy(rx = it)) }
+                            FloatField("Corner Radius Y", operation.ry) { onChange(operation.copy(ry = it)) }
+                        }
                     }
 
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {

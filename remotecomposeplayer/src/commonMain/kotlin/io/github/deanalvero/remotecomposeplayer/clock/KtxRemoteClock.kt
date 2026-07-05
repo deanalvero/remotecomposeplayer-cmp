@@ -28,7 +28,7 @@ class KtxRemoteClock(
         return object : RemoteClock.TimeSnapshot {
             override val continuousSeconds: Float = continuousSeconds
             override val dayOfWeek: Int = localDateTime.dayOfWeek.isoDayNumber
-            override val dayOfMonth: Int = localDateTime.dayOfMonth
+            override val dayOfMonth: Int = localDateTime.day
             override val dayOfYear: Int = localDateTime.dayOfYear
             override val year: Int = localDateTime.year
             override val month: Int = localDateTime.month.number

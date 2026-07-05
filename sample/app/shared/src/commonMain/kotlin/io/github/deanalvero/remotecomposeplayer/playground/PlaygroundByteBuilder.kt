@@ -10,7 +10,10 @@ import io.github.deanalvero.remotecomposeplayer.operation.RcContainerEndOperatio
 import io.github.deanalvero.remotecomposeplayer.operation.RcDrawArcOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcDrawCircleOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcDrawLineOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcDrawOvalOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcDrawRectOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcDrawRoundRectOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcDrawSectorOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcHeaderOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcHeightModifierOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcLayoutContentOperation
@@ -346,6 +349,34 @@ object PlaygroundByteBuilder {
                 writer.writeFloat(op.bottom)
                 writer.writeFloat(op.startAngle)
                 writer.writeFloat(op.sweepAngle)
+            }
+
+            is RcDrawOvalOperation -> {
+                writer.writeByte(op.opCode)
+                writer.writeFloat(op.left)
+                writer.writeFloat(op.top)
+                writer.writeFloat(op.right)
+                writer.writeFloat(op.bottom)
+            }
+
+            is RcDrawSectorOperation -> {
+                writer.writeByte(op.opCode)
+                writer.writeFloat(op.left)
+                writer.writeFloat(op.top)
+                writer.writeFloat(op.right)
+                writer.writeFloat(op.bottom)
+                writer.writeFloat(op.startAngle)
+                writer.writeFloat(op.sweepAngle)
+            }
+
+            is RcDrawRoundRectOperation -> {
+                writer.writeByte(op.opCode)
+                writer.writeFloat(op.left)
+                writer.writeFloat(op.top)
+                writer.writeFloat(op.right)
+                writer.writeFloat(op.bottom)
+                writer.writeFloat(op.rx)
+                writer.writeFloat(op.ry)
             }
 
             else -> error("Unsupported operation for serialization: " + op::class.simpleName)

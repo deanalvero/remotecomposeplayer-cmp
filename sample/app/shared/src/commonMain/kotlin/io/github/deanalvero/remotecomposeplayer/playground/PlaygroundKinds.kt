@@ -20,5 +20,8 @@ enum class PlaygroundDrawOperationKind {
     Arc,
     Circle,
     Line,
-    Rect
+    Oval,
+    Rect,
+    RoundRect,
+    Sector
 }

@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.text.TextStyle
@@ -23,7 +24,10 @@ import io.github.deanalvero.remotecomposeplayer.operation.RcColumnLayoutOperatio
 import io.github.deanalvero.remotecomposeplayer.operation.RcDrawArcOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcDrawCircleOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcDrawLineOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcDrawOvalOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcDrawRectOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcDrawRoundRectOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcDrawSectorOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcDrawTextAnchoredOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcLayoutContentOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcMatrixRestoreOperation
@@ -250,6 +254,116 @@ fun RenderLayoutContainer(
                                         useCenter = false,
                                         topLeft = Offset(left, top),
                                         size = Size(width, height),
+                                        alpha = paintState.alpha,
+                                        style = paintState.style,
+                                        colorFilter = paintState.colorFilter,
+                                        blendMode = paintState.blendMode
+                                    )
+                                }
+                            }
+
+                            is RcDrawOvalOperation -> {
+                                val left = context.resolveFloat(op.left)
+                                val top = context.resolveFloat(op.top)
+                                val right = context.resolveFloat(op.right)
+                                val bottom = context.resolveFloat(op.bottom)
+                                val width = right - left
+                                val height = bottom - top
+
+                                val brush = paintState.brush
+                                if (brush != null) {
+                                    drawOval(
+                                        brush = brush,
+                                        topLeft = Offset(left, top),
+                                        size = Size(width, height),
+                                        alpha = paintState.alpha,
+                                        style = paintState.style,
+                                        colorFilter = paintState.colorFilter,
+                                        blendMode = paintState.blendMode
+                                    )
+                                } else {
+                                    drawOval(
+                                        color = paintState.color,
+                                        topLeft = Offset(left, top),
+                                        size = Size(width, height),
+                                        alpha = paintState.alpha,
+                                        style = paintState.style,
+                                        colorFilter = paintState.colorFilter,
+                                        blendMode = paintState.blendMode
+                                    )
+                                }
+                            }
+
+                            is RcDrawSectorOperation -> {
+                                val left = context.resolveFloat(op.left)
+                                val top = context.resolveFloat(op.top)
+                                val right = context.resolveFloat(op.right)
+                                val bottom = context.resolveFloat(op.bottom)
+                                val startAngle = context.resolveFloat(op.startAngle)
+                                val sweepAngle = context.resolveFloat(op.sweepAngle)
+
+                                val width = right - left
+                                val height = bottom - top
+
+                                val brush = paintState.brush
+                                if (brush != null) {
+                                    drawArc(
+                                        brush = brush,
+                                        startAngle = startAngle,
+                                        sweepAngle = sweepAngle,
+                                        useCenter = true,
+                                        topLeft = Offset(left, top),
+                                        size = Size(width, height),
+                                        alpha = paintState.alpha,
+                                        style = paintState.style,
+                                        colorFilter = paintState.colorFilter,
+                                        blendMode = paintState.blendMode
+                                    )
+                                } else {
+                                    drawArc(
+                                        color = paintState.color,
+                                        startAngle = startAngle,
+                                        sweepAngle = sweepAngle,
+                                        useCenter = true,
+                                        topLeft = Offset(left, top),
+                                        size = Size(width, height),
+                                        alpha = paintState.alpha,
+                                        style = paintState.style,
+                                        colorFilter = paintState.colorFilter,
+                                        blendMode = paintState.blendMode
+                                    )
+                                }
+                            }
+
+                            is RcDrawRoundRectOperation -> {
+                                val left = context.resolveFloat(op.left)
+                                val top = context.resolveFloat(op.top)
+                                val right = context.resolveFloat(op.right)
+                                val bottom = context.resolveFloat(op.bottom)
+                                val rx = context.resolveFloat(op.rx)
+                                val ry = context.resolveFloat(op.ry)
+
+                                val width = right - left
+                                val height = bottom - top
+
+                                val brush = paintState.brush
+                                if (brush != null) {
+                                    drawRoundRect(
+                                        brush = brush,
+                                        topLeft = Offset(left, top),
+                                        size = Size(width, height),
+                                        cornerRadius = CornerRadius(rx, ry),
+                                        alpha = paintState.alpha,
+                                        style = paintState.style,
+                                        colorFilter = paintState.colorFilter,
+                                        blendMode = paintState.blendMode
+                                    )
+                                } else {
+                                    drawRoundRect(
+                                        color = paintState.color,
+                                        topLeft = Offset(left, top),
+                                        size = Size(width, height),
+                                        cornerRadius = CornerRadius(rx, ry),
                                         alpha = paintState.alpha,
                                         style = paintState.style,
                                         colorFilter = paintState.colorFilter,

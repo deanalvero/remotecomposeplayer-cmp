@@ -4,7 +4,11 @@ import io.github.deanalvero.remotecomposeplayer.core.RcOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcDrawArcOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcDrawCircleOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcDrawLineOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcDrawOvalOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcDrawOvalOperation.Companion.OP_CODE
 import io.github.deanalvero.remotecomposeplayer.operation.RcDrawRectOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcDrawRoundRectOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcDrawSectorOperation
 
 sealed interface PlaygroundDrawOperation {
     fun toOperation(): RcOperation
@@ -74,6 +78,62 @@ sealed interface PlaygroundDrawOperation {
             )
         }
     }
+
+    data class Oval(
+        val left: Float = 0f,
+        val top: Float = 20f,
+        val right: Float = 100f,
+        val bottom: Float = 80f
+    ) : PlaygroundDrawOperation {
+        override fun toOperation(): RcOperation {
+            return RcDrawOvalOperation(
+                left = left,
+                top = top,
+                right = right,
+                bottom = bottom
+            )
+        }
+    }
+
+    data class Sector(
+        val left: Float = 0f,
+        val top: Float = 0f,
+        val right: Float = 100f,
+        val bottom: Float = 100f,
+        val startAngle: Float = 0f,
+        val sweepAngle: Float = 270f
+    ) : PlaygroundDrawOperation {
+        override fun toOperation(): RcOperation {
+            return RcDrawSectorOperation(
+                left = left,
+                top = top,
+                right = right,
+                bottom = bottom,
+                startAngle = startAngle,
+                sweepAngle = sweepAngle
+            )
+        }
+    }
+
+    data class RoundRect(
+        val left: Float = 0f,
+        val top: Float = 0f,
+        val right: Float = 100f,
+        val bottom: Float = 100f,
+        val rx: Float = 16f,
+        val ry: Float = 16f
+    ) : PlaygroundDrawOperation {
+        override fun toOperation(): RcOperation {
+            return RcDrawRoundRectOperation(
+                left = left,
+                top = top,
+                right = right,
+                bottom = bottom,
+                rx = rx,
+                ry = ry
+            )
+        }
+    }
 }
 
 fun defaultDrawOperation(kind: PlaygroundDrawOperationKind): PlaygroundDrawOperation {
@@ -81,7 +141,10 @@ fun defaultDrawOperation(kind: PlaygroundDrawOperationKind): PlaygroundDrawOpera
         PlaygroundDrawOperationKind.Arc -> PlaygroundDrawOperation.Arc()
         PlaygroundDrawOperationKind.Circle -> PlaygroundDrawOperation.Circle()
         PlaygroundDrawOperationKind.Line -> PlaygroundDrawOperation.Line()
+        PlaygroundDrawOperationKind.Oval -> PlaygroundDrawOperation.Oval()
         PlaygroundDrawOperationKind.Rect -> PlaygroundDrawOperation.Rect()
+        PlaygroundDrawOperationKind.RoundRect -> PlaygroundDrawOperation.RoundRect()
+        PlaygroundDrawOperationKind.Sector -> PlaygroundDrawOperation.Sector()
     }
 }
 
@@ -90,6 +153,9 @@ fun PlaygroundDrawOperation.label(): String {
         is PlaygroundDrawOperation.Arc -> "Draw Arc"
         is PlaygroundDrawOperation.Circle -> "Draw Circle"
         is PlaygroundDrawOperation.Line -> "Draw Line"
+        is PlaygroundDrawOperation.Oval -> "Draw Oval"
         is PlaygroundDrawOperation.Rect -> "Draw Rect"
+        is PlaygroundDrawOperation.RoundRect -> "Draw RoundRect"
+        is PlaygroundDrawOperation.Sector -> "Draw Sector"
     }
 }
