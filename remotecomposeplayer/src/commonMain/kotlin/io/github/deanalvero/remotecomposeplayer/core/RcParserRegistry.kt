@@ -43,6 +43,7 @@ import io.github.deanalvero.remotecomposeplayer.operation.RcPaintDataOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcRootLayoutOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcRoundedClipRectModifierOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcRowLayoutOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcScrollModifierOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcStateLayoutOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcTextDataOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcTextFromFloatOperation
@@ -51,6 +52,7 @@ import io.github.deanalvero.remotecomposeplayer.operation.RcTextLookupIntOperati
 import io.github.deanalvero.remotecomposeplayer.operation.RcTextLookupOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcTextMergeOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcThemeOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcTouchExpressionOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcValueIntegerExpressionChangeActionOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcWidthInModifierOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcWidthModifierOperation
@@ -113,7 +115,9 @@ object RcParserRegistry {
             RcDrawRectOperation,
             RcDrawOvalOperation,
             RcDrawRoundRectOperation,
-            RcDrawSectorOperation
+            RcDrawSectorOperation,
+            RcScrollModifierOperation,
+            RcTouchExpressionOperation
         ).forEach {
             register(it)
         }

@@ -29,6 +29,7 @@ fun RemoteComposeRenderer(
         var resolvedModifier = RcModifierRegistry.applyAll(
             operations = node.modifiers,
             initial = modifier,
+            node = node,
             scope = scope,
             context = context
         )

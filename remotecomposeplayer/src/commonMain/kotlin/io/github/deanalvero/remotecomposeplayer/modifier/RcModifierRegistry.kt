@@ -1,12 +1,16 @@
 package io.github.deanalvero.remotecomposeplayer.modifier
 
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import io.github.deanalvero.remotecomposeplayer.core.RcOperation
 import io.github.deanalvero.remotecomposeplayer.core.RemoteComposeContext
 import io.github.deanalvero.remotecomposeplayer.operation.RcBackgroundModifierOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcClipRectModifierOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcHeightModifierOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcPaddingModifierOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcScrollModifierOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcWidthModifierOperation
+import io.github.deanalvero.remotecomposeplayer.ui.RcNode
 import kotlin.reflect.KClass
 
 object RcModifierRegistry {
@@ -17,6 +21,8 @@ object RcModifierRegistry {
         register(RcBackgroundModifierOperation::class, BackgroundApplier)
         register(RcWidthModifierOperation::class, WidthApplier)
         register(RcHeightModifierOperation::class, HeightApplier)
+        register(RcClipRectModifierOperation::class, ClipRectApplier)
+        register(RcScrollModifierOperation::class, ScrollApplier)
     }
 
     private fun <T : RcOperation> register(type: KClass<T>, applier: RcModifierApplier<T>) {
@@ -24,15 +30,17 @@ object RcModifierRegistry {
     }
 
     @Suppress("UNCHECKED_CAST")
+    @Composable
     fun applyAll(
         operations: List<RcOperation>,
         initial: Modifier = Modifier,
+        node: RcNode,
         scope: Any?,
         context: RemoteComposeContext
     ): Modifier {
         return operations.fold(initial) { mod, op ->
             val applier = appliers[op::class] as? RcModifierApplier<RcOperation>
-            applier?.apply(op, mod, scope, context) ?: mod
+            applier?.apply(op, mod, node, scope, context) ?: mod
         }
     }
 }

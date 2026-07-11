@@ -123,15 +123,51 @@ object ExampleCatalog {
             """
     )
 
+    val verticalScroll: Example.Document = Example.Document(
+        id = "vertical-scroll",
+        title = "Vertical Scroll",
+        subtitle = "A scrollable column of rows driven by Remote Compose verticalScroll modifier",
+        creatorDslCode = """
+            Column(
+                modifier = Modifier.fillMaxSize().padding(32f).verticalScroll(),
+                horizontal = RcHorizontalPositioning.Center
+            ) {
+                repeat(50) {
+                    Text(text = "Text ${'$'}{it + 1}")
+                }
+            }
+            """
+    )
+
+    val horizontalScroll: Example.Document = Example.Document(
+        id = "horizontal-scroll",
+        title = "Horizontal Scroll",
+        subtitle = "A scrollable row of text driven by Remote Compose horizontalScroll modifier",
+        creatorDslCode = """
+            Row(
+                modifier = Modifier.fillMaxSize().padding(32f).horizontalScroll(),
+                vertical = RcVerticalPositioning.Center
+            ) {
+                repeat(50) {
+                    Text(text = "Text ${'$'}{it + 1}")
+                }
+            }
+            """
+    )
+
     val all: List<Example> = listOf(
         Example.Playground,
         analogClock,
-        digitalClock
+        digitalClock,
+        verticalScroll,
+        horizontalScroll
     )
 
     fun bytesFor(example: Example.Document): ByteArray = when (example.id) {
         analogClock.id -> SampleDocuments.analogClock()
         digitalClock.id -> SampleDocuments.digitalClock()
+        verticalScroll.id -> SampleDocuments.verticalScroll()
+        horizontalScroll.id -> SampleDocuments.horizontalScroll()
         else -> error("No bundled bytes registered for example '${example.id}'")
     }
 }

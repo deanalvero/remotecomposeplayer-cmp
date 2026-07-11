@@ -6,16 +6,18 @@ import io.github.deanalvero.remotecomposeplayer.operation.RcBackgroundModifierOp
 import io.github.deanalvero.remotecomposeplayer.operation.RcBoxLayoutOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcCanvasContentOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcCanvasLayoutOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcClipRectModifierOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcColumnLayoutOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcContainerEndOperation
-import io.github.deanalvero.remotecomposeplayer.operation.RcDrawCircleOperation
-import io.github.deanalvero.remotecomposeplayer.operation.RcDrawLineOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcDataFloatOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcHeightModifierOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcLayoutContentOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcPaddingModifierOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcRootLayoutOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcRowLayoutOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcScrollModifierOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcTextLayoutOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcTouchExpressionOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcWidthModifierOperation
 
 fun buildRcTree(operations: List<RcOperation>): RcNode.Layout {
@@ -36,9 +38,13 @@ fun buildRcTree(operations: List<RcOperation>): RcNode.Layout {
             is RcPaddingModifierOperation,
             is RcBackgroundModifierOperation,
             is RcWidthModifierOperation,
-            is RcHeightModifierOperation -> {
+            is RcHeightModifierOperation,
+            is RcClipRectModifierOperation,
+            is RcScrollModifierOperation-> {
                 lastAddedNode.modifiers.add(op)
             }
+
+            is RcDataFloatOperation -> {}
 
             is RcRootLayoutOperation,
             is RcLayoutContentOperation,
@@ -47,7 +53,8 @@ fun buildRcTree(operations: List<RcOperation>): RcNode.Layout {
             is RcRowLayoutOperation,
             is RcColumnLayoutOperation,
             is RcBoxLayoutOperation,
-            is RcTextLayoutOperation -> {
+            is RcTextLayoutOperation,
+            is RcTouchExpressionOperation -> {
                 val newNode = RcNode.Layout(op)
                 stack.last().children.add(newNode)
                 stack.add(newNode)
