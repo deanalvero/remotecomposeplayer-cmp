@@ -23,5 +23,6 @@ enum class PlaygroundDrawOperationKind {
     Oval,
     Rect,
     RoundRect,
-    Sector
+    Sector,
+    PaintData
 }

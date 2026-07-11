@@ -19,6 +19,7 @@ import io.github.deanalvero.remotecomposeplayer.operation.RcDrawSectorOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcHeightModifierOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcLayoutContentOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcPaddingModifierOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcPaintDataOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcRootLayoutOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcRowLayoutOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcTextLayoutOperation
@@ -231,6 +232,68 @@ private fun RcNode.Layout.collectDrawOperations(): List<PlaygroundDrawOperation>
                     rx = op.rx, ry = op.ry
                 )
             )
+
+            is RcPaintDataOperation -> {
+                var color = 0xFF000000.toInt()
+                var alpha = 1.0f
+                var strokeWidth = 0f
+                var isStroke = false
+
+                var i = 0
+                val data = op.paintData
+                while (i < data.size) {
+                    val cmd = data[i++]
+                    val type = cmd and 0xFFFF
+                    val packed = cmd ushr 16
+                    when (type) {
+                        1 -> i++
+                        4 -> color = data[i++]
+                        5 -> strokeWidth = Float.fromBits(data[i++])
+                        6 -> i++
+                        7 -> {}
+                        8 -> isStroke = packed == 1 || packed == 2
+                        9 -> i++
+                        10 -> {}
+                        11 -> {
+                            val control = data[i++]
+                            val len = control and 0xFF
+                            if (len > 0) i += len
+                            val stopLen = data[i++]
+                            if (stopLen > 0) i += stopLen
+                            val gradType = cmd ushr 16
+                            when (gradType) {
+                                0 -> i += 5
+                                1 -> i += 4
+                                2 -> i += 2
+                            }
+                        }
+                        12 -> alpha = Float.fromBits(data[i++])
+                        13 -> i++
+                        14 -> {}
+                        15 -> {}
+                        16 -> i++
+                        18 -> {}
+                        19 -> i++
+                        20 -> i++
+                        21 -> {}
+                        22 -> i++
+                        23 -> i += packed * 2
+                        24 -> i += 3
+                        25 -> if (packed > 0) i += packed
+                        26 -> i++
+                        else -> break
+                    }
+                }
+
+                listOf(
+                    PlaygroundDrawOperation.PaintData(
+                        color = color,
+                        alpha = alpha,
+                        strokeWidth = strokeWidth,
+                        isStroke = isStroke
+                    )
+                )
+            }
 
             is RcLayoutContentOperation,
             is RcCanvasContentOperation -> {

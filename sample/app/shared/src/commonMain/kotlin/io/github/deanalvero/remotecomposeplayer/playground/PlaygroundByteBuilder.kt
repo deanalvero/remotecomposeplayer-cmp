@@ -18,6 +18,7 @@ import io.github.deanalvero.remotecomposeplayer.operation.RcHeaderOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcHeightModifierOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcLayoutContentOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcPaddingModifierOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcPaintDataOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcRootLayoutOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcRowLayoutOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcTextDataOperation
@@ -377,6 +378,12 @@ object PlaygroundByteBuilder {
                 writer.writeFloat(op.bottom)
                 writer.writeFloat(op.rx)
                 writer.writeFloat(op.ry)
+            }
+
+            is RcPaintDataOperation -> {
+                writer.writeByte(op.opCode)
+                writer.writeInt(op.paintData.size)
+                op.paintData.forEach { writer.writeInt(it) }
             }
 
             else -> error("Unsupported operation for serialization: " + op::class.simpleName)

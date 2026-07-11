@@ -9,6 +9,7 @@ import io.github.deanalvero.remotecomposeplayer.operation.RcDrawOvalOperation.Co
 import io.github.deanalvero.remotecomposeplayer.operation.RcDrawRectOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcDrawRoundRectOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcDrawSectorOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcPaintDataOperation
 
 sealed interface PlaygroundDrawOperation {
     fun toOperation(): RcOperation
@@ -134,6 +135,32 @@ sealed interface PlaygroundDrawOperation {
             )
         }
     }
+
+    data class PaintData(
+        val color: Int = 0xFF000000.toInt(),
+        val alpha: Float = 1.0f,
+        val strokeWidth: Float = 5f,
+        val isStroke: Boolean = false
+    ) : PlaygroundDrawOperation {
+        override fun toOperation(): RcOperation {
+            val data = mutableListOf<Int>()
+            data.add(4)
+            data.add(color)
+
+            data.add(12)
+            data.add(alpha.toRawBits())
+
+            if (isStroke) {
+                data.add(5)
+                data.add(strokeWidth.toRawBits())
+                data.add(8 or (1 shl 16))
+            } else {
+                data.add(8 or (0 shl 16))
+            }
+
+            return RcPaintDataOperation(paintData = data.toIntArray())
+        }
+    }
 }
 
 fun defaultDrawOperation(kind: PlaygroundDrawOperationKind): PlaygroundDrawOperation {
@@ -145,6 +172,7 @@ fun defaultDrawOperation(kind: PlaygroundDrawOperationKind): PlaygroundDrawOpera
         PlaygroundDrawOperationKind.Rect -> PlaygroundDrawOperation.Rect()
         PlaygroundDrawOperationKind.RoundRect -> PlaygroundDrawOperation.RoundRect()
         PlaygroundDrawOperationKind.Sector -> PlaygroundDrawOperation.Sector()
+        PlaygroundDrawOperationKind.PaintData -> PlaygroundDrawOperation.PaintData()
     }
 }
 
@@ -157,5 +185,6 @@ fun PlaygroundDrawOperation.label(): String {
         is PlaygroundDrawOperation.Rect -> "Draw Rect"
         is PlaygroundDrawOperation.RoundRect -> "Draw RoundRect"
         is PlaygroundDrawOperation.Sector -> "Draw Sector"
+        is PlaygroundDrawOperation.PaintData -> "Paint Data"
     }
 }
