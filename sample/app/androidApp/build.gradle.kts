@@ -26,6 +26,7 @@ dependencies {
     implementation(libs.compose.foundation)
     implementation(libs.compose.material3)
     implementation(libs.compose.ui)
+    implementation(compose.materialIconsExtended)
 
     implementation("androidx.compose.remote:remote-core:1.0.0-alpha14")
     implementation("androidx.compose.remote:remote-player-core:1.0.0-alpha14")

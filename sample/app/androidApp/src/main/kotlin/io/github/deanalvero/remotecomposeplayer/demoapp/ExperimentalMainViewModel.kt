@@ -24,6 +24,10 @@ class ExperimentalMainViewModel : ViewModel() {
     fun load() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
+                _uiState.update {
+                    ExperimentalMainUiState.Loading
+                }
+
                 val response = client.get("http://10.0.2.2:8080/")
                 println(response)
                 _uiState.update {

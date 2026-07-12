@@ -14,13 +14,14 @@ import io.github.deanalvero.remotecomposeplayer.demoapp.ui.ExamplesListScreen
 @Composable
 fun ExamplesApp(
     modifier: Modifier = Modifier,
+    platformExamples: List<Example> = emptyList(),
     onDownload: (filename: String, bytes: ByteArray) -> Unit = { _, _ -> }
 ) {
     var selected by remember { mutableStateOf<Example?>(null) }
 
     when (val example = selected) {
         null -> ExamplesListScreen(
-            examples = ExampleCatalog.all,
+            examples = ExampleCatalog.all + platformExamples,
             onExampleSelected = { selected = it },
             modifier = modifier
         )
@@ -37,5 +38,9 @@ fun ExamplesApp(
             onDownload = { onDownload("${example.id}.rc", it) },
             onBack = { selected = null }
         )
+
+        is Example.PlatformExample -> example.screen.invoke {
+            selected = null
+        }
     }
 }
