@@ -1,6 +1,7 @@
 package io.github.deanalvero.remotecomposeplayer.core
 
 import io.github.deanalvero.remotecomposeplayer.operation.RcBackgroundModifierOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcBorderModifierOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcBoxLayoutOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcCanvasContentOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcCanvasLayoutOperation
@@ -117,7 +118,8 @@ object RcParserRegistry {
             RcDrawRoundRectOperation,
             RcDrawSectorOperation,
             RcScrollModifierOperation,
-            RcTouchExpressionOperation
+            RcTouchExpressionOperation,
+            RcBorderModifierOperation
         ).forEach {
             register(it)
         }
