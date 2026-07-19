@@ -18,6 +18,7 @@ import io.github.deanalvero.remotecomposeplayer.operation.RcColorExpressionOpera
 import io.github.deanalvero.remotecomposeplayer.operation.RcComponentValueOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcDataListIdsOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcFloatExpressionOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcIntegerExpressionOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcNamedVariableOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcTextDataOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcTextFromFloatOperation
@@ -55,6 +56,10 @@ class RemoteComposeContext(
         .filterIsInstance<RcFloatExpressionOperation>()
         .associateBy { it.id }
 
+    private val integerExpressions: Map<Int, RcIntegerExpressionOperation> = operations
+        .filterIsInstance<RcIntegerExpressionOperation>()
+        .associateBy { it.id }
+
     val componentValueBindings: Map<Int, List<RcComponentValueOperation>> = operations
         .filterIsInstance<RcComponentValueOperation>()
         .groupBy { it.componentId }
@@ -67,7 +72,8 @@ class RemoteComposeContext(
         .filterIsInstance<RcTextLookupOperation>()
         .associateBy { it.textId }
 
-    private val evaluator = RcFloatExpressionEvaluator(this)
+    private val floatEvaluator = RcFloatExpressionEvaluator(this)
+    private val intEvaluator = RcIntegerExpressionEvaluator(this)
 
     var currentSnapshot by mutableStateOf(clock.snapshot())
         private set
@@ -137,9 +143,23 @@ class RemoteComposeContext(
             ID_YEAR -> return currentSnapshot.year.toFloat()
         }
         floatExpressions[id]?.let { expr ->
-            return evaluator.evaluate(expr.srcValues)
+            return floatEvaluator.evaluate(expr.srcValues)
         }
         return floatVariables[id] ?: 0f
+    }
+
+    fun evaluateIntegerExpression(exprId: Int): Int {
+        val expr = integerExpressions[exprId] ?: return 0
+        return intEvaluator.evaluate(expr.mask.toLong(), expr.srcValues)
+    }
+
+    fun evaluateIntExpression(expressionId: Long, targetId: Long) {
+        val exprIdInt = expressionId.toInt()
+        val expr = integerExpressions[exprIdInt]
+        if (expr != null) {
+            val value = intEvaluator.evaluate(expr.mask.toLong(), expr.srcValues)
+            updateIntegerVariable(targetId.toInt(), value)
+        }
     }
 
     fun resolveFloat(value: Float): Float {
