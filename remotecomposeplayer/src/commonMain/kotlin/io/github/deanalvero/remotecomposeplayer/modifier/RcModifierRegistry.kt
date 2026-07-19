@@ -5,6 +5,7 @@ import androidx.compose.ui.Modifier
 import io.github.deanalvero.remotecomposeplayer.core.RcOperation
 import io.github.deanalvero.remotecomposeplayer.core.RemoteComposeContext
 import io.github.deanalvero.remotecomposeplayer.operation.RcBackgroundModifierOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcClickModifierOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcClipRectModifierOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcHeightModifierOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcPaddingModifierOperation
@@ -23,6 +24,7 @@ object RcModifierRegistry {
         register(RcHeightModifierOperation::class, HeightApplier)
         register(RcClipRectModifierOperation::class, ClipRectApplier)
         register(RcScrollModifierOperation::class, ScrollApplier)
+        register(RcClickModifierOperation::class, ClickApplier)
     }
 
     private fun <T : RcOperation> register(type: KClass<T>, applier: RcModifierApplier<T>) {

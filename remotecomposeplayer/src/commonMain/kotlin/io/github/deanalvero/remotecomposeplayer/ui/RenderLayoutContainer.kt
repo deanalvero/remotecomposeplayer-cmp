@@ -39,6 +39,7 @@ import io.github.deanalvero.remotecomposeplayer.operation.RcMatrixTranslateOpera
 import io.github.deanalvero.remotecomposeplayer.operation.RcPaintDataOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcRootLayoutOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcRowLayoutOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcStateLayoutOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcTextLayoutOperation
 import io.github.deanalvero.remotecomposeplayer.operation.mapBoxAlignment
 import io.github.deanalvero.remotecomposeplayer.paint.RcPaintState
@@ -440,6 +441,29 @@ fun RenderLayoutContainer(
                 contentAlignment = mapBoxAlignment(operation.horizontalPositioning, operation.verticalPositioning)
             ) {
                 RemoteComposeRenderer(node.children, context, Modifier, this)
+            }
+        }
+
+        is RcStateLayoutOperation -> {
+            Box(
+                modifier = modifier,
+                contentAlignment = mapBoxAlignment(operation.horizontalPositioning, operation.verticalPositioning)
+            ) {
+                val stateIndex = context.resolveInt(operation.indexId)
+
+                val layoutContentNode = node.children.firstOrNull {
+                    it.operation is RcLayoutContentOperation
+                }
+                val activeStateNode = (layoutContentNode as? RcNode.Layout)?.children?.getOrNull(stateIndex)
+
+                if (activeStateNode != null) {
+                    RemoteComposeRenderer(
+                        nodes = listOf(activeStateNode),
+                        context = context,
+                        modifier = modifier,
+                        scope = this
+                    )
+                }
             }
         }
 

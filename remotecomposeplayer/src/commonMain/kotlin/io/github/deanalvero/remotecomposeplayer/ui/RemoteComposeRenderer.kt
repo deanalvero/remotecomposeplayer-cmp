@@ -16,6 +16,7 @@ import io.github.deanalvero.remotecomposeplayer.operation.RcComponentValueOperat
 import io.github.deanalvero.remotecomposeplayer.operation.RcLayoutContentOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcRootLayoutOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcRowLayoutOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcStateLayoutOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcTextLayoutOperation
 
 @Composable
@@ -89,6 +90,7 @@ private fun RcOperation.getComponentIdOrNull(): Int? {
         is RcCanvasContentOperation -> componentId
         is RcTextLayoutOperation -> componentId
         is RcBoxLayoutOperation -> componentId
+        is RcStateLayoutOperation -> componentId
         is RcComponentValueOperation -> componentId
         else -> null
     }

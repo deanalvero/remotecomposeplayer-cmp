@@ -4,10 +4,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.withFrameNanos
 import io.github.deanalvero.remotecomposeplayer.clock.KtxRemoteClock
@@ -121,6 +119,10 @@ class RemoteComposeContext(
         }
     }
 
+    fun updateIntegerVariable(valueId: Int, value: Int) {
+        updateFloatVariable(valueId, value.toFloat())
+    }
+
     fun resolveDynamicFloat(id: Int): Float {
         val cleanId = id and 0x3FFFFF
         when (cleanId) {
@@ -144,6 +146,11 @@ class RemoteComposeContext(
         if (!value.isNaN()) return value
         val id = value.toRawBits() and 0x7FFFFF
         return resolveDynamicFloat(id)
+    }
+
+    fun resolveInt(id: Int): Int {
+        val floatVal = resolveDynamicFloat(id)
+        return if (floatVal.isNaN()) 0 else floatVal.toInt()
     }
 
     fun getListValues(listId: Int): FloatArray? {
