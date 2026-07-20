@@ -3,6 +3,7 @@ package io.github.deanalvero.remotecomposeplayer.ui
 import io.github.deanalvero.remotecomposeplayer.core.RcOperation
 import io.github.deanalvero.remotecomposeplayer.operation.CanvasScopedOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcBackgroundModifierOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcBorderModifierOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcBoxLayoutOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcCanvasContentOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcCanvasLayoutOperation
@@ -56,6 +57,7 @@ fun buildRcTree(operations: List<RcOperation>): RcNode.Layout {
             is RcHeightModifierOperation,
             is RcClipRectModifierOperation,
             is RcScrollModifierOperation,
+            is RcBorderModifierOperation,
             is RcClickModifierOperation -> {
                 lastAddedNode.modifiers.add(op)
             }

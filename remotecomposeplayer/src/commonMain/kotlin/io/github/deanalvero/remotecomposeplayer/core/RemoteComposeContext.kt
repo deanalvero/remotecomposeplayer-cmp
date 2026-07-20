@@ -16,7 +16,11 @@ import io.github.deanalvero.remotecomposeplayer.format
 import io.github.deanalvero.remotecomposeplayer.operation.RcColorConstantOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcColorExpressionOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcComponentValueOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcDataBooleanOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcDataFloatOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcDataIntOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcDataListIdsOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcDataLongOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcFloatExpressionOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcIntegerExpressionOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcNamedVariableOperation
@@ -108,6 +112,17 @@ class RemoteComposeContext(
         }
     }
 
+    init {
+        operations.forEach { op ->
+            when (op) {
+                is RcDataIntOperation -> floatVariables[op.id] = op.value.toFloat()
+                is RcDataFloatOperation -> floatVariables[op.id] = op.value
+                is RcDataBooleanOperation -> floatVariables[op.id] = if (op.value) 1f else 0f
+                is RcDataLongOperation -> floatVariables[op.id] = op.value.toFloat()
+            }
+        }
+    }
+
     @Composable
     fun Ticker() {
         LaunchedEffect(clock) {
@@ -144,6 +159,9 @@ class RemoteComposeContext(
         }
         floatExpressions[id]?.let { expr ->
             return floatEvaluator.evaluate(expr.srcValues)
+        }
+        integerExpressions[id]?.let { expr ->
+            return intEvaluator.evaluate(expr.mask.toLong(), expr.srcValues).toFloat()
         }
         return floatVariables[id] ?: 0f
     }
