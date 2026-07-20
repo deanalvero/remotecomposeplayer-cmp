@@ -5,16 +5,20 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import io.github.deanalvero.remotecomposeplayer.core.RemoteComposeContext
 import io.github.deanalvero.remotecomposeplayer.operation.RcWidthModifierOperation
 import io.github.deanalvero.remotecomposeplayer.operation.common.RcDimensionType
+import io.github.deanalvero.remotecomposeplayer.ui.RcNode
 
 object WidthApplier : RcModifierApplier<RcWidthModifierOperation> {
+    @Composable
     override fun apply(
         operation: RcWidthModifierOperation,
         currentModifier: Modifier,
+        node: RcNode,
         scope: Any?,
         context: RemoteComposeContext
     ): Modifier {

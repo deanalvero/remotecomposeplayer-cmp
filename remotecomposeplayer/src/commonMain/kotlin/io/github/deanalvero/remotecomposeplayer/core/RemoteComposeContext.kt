@@ -4,19 +4,36 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.withFrameNanos
 import io.github.deanalvero.remotecomposeplayer.clock.KtxRemoteClock
 import io.github.deanalvero.remotecomposeplayer.clock.RemoteClock
+import io.github.deanalvero.remotecomposeplayer.clock.timeInMin
+import io.github.deanalvero.remotecomposeplayer.clock.timeInSec
 import io.github.deanalvero.remotecomposeplayer.format
+import io.github.deanalvero.remotecomposeplayer.operation.RcColorConstantOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcColorExpressionOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcComponentValueOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcDataBooleanOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcDataFloatOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcDataIntOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcDataListIdsOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcDataLongOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcFloatExpressionOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcIntegerExpressionOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcNamedVariableOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcTextDataOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcTextFromFloatOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcTextLookupOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcTextMergeOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcThemeOperation
 
 @Immutable
 class RemoteComposeContext(
     operations: List<RcOperation>,
+    val isDarkTheme: Boolean = true,
     val colors: Map<Int, Int> = emptyMap()
 ) {
     private val clock: RemoteClock = KtxRemoteClock()
@@ -29,39 +46,178 @@ class RemoteComposeContext(
         .filterIsInstance<RcTextFromFloatOperation>()
         .associate { it.textId to it }
 
-    @Composable
-    fun resolveText(textId: Int): String {
-        textRegistry[textId]?.let { return it }
+    private val floatVariables = mutableStateMapOf<Int, Float>()
 
-        textFromFloatRegistry[textId]?.let { op ->
-            val floatValue = extractDynamicFloat(op.value, clock)
-            return floatValue.format(op)
+    val namedVariables: Map<String, RcNamedVariableOperation> = operations
+        .filterIsInstance<RcNamedVariableOperation>()
+        .associateBy { it.varName }
+
+    private val dataLists: Map<Int, RcDataListIdsOperation> = operations
+        .filterIsInstance<RcDataListIdsOperation>()
+        .associateBy { it.id }
+
+    private val floatExpressions: Map<Int, RcFloatExpressionOperation> = operations
+        .filterIsInstance<RcFloatExpressionOperation>()
+        .associateBy { it.id }
+
+    private val integerExpressions: Map<Int, RcIntegerExpressionOperation> = operations
+        .filterIsInstance<RcIntegerExpressionOperation>()
+        .associateBy { it.id }
+
+    val componentValueBindings: Map<Int, List<RcComponentValueOperation>> = operations
+        .filterIsInstance<RcComponentValueOperation>()
+        .groupBy { it.componentId }
+
+    private val textMergeRegistry: Map<Int, RcTextMergeOperation> = operations
+        .filterIsInstance<RcTextMergeOperation>()
+        .associateBy { it.textId }
+
+    private val textLookupRegistry: Map<Int, RcTextLookupOperation> = operations
+        .filterIsInstance<RcTextLookupOperation>()
+        .associateBy { it.textId }
+
+    private val floatEvaluator = RcFloatExpressionEvaluator(this)
+    private val intEvaluator = RcIntegerExpressionEvaluator(this)
+
+    var currentSnapshot by mutableStateOf(clock.snapshot())
+        private set
+
+    private val resolvedColors = mutableMapOf<Int, Int>().apply {
+        putAll(colors)
+        operations.filterIsInstance<RcColorConstantOperation>().forEach { put(it.colorId, it.color) }
+
+        var currentTheme = 0
+
+        operations.forEach { op ->
+            if (op is RcThemeOperation) {
+                currentTheme = op.theme
+            } else if (op is RcColorExpressionOperation && op.mode == RcColorExpressionOperation.ID_ID_INTERPOLATE) {
+
+                val isDarkContext = currentTheme == -2 || (currentTheme == 0)
+                val isLightContext = currentTheme == -3 || (currentTheme == 0 && !isDarkTheme)
+
+                if (currentTheme == -1 || isDarkContext || isLightContext) {
+                    val c1 = get(op.param2) ?: 0
+                    val c2 = get(op.param3) ?: 0
+                    val ratio = Float.fromBits(op.param4).coerceIn(0f, 1f)
+
+                    val a = (c1 ushr 24 and 0xff) + ((c2 ushr 24 and 0xff) - (c1 ushr 24 and 0xff)) * ratio
+                    val r = (c1 ushr 16 and 0xff) + ((c2 ushr 16 and 0xff) - (c1 ushr 16 and 0xff)) * ratio
+                    val g = (c1 ushr 8 and 0xff) + ((c2 ushr 8 and 0xff) - (c1 ushr 8 and 0xff)) * ratio
+                    val b = (c1 and 0xff) + ((c2 and 0xff) - (c1 and 0xff)) * ratio
+
+                    put(op.id, (a.toInt() shl 24) or (r.toInt() shl 16) or (g.toInt() shl 8) or b.toInt())
+                }
+            }
         }
-        return "Error: Text ID [$textId] not found"
+    }
+
+    init {
+        operations.forEach { op ->
+            when (op) {
+                is RcDataIntOperation -> floatVariables[op.id] = op.value.toFloat()
+                is RcDataFloatOperation -> floatVariables[op.id] = op.value
+                is RcDataBooleanOperation -> floatVariables[op.id] = if (op.value) 1f else 0f
+                is RcDataLongOperation -> floatVariables[op.id] = op.value.toFloat()
+            }
+        }
     }
 
     @Composable
-    private fun extractDynamicFloat(rawValue: Float, clock: RemoteClock): Float {
-        if (!rawValue.isNaN()) return rawValue
-
-        val variableId = rawValue.toRawBits() and 0x3FFFFF
-
-        return when (variableId) {
-            ID_CONTINUOUS_SEC -> {
-                var currentSeconds by remember {
-                    mutableFloatStateOf(clock.snapshot().continuousSeconds)
+    fun Ticker() {
+        LaunchedEffect(clock) {
+            while (true) {
+                withFrameNanos {
+                    currentSnapshot = clock.snapshot()
                 }
-                LaunchedEffect(clock) {
-                    while (true) {
-                        withFrameNanos {
-                            currentSeconds = clock.snapshot().continuousSeconds
-                        }
-                    }
-                }
-                currentSeconds % 3600f
             }
-            else -> 0f
         }
+    }
+
+    fun updateFloatVariable(valueId: Int, value: Float) {
+        if (floatVariables[valueId] != value) {
+            floatVariables[valueId] = value
+        }
+    }
+
+    fun updateIntegerVariable(valueId: Int, value: Int) {
+        updateFloatVariable(valueId, value.toFloat())
+    }
+
+    fun resolveDynamicFloat(id: Int): Float {
+        val cleanId = id and 0x3FFFFF
+        when (cleanId) {
+            ID_CONTINUOUS_SEC -> return currentSnapshot.continuousSeconds
+            ID_TIME_IN_SEC -> return currentSnapshot.timeInSec()
+            ID_TIME_IN_MIN -> return currentSnapshot.timeInMin()
+            ID_TIME_IN_HR -> return currentSnapshot.hour.toFloat()
+            ID_CALENDAR_MONTH -> return currentSnapshot.month.toFloat()
+            ID_WEEK_DAY -> return currentSnapshot.dayOfWeek.toFloat()
+            ID_DAY_OF_MONTH -> return currentSnapshot.dayOfMonth.toFloat()
+            ID_DAY_OF_YEAR -> return currentSnapshot.dayOfYear.toFloat()
+            ID_YEAR -> return currentSnapshot.year.toFloat()
+        }
+        floatExpressions[id]?.let { expr ->
+            return floatEvaluator.evaluate(expr.srcValues)
+        }
+        integerExpressions[id]?.let { expr ->
+            return intEvaluator.evaluate(expr.mask.toLong(), expr.srcValues).toFloat()
+        }
+        return floatVariables[id] ?: 0f
+    }
+
+    fun evaluateIntegerExpression(exprId: Int): Int {
+        val expr = integerExpressions[exprId] ?: return 0
+        return intEvaluator.evaluate(expr.mask.toLong(), expr.srcValues)
+    }
+
+    fun evaluateIntExpression(expressionId: Long, targetId: Long) {
+        val exprIdInt = expressionId.toInt()
+        val expr = integerExpressions[exprIdInt]
+        if (expr != null) {
+            val value = intEvaluator.evaluate(expr.mask.toLong(), expr.srcValues)
+            updateIntegerVariable(targetId.toInt(), value)
+        }
+    }
+
+    fun resolveFloat(value: Float): Float {
+        if (!value.isNaN()) return value
+        val id = value.toRawBits() and 0x7FFFFF
+        return resolveDynamicFloat(id)
+    }
+
+    fun resolveInt(id: Int): Int {
+        val floatVal = resolveDynamicFloat(id)
+        return if (floatVal.isNaN()) 0 else floatVal.toInt()
+    }
+
+    fun getListValues(listId: Int): FloatArray? {
+        val listOp = dataLists[listId] ?: return null
+        return listOp.ids.map { resolveDynamicFloat(it) }.toFloatArray()
+    }
+
+    fun getListValue(listId: Int, index: Int): Float {
+        val listOp = dataLists[listId] ?: return Float.NaN
+        if (index < 0 || index >= listOp.ids.size) return Float.NaN
+        return resolveDynamicFloat(listOp.ids[index])
+    }
+
+    fun resolveText(textId: Int): String {
+        textRegistry[textId]?.let { return it }
+        textFromFloatRegistry[textId]?.let { op ->
+            val floatValue = resolveFloat(op.value)
+            return floatValue.format(op)
+        }
+        textMergeRegistry[textId]?.let { op ->
+            return resolveText(op.srcId1) + resolveText(op.srcId2)
+        }
+        textLookupRegistry[textId]?.let { op ->
+            val dataList = dataLists[op.dataSetId] ?: return "Err: List ${op.dataSetId}"
+            val indexF = resolveFloat(op.index)
+            val index = indexF.toInt().coerceIn(0, dataList.ids.lastIndex)
+            return resolveText(dataList.ids[index])
+        }
+        return "Error: Text ID [$textId] not found"
     }
 
     fun getStaticText(textId: Int): String {
@@ -78,12 +234,18 @@ class RemoteComposeContext(
     }
 
     fun getColor(colorId: Int): Int {
-        val themeColor = colors[colorId]
-        if (themeColor != null) return themeColor
-        return 0xFFFF00FF.toInt()
+        return resolvedColors[colorId] ?: 0xFFFF00FF.toInt()
     }
 
     companion object {
         private const val ID_CONTINUOUS_SEC = 1
+        private const val ID_TIME_IN_SEC = 2
+        private const val ID_TIME_IN_MIN = 3
+        private const val ID_TIME_IN_HR = 4
+        private const val ID_CALENDAR_MONTH = 9
+        private const val ID_WEEK_DAY = 11
+        private const val ID_DAY_OF_MONTH = 12
+        private const val ID_DAY_OF_YEAR = 34
+        private const val ID_YEAR = 35
     }
 }

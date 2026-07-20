@@ -8,12 +8,14 @@ import io.github.deanalvero.remotecomposeplayer.demoapp.ui.MainScreen
 @Composable
 fun PlaygroundApp(
     modifier: Modifier = Modifier,
-    onDownload: (ByteArray) -> Unit = {}
+    onDownload: (ByteArray) -> Unit = {},
+    onBack: (() -> Unit)? = null
 ) {
     val viewModel = remember { MainViewModel() }
     MainScreen(
         viewModel = viewModel,
         modifier = modifier,
-        onDownload = onDownload
+        onDownload = onDownload,
+        onBack = onBack
     )
 }

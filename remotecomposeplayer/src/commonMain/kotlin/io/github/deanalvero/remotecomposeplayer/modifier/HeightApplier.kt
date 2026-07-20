@@ -5,16 +5,20 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import io.github.deanalvero.remotecomposeplayer.core.RemoteComposeContext
 import io.github.deanalvero.remotecomposeplayer.operation.RcHeightModifierOperation
 import io.github.deanalvero.remotecomposeplayer.operation.common.RcDimensionType
+import io.github.deanalvero.remotecomposeplayer.ui.RcNode
 
 object HeightApplier : RcModifierApplier<RcHeightModifierOperation> {
+    @Composable
     override fun apply(
         operation: RcHeightModifierOperation,
         currentModifier: Modifier,
+        node: RcNode,
         scope: Any?,
         context: RemoteComposeContext
     ): Modifier {

@@ -15,6 +15,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -22,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import io.github.deanalvero.remotecomposeplayer.demoapp.ui.field.ColorField
 import io.github.deanalvero.remotecomposeplayer.demoapp.ui.field.FloatField
 import io.github.deanalvero.remotecomposeplayer.playground.PlaygroundDrawOperation
 import io.github.deanalvero.remotecomposeplayer.playground.label
@@ -97,6 +99,106 @@ fun DrawOperationEditDialog(
                                 value = operation.endY,
                                 onValueChange = { onChange(operation.copy(endY = it)) }
                             )
+                        }
+
+                        is PlaygroundDrawOperation.Rect -> {
+                            FloatField(
+                                label = "Left",
+                                value = operation.left,
+                                onValueChange = { onChange(operation.copy(left = it)) }
+                            )
+                            FloatField(
+                                label = "Top",
+                                value = operation.top,
+                                onValueChange = { onChange(operation.copy(top = it)) }
+                            )
+                            FloatField(
+                                label = "Right",
+                                value = operation.right,
+                                onValueChange = { onChange(operation.copy(right = it)) }
+                            )
+                            FloatField(
+                                label = "Bottom",
+                                value = operation.bottom,
+                                onValueChange = { onChange(operation.copy(bottom = it)) }
+                            )
+                        }
+
+
+                        is PlaygroundDrawOperation.Arc -> {
+                            FloatField(
+                                label = "Left",
+                                value = operation.left,
+                                onValueChange = { onChange(operation.copy(left = it)) }
+                            )
+                            FloatField(
+                                label = "Top",
+                                value = operation.top,
+                                onValueChange = { onChange(operation.copy(top = it)) }
+                            )
+                            FloatField(
+                                label = "Right",
+                                value = operation.right,
+                                onValueChange = { onChange(operation.copy(right = it)) }
+                            )
+                            FloatField(
+                                label = "Bottom",
+                                value = operation.bottom,
+                                onValueChange = { onChange(operation.copy(bottom = it)) }
+                            )
+                            FloatField(
+                                label = "Start Angle",
+                                value = operation.startAngle,
+                                onValueChange = { onChange(operation.copy(startAngle = it)) }
+                            )
+                            FloatField(
+                                label = "Sweep Angle",
+                                value = operation.sweepAngle,
+                                onValueChange = { onChange(operation.copy(sweepAngle = it)) }
+                            )
+                        }
+
+                        is PlaygroundDrawOperation.Oval -> {
+                            FloatField("Left", operation.left) { onChange(operation.copy(left = it)) }
+                            FloatField("Top", operation.top) { onChange(operation.copy(top = it)) }
+                            FloatField("Right", operation.right) { onChange(operation.copy(right = it)) }
+                            FloatField("Bottom", operation.bottom) { onChange(operation.copy(bottom = it)) }
+                        }
+                        is PlaygroundDrawOperation.Sector -> {
+                            FloatField("Left", operation.left) { onChange(operation.copy(left = it)) }
+                            FloatField("Top", operation.top) { onChange(operation.copy(top = it)) }
+                            FloatField("Right", operation.right) { onChange(operation.copy(right = it)) }
+                            FloatField("Bottom", operation.bottom) { onChange(operation.copy(bottom = it)) }
+                            FloatField("Start Angle", operation.startAngle) { onChange(operation.copy(startAngle = it)) }
+                            FloatField("Sweep Angle", operation.sweepAngle) { onChange(operation.copy(sweepAngle = it)) }
+                        }
+                        is PlaygroundDrawOperation.RoundRect -> {
+                            FloatField("Left", operation.left) { onChange(operation.copy(left = it)) }
+                            FloatField("Top", operation.top) { onChange(operation.copy(top = it)) }
+                            FloatField("Right", operation.right) { onChange(operation.copy(right = it)) }
+                            FloatField("Bottom", operation.bottom) { onChange(operation.copy(bottom = it)) }
+                            FloatField("Corner Radius X", operation.rx) { onChange(operation.copy(rx = it)) }
+                            FloatField("Corner Radius Y", operation.ry) { onChange(operation.copy(ry = it)) }
+                        }
+                        is PlaygroundDrawOperation.PaintData -> {
+                            ColorField("Color", operation.color) { onChange(operation.copy(color = it)) }
+                            FloatField("Alpha (0.0 to 1.0)", operation.alpha) { onChange(operation.copy(alpha = it)) }
+
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
+                            ) {
+                                Text("Is Stroke?", style = MaterialTheme.typography.bodyMedium)
+                                Switch(
+                                    checked = operation.isStroke,
+                                    onCheckedChange = { onChange(operation.copy(isStroke = it)) }
+                                )
+                            }
+
+                            if (operation.isStroke) {
+                                FloatField("Stroke Width", operation.strokeWidth) { onChange(operation.copy(strokeWidth = it)) }
+                            }
                         }
                     }
 

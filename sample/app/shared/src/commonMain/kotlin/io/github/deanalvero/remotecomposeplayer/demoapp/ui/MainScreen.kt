@@ -3,6 +3,7 @@ package io.github.deanalvero.remotecomposeplayer.demoapp.ui
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Code
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -23,7 +24,8 @@ import io.github.deanalvero.remotecomposeplayer.demoapp.MainViewModel
 fun MainScreen(
     viewModel: MainViewModel,
     modifier: Modifier = Modifier,
-    onDownload: (ByteArray) -> Unit = {}
+    onDownload: (ByteArray) -> Unit = {},
+    onBack: (() -> Unit)? = null
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val uriHandler = LocalUriHandler.current
@@ -32,6 +34,16 @@ fun MainScreen(
         topBar = {
             TopAppBar(
                 title = { Text("Remote Compose Playground") },
+                navigationIcon = {
+                    if (onBack != null) {
+                        IconButton(onClick = onBack) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = "Back to examples"
+                            )
+                        }
+                    }
+                },
                 actions = {
                     IconButton(
                         onClick = {
