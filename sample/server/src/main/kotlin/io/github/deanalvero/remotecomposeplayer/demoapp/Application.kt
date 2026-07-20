@@ -57,6 +57,7 @@ fun Application.module() {
                 RemoteComposeWriter.hTag(Header.DOC_CONTENT_DESCRIPTION, ""),
                 RemoteComposeWriter.hTag(Header.DOC_PROFILES, 0),
             ) {
+                val s = continuousSeconds()
                 Column(
                     modifier = Modifier.fillMaxWidth().background(0xFFEEEEEE.toInt()).padding(20f),
                     horizontal = RcHorizontalPositioning.Center,

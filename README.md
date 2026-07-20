@@ -11,6 +11,8 @@ The sample app has a list of Remote Compose examples and shows the creator code,
 
 [![Playground sample](./doc/remote-compose-playground.png)](https://deanalvero.github.io/remotecomposeplayer-cmp/)
 
+[![Playground sample](./doc/remote-compose-playground.png)](https://deanalvero.github.io/remotecomposeplayer-cmp/)
+
 ## Dependency
 Add the dependency to your build.gradle. Replace version with what is available [here](https://central.sonatype.com/artifact/io.github.deanalvero/remotecomposeplayer/versions).
 ```
