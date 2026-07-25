@@ -2,8 +2,8 @@ name: Publish to Maven Central
 
 on:
   push:
-    branches:
-      - deploy
+    tags:
+      - 'v*'
 
 permissions:
   contents: write
@@ -50,8 +50,8 @@ jobs:
         uses: softprops/action-gh-release@v2
         if: success()
         with:
-          tag_name: v${{ steps.get_version.outputs.VERSION }}
-          name: Release v${{ steps.get_version.outputs.VERSION }}
+          tag_name: ${{ github.ref_name }}
+          name: Release ${{ github.ref_name }}
           token: ${{ secrets.GITHUB_TOKEN }}
           body: |
             ## Automated Release
