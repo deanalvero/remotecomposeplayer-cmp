@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.androidMultiplatformLibrary)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
+    kotlin("plugin.serialization") version "2.3.20"
 }
 
 kotlin {
@@ -62,6 +63,9 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
             implementation(compose.materialIconsExtended)
+
+            implementation("org.jetbrains.androidx.navigation:navigation-compose:2.9.2")
+            implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.11.0")
 //            implementation(libs.coil.compose)
 //            implementation(libs.coil.network.ktor3)
         }
