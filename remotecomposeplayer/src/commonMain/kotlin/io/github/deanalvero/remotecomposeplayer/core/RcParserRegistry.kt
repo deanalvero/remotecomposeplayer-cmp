@@ -54,8 +54,10 @@ import io.github.deanalvero.remotecomposeplayer.operation.RcTextLookupOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcTextMergeOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcThemeOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcTouchExpressionOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcValueFloatChangeActionOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcValueIntegerChangeActionOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcValueIntegerExpressionChangeActionOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcValueStringChangeActionOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcWidthInModifierOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcWidthModifierOperation
 
@@ -121,7 +123,9 @@ object RcParserRegistry {
             RcScrollModifierOperation,
             RcTouchExpressionOperation,
             RcBorderModifierOperation,
-            RcValueIntegerChangeActionOperation
+            RcValueIntegerChangeActionOperation,
+            RcValueStringChangeActionOperation,
+            RcValueFloatChangeActionOperation
         ).forEach {
             register(it)
         }

@@ -5,8 +5,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import io.github.deanalvero.remotecomposeplayer.core.RemoteComposeContext
 import io.github.deanalvero.remotecomposeplayer.operation.RcClickModifierOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcValueFloatChangeActionOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcValueIntegerChangeActionOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcValueIntegerExpressionChangeActionOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcValueStringChangeActionOperation
 import io.github.deanalvero.remotecomposeplayer.ui.RcNode
 
 object ClickApplier : RcModifierApplier<RcClickModifierOperation> {
@@ -29,6 +31,12 @@ object ClickApplier : RcModifierApplier<RcClickModifierOperation> {
                         val exprId = action.valueExpressionId.toInt()
                         val result = context.evaluateIntegerExpression(exprId)
                         context.updateIntegerVariable(targetId, result)
+                    }
+                    is RcValueStringChangeActionOperation -> {
+                        context.overrideText(action.targetValueId, action.valueId)
+                    }
+                    is RcValueFloatChangeActionOperation -> {
+                        context.updateFloatVariable(action.targetValueId, action.value)
                     }
                 }
             }

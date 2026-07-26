@@ -78,9 +78,14 @@ class RemoteComposeContext(
 
     private val floatEvaluator = RcFloatExpressionEvaluator(this)
     private val intEvaluator = RcIntegerExpressionEvaluator(this)
+    private val textOverrides = mutableStateMapOf<Int, Int>()
 
     var currentSnapshot by mutableStateOf(clock.snapshot())
         private set
+
+    fun overrideText(targetValueId: Int, valueId: Int) {
+        textOverrides[targetValueId] = valueId
+    }
 
     private val resolvedColors = mutableMapOf<Int, Int>().apply {
         putAll(colors)
@@ -203,21 +208,25 @@ class RemoteComposeContext(
     }
 
     fun resolveText(textId: Int): String {
-        textRegistry[textId]?.let { return it }
-        textFromFloatRegistry[textId]?.let { op ->
+        val actualId = textOverrides[textId] ?: textId
+
+        textRegistry[actualId]?.let { return it }
+        textFromFloatRegistry[actualId]?.let { op ->
             val floatValue = resolveFloat(op.value)
             return floatValue.format(op)
         }
-        textMergeRegistry[textId]?.let { op ->
+
+        textMergeRegistry[actualId]?.let { op ->
             return resolveText(op.srcId1) + resolveText(op.srcId2)
         }
-        textLookupRegistry[textId]?.let { op ->
+
+        textLookupRegistry[actualId]?.let { op ->
             val dataList = dataLists[op.dataSetId] ?: return "Err: List ${op.dataSetId}"
             val indexF = resolveFloat(op.index)
             val index = indexF.toInt().coerceIn(0, dataList.ids.lastIndex)
             return resolveText(dataList.ids[index])
         }
-        return "Error: Text ID [$textId] not found"
+        return "Error: Text ID [$actualId] not found"
     }
 
     fun getStaticText(textId: Int): String {

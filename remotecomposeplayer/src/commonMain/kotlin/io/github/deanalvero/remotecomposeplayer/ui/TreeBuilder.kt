@@ -25,8 +25,10 @@ import io.github.deanalvero.remotecomposeplayer.operation.RcStateLayoutOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcTextDataOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcTextLayoutOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcTouchExpressionOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcValueFloatChangeActionOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcValueIntegerChangeActionOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcValueIntegerExpressionChangeActionOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcValueStringChangeActionOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcWidthModifierOperation
 
 fun buildRcTree(operations: List<RcOperation>): RcNode.Layout {
@@ -69,7 +71,9 @@ fun buildRcTree(operations: List<RcOperation>): RcNode.Layout {
             is RcTextDataOperation -> {}
 
             is RcValueIntegerChangeActionOperation,
-            is RcValueIntegerExpressionChangeActionOperation -> {
+            is RcValueIntegerExpressionChangeActionOperation,
+            is RcValueStringChangeActionOperation,
+            is RcValueFloatChangeActionOperation -> {
                 val currentModifier: RcClickModifierOperation? = activeClickModifier
                 if (currentModifier != null) {
                     val updatedModifier: RcClickModifierOperation = currentModifier.copy(
