@@ -16,7 +16,7 @@ fun CreatorCodeScreen(
 ) {
     SelectionContainer(modifier = modifier) {
         Text(
-            text = code,
+            text = code.trimIndent(),
             fontFamily = FontFamily.Monospace,
             style = MaterialTheme.typography.bodySmall,
             modifier = Modifier.verticalScroll(rememberScrollState())
