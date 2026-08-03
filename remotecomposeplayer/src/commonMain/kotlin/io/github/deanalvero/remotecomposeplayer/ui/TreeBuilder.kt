@@ -29,6 +29,7 @@ import io.github.deanalvero.remotecomposeplayer.operation.RcValueFloatChangeActi
 import io.github.deanalvero.remotecomposeplayer.operation.RcValueIntegerChangeActionOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcValueIntegerExpressionChangeActionOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcValueStringChangeActionOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcVisibilityModifierOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcWidthModifierOperation
 
 fun buildRcTree(operations: List<RcOperation>): RcNode.Layout {
@@ -60,7 +61,8 @@ fun buildRcTree(operations: List<RcOperation>): RcNode.Layout {
             is RcClipRectModifierOperation,
             is RcScrollModifierOperation,
             is RcBorderModifierOperation,
-            is RcClickModifierOperation -> {
+            is RcClickModifierOperation,
+            is RcVisibilityModifierOperation -> {
                 lastAddedNode.modifiers.add(op)
             }
 
