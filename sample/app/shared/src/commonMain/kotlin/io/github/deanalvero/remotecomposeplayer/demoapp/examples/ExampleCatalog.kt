@@ -334,13 +334,87 @@ object ExampleCatalog {
             """
     )
 
+    val pieChart: Example.Document = Example.Document(
+        id = "pie-chart",
+        title = "Pie Chart",
+        subtitle = "A custom pie chart driven by Remote Compose canvas sectors and anchored text",
+        creatorDslCode = """
+            val data = floatArrayOf(68f, 31f)
+            val names = arrayOf("Android", "iOS")
+            val colors = intArrayOf(
+                0xFF3DDC84.toInt(),
+                0xFFFF3B30.toInt(),
+            )
+            
+            Box(modifier = Modifier.fillMaxSize()) {
+                Canvas(modifier = Modifier.fillMaxSize()) {
+                    val w = componentWidth()
+                    val h = componentHeight()
+                    val cx = w / 2f
+                    val cy = h / 2f
+                    val radius = min(w, h) * 0.4f
+            
+                    val total = data.sum()
+                    var currentAngle = 0f
+            
+                    for (i in data.indices) {
+                        val sweepAngle = (data[i] / total) * 360f
+            
+                        paint {
+                            color(colors[i % colors.size])
+                            style(RcPaintStyle.Fill)
+                        }
+                        drawSector(
+                            cx - radius,
+                            cy - radius,
+                            cx + radius,
+                            cy + radius,
+                            currentAngle.rf,
+                            sweepAngle.rf,
+                        )
+            
+                        paint {
+                            color(0xFFFFFFFF.toInt())
+                            style(RcPaintStyle.Stroke)
+                            strokeWidth(2f)
+                        }
+                        drawSector(
+                            cx - radius,
+                            cy - radius,
+                            cx + radius,
+                            cy + radius,
+                            currentAngle.rf,
+                            sweepAngle.rf,
+                        )
+            
+                        val labelAngle = (currentAngle + sweepAngle / 2f) * PI.toFloat() / 180f
+                        val labelRadius = radius * 0.5f
+                        val lx = cx + labelRadius * cos(labelAngle)
+                        val ly = cy + labelRadius * sin(labelAngle)
+            
+                        paint {
+                            color(0xFFFFFFFF.toInt())
+                            textSize(12f)
+                            style(RcPaintStyle.Fill)
+                            typeface(RcFontType.Default, RcWeight.Bold, italic = false)
+                        }
+                        drawTextAnchored(remoteText(names[i]), lx, ly, 0.5f.rf, 0.5f.rf, 0)
+            
+                        currentAngle += sweepAngle
+                    }
+                }
+            }
+            """
+    )
+
     val all: List<Example> = listOf(
         Example.Playground,
         analogClock,
         digitalClock,
+        ticTacToe,
+        pieChart,
         verticalScroll,
-        horizontalScroll,
-        ticTacToe
+        horizontalScroll
     )
 
     fun bytesFor(example: Example.Document): ByteArray = when (example.id) {
@@ -349,6 +423,7 @@ object ExampleCatalog {
         verticalScroll.id -> SampleDocuments.verticalScroll()
         horizontalScroll.id -> SampleDocuments.horizontalScroll()
         ticTacToe.id -> SampleDocuments.ticTacToe()
+        pieChart.id -> SampleDocuments.pieChart()
         else -> error("No bundled bytes registered for example '${example.id}'")
     }
 }
