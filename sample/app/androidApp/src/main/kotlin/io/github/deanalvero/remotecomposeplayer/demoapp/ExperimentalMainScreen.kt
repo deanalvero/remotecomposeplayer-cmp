@@ -26,7 +26,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import io.github.deanalvero.remotecomposeplayer.RemoteComposePlayer
-import io.github.deanalvero.remotecomposeplayer.RemoteComposeVisualizer
+import io.github.deanalvero.remotecomposeplayer.RemoteComposeOperationsList
 
 @SuppressLint("RestrictedApi")
 @Composable
@@ -74,7 +74,7 @@ fun ExperimentalMainScreen(
                             rcBytes = document,
                             modifier = Modifier.weight(0.25f)
                         )
-                        RemoteComposeVisualizer(
+                        RemoteComposeOperationsList(
                             rcBytes = document,
                             modifier = Modifier.weight(0.50f)
                         )

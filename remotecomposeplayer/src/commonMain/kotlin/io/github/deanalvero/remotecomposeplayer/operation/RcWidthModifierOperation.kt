@@ -9,7 +9,7 @@ data class RcWidthModifierOperation(
     override val opCode: Int = OP_CODE,
     val typeId: Int,
     val value: Float
-) : RcOperation {
+) : RcOperation, ModifierOperation {
 
     override val name: String = "Modifier.width"
 

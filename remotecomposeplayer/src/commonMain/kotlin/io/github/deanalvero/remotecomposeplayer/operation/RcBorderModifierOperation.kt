@@ -18,7 +18,7 @@ data class RcBorderModifierOperation(
     val b: Float,
     val a: Float,
     val shapeType: Int
-) : RcOperation {
+) : RcOperation, ModifierOperation {
 
     override val name: String = "Modifier.border"
 

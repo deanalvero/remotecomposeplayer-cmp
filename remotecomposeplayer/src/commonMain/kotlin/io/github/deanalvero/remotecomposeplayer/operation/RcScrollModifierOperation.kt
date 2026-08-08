@@ -10,7 +10,7 @@ data class RcScrollModifierOperation(
     val position: Float,
     val max: Float,
     val notchMax: Float
-) : RcOperation {
+) : RcOperation, ModifierOperation {
 
     override val name = "Modifier.scroll"
 

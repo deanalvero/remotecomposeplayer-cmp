@@ -29,7 +29,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import io.github.deanalvero.remotecomposeplayer.RemoteComposePlayer
-import io.github.deanalvero.remotecomposeplayer.RemoteComposeVisualizer
+import io.github.deanalvero.remotecomposeplayer.RemoteComposeOperationsList
 import io.github.deanalvero.remotecomposeplayer.demoapp.examples.Example
 import io.github.deanalvero.remotecomposeplayer.demoapp.examples.ExampleCatalog
 
@@ -111,7 +111,7 @@ fun ExampleDetailScreen(
                                         code = example.creatorDslCode,
                                         modifier = Modifier.fillMaxSize()
                                     )
-                                    1 -> RemoteComposeVisualizer(
+                                    1 -> RemoteComposeOperationsList(
                                         rcBytes = bytes,
                                         modifier = Modifier.fillMaxSize()
                                     )
@@ -148,7 +148,7 @@ fun ExampleDetailScreen(
                                 code = example.creatorDslCode,
                                 modifier = Modifier.fillMaxSize()
                             )
-                            2 -> RemoteComposeVisualizer(
+                            2 -> RemoteComposeOperationsList(
                                 rcBytes = bytes,
                                 modifier = Modifier.fillMaxSize()
                             )

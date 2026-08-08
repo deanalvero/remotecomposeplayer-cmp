@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SecondaryTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
@@ -19,7 +18,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import io.github.deanalvero.remotecomposeplayer.RemoteComposePlayer
-import io.github.deanalvero.remotecomposeplayer.RemoteComposeVisualizer
+import io.github.deanalvero.remotecomposeplayer.RemoteComposeOperationsList
 import io.github.deanalvero.remotecomposeplayer.demoapp.FileUploader
 import io.github.deanalvero.remotecomposeplayer.playground.PlaygroundByteBuilder
 import io.github.deanalvero.remotecomposeplayer.playground.PlaygroundComponentKind
@@ -110,7 +109,7 @@ fun PlaygroundEditor(
                         onDownload = { onDownload(bytes) },
                         onUpload = { showUploader = true }
                     )
-                    1 -> RemoteComposeVisualizer(
+                    1 -> RemoteComposeOperationsList(
                         rcBytes = bytes,
                         modifier = Modifier.fillMaxWidth()
                     )

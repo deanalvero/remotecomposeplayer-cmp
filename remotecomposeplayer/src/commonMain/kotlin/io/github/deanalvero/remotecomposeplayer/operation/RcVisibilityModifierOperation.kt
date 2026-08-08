@@ -7,7 +7,7 @@ import io.github.deanalvero.remotecomposeplayer.core.RcOperation
 data class RcVisibilityModifierOperation(
     override val opCode: Int = OP_CODE,
     val visibilityId: Int
-) : RcOperation {
+) : RcOperation, ModifierOperation {
 
     override val name: String = "Modifier.visibility"
 

@@ -13,7 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import io.github.deanalvero.remotecomposeplayer.RemoteComposePlayer
-import io.github.deanalvero.remotecomposeplayer.RemoteComposeVisualizer
+import io.github.deanalvero.remotecomposeplayer.RemoteComposeOperationsList
 
 @Composable
 fun PreviewPane(
@@ -28,7 +28,7 @@ fun PreviewPane(
                 modifier = Modifier.weight(0.45f).fillMaxWidth()
             )
             Text("Operations", style = MaterialTheme.typography.titleMedium)
-            RemoteComposeVisualizer(
+            RemoteComposeOperationsList(
                 rcBytes = bytes,
                 modifier = Modifier.weight(0.55f).fillMaxWidth()
             )

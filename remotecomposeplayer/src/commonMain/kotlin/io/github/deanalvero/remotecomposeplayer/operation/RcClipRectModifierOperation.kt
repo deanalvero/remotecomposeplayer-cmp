@@ -6,7 +6,7 @@ import io.github.deanalvero.remotecomposeplayer.core.RcOperation
 
 class RcClipRectModifierOperation(
     override val opCode: Int = OP_CODE
-) : RcOperation {
+) : RcOperation, ModifierOperation {
 
     override val name: String = "ClipRectModifierOperation"
 

@@ -14,7 +14,7 @@ data class RcBackgroundModifierOperation(
     val b: Float,
     val a: Float,
     val shapeType: Int
-) : RcOperation {
+) : RcOperation, ModifierOperation {
 
     override val name: String = "Modifier.background"
 

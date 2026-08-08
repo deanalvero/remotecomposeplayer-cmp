@@ -10,7 +10,7 @@ data class RcPaddingModifierOperation(
     val top: Float,
     val right: Float,
     val bottom: Float
-) : RcOperation {
+) : RcOperation, ModifierOperation {
 
     override val name: String = "Modifier.padding"
 

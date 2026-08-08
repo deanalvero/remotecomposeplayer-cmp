@@ -7,7 +7,7 @@ import io.github.deanalvero.remotecomposeplayer.core.RcOperation
 data class RcClickModifierOperation(
     override val opCode: Int = OP_CODE,
     val actions: List<RcOperation> = emptyList()
-) : RcOperation {
+) : RcOperation, ModifierOperation {
 
     override val name: String = "ClickModifier"
 

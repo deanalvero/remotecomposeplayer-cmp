@@ -19,6 +19,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.github.deanalvero.remotecomposeplayer.core.RcOperation
 import io.github.deanalvero.remotecomposeplayer.core.RemoteComposeEngine
+import io.github.deanalvero.remotecomposeplayer.operation.CanvasScopedOperation
+import io.github.deanalvero.remotecomposeplayer.operation.ModifierOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcBackgroundModifierOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcBoxLayoutOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcCanvasContentOperation
@@ -39,7 +41,7 @@ import io.github.deanalvero.remotecomposeplayer.operation.RcWidthModifierOperati
 import io.github.deanalvero.remotecomposeplayer.operation.UnknownOperation
 
 @Composable
-fun RemoteComposeVisualizer(
+fun RemoteComposeOperationsList(
     rcBytes: ByteArray,
     modifier: Modifier = Modifier
 ) {
@@ -78,12 +80,8 @@ private fun OperationRowItem(operation: RcOperation) {
         is RcColumnLayoutOperation,
         is RcBoxLayoutOperation -> Color(0xFF4CAF50)
         is RcTextLayoutOperation -> Color(0xFFFFC107)
-        is RcWidthModifierOperation,
-        is RcHeightModifierOperation,
-        is RcBackgroundModifierOperation,
-        is RcPaddingModifierOperation -> Color(0xFF9C27B0)
-        is RcDrawCircleOperation,
-        is RcDrawLineOperation -> Color(0xFF7C3AED)
+        is ModifierOperation -> Color(0xFF9C27B0)
+        is CanvasScopedOperation -> Color(0xFF7C3AED)
         is UnknownOperation -> Color(0xFFE91E63)
         else -> Color(0xFFE91E63)
     }
