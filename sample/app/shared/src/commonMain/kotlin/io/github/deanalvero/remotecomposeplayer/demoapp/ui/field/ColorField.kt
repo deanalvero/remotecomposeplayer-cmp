@@ -17,18 +17,23 @@ fun ColorField(
     value: Int,
     onChange: (Int) -> Unit
 ) {
-    val hex = remember(value) { value.toUInt().toString(16).uppercase().padStart(8, '0') }
-    var local by remember(value) { mutableStateOf(hex) }
+    val upstreamHex = value.toUInt().toString(16).uppercase().padStart(8, '0')
+    var local by remember { mutableStateOf(upstreamHex) }
     LaunchedEffect(value) {
-        val normalized = value.toUInt().toString(16).uppercase().padStart(8, '0')
-        if (local != normalized) local = normalized
+        val localParsed = local.toLongOrNull(16)?.toInt()
+        if (localParsed != value) {
+            local = upstreamHex
+        }
     }
+
     OutlinedTextField(
         value = local,
-        onValueChange = {
-            local = it.uppercase()
-            val parsed = it.trim().removePrefix("0x").removePrefix("#")
-            parsed.toLongOrNull(16)?.let { raw ->
+        onValueChange = { input ->
+            val sanitized = input.trim().removePrefix("0x").removePrefix("#").uppercase()
+                .filter { it in '0'..'9' || it in 'A'..'F' }
+                .take(8)
+            local = sanitized
+            sanitized.toUIntOrNull(16)?.let { raw ->
                 onChange(raw.toInt())
             }
         },
