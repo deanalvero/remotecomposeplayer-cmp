@@ -21,7 +21,7 @@ class MainActivity : ComponentActivity() {
                         title = "Remote Source",
                         subtitle = "Render Remote Compose from a remote source",
                     ) {
-                        ExperimentalMainScreen(
+                        RemoteSourceScreen(
                             onBack = it
                         )
                     }

@@ -30,8 +30,8 @@ import io.github.deanalvero.remotecomposeplayer.RemoteComposeOperationsList
 
 @SuppressLint("RestrictedApi")
 @Composable
-fun ExperimentalMainScreen(
-    viewModel: ExperimentalMainViewModel = viewModel(),
+fun RemoteSourceScreen(
+    viewModel: RemoteSourceViewModel = viewModel(),
     onBack: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -57,8 +57,8 @@ fun ExperimentalMainScreen(
             contentAlignment = Alignment.Center
         ) {
             when (uiState) {
-                is ExperimentalMainUiState.Loaded -> {
-                    val document = (uiState as ExperimentalMainUiState.Loaded).data
+                is RemoteSourceUiState.Loaded -> {
+                    val document = (uiState as RemoteSourceUiState.Loaded).data
                     Column(
                         modifier = Modifier.fillMaxSize()
                     ) {
@@ -81,7 +81,7 @@ fun ExperimentalMainScreen(
                     }
                 }
 
-                is ExperimentalMainUiState.Loading -> {
+                is RemoteSourceUiState.Loading -> {
                     Box(
                         modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center
@@ -90,14 +90,14 @@ fun ExperimentalMainScreen(
                     }
                 }
 
-                is ExperimentalMainUiState.Error -> {
+                is RemoteSourceUiState.Error -> {
                     Column(
                         modifier = Modifier.fillMaxSize().padding(24.dp),
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
-                            text = (uiState as ExperimentalMainUiState.Error).message
+                            text = (uiState as RemoteSourceUiState.Error).message
                                 ?: "An unknown error occurred"
                         )
                         Text(
