@@ -18,6 +18,8 @@ import io.github.deanalvero.remotecomposeplayer.demoapp.ui.ExamplesListScreen
 fun ExamplesApp(
     modifier: Modifier = Modifier,
     platformExamples: List<Example> = emptyList(),
+    isDarkTheme: Boolean = false,
+    onToggleTheme: () -> Unit = {},
     onDownload: (filename: String, bytes: ByteArray) -> Unit = { _, _ -> },
     onNavHostReady: suspend (NavController) -> Unit = {}
 ) {
@@ -28,6 +30,8 @@ fun ExamplesApp(
         composable<ExamplesListRoute> {
             ExamplesListScreen(
                 examples = allExamples,
+                isDarkTheme = isDarkTheme,
+                onToggleTheme = onToggleTheme,
                 onExampleSelected = { navController.navigate(ExampleRoute(it.id)) },
                 modifier = modifier
             )

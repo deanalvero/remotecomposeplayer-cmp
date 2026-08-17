@@ -11,6 +11,8 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Code
+import androidx.compose.material.icons.filled.DarkMode
+import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -29,6 +31,8 @@ import io.github.deanalvero.remotecomposeplayer.demoapp.examples.Example
 fun ExamplesListScreen(
     examples: List<Example>,
     onExampleSelected: (Example) -> Unit,
+    isDarkTheme: Boolean,
+    onToggleTheme: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val uriHandler = LocalUriHandler.current
@@ -37,6 +41,13 @@ fun ExamplesListScreen(
             TopAppBar(
                 title = { Text("Remote Compose Examples") },
                 actions = {
+                    IconButton(onClick = onToggleTheme) {
+                        Icon(
+                            imageVector = if (isDarkTheme) Icons.Default.LightMode else Icons.Default.DarkMode,
+                            contentDescription = "Toggle Light/Dark Theme",
+                            tint = LocalContentColor.current
+                        )
+                    }
                     IconButton(
                         onClick = {
                             uriHandler.openUri("https://github.com/deanalvero/remotecomposeplayer-cmp")

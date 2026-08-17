@@ -1,6 +1,8 @@
 package io.github.deanalvero.remotecomposeplayer.demoapp
 
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
@@ -12,9 +14,18 @@ fun App(
     platformExamples: List<Example> = emptyList(),
     onNavHostReady: suspend (NavController) -> Unit = {}
 ) {
-    MaterialTheme {
+    var isDarkTheme by remember { mutableStateOf(false) }
+    val colorScheme = if (isDarkTheme) {
+        darkColorScheme()
+    } else {
+        lightColorScheme()
+    }
+
+    MaterialTheme(colorScheme = colorScheme) {
         ExamplesApp(
             platformExamples = platformExamples,
+            isDarkTheme = isDarkTheme,
+            onToggleTheme = { isDarkTheme = !isDarkTheme },
             onDownload = { filename, bytes ->
                 downloadDocument(bytes, filename)
             },
