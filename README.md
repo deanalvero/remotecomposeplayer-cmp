@@ -41,7 +41,9 @@ The ByteArray can be generated from either an Android device or a JVM backend us
 If you want to see how to set up a JVM server, check out the [sample/server](./sample/server) folder which contains a Ktor-based backend using the Remote Compose DSL.
 
 ## Supported operations
-See the classes in the package: [io.github.deanalvero.remotecomposeplayer.operation](./remotecomposeplayer/src/commonMain/kotlin/io/github/deanalvero/remotecomposeplayer/operation)
+The operations supported by this KMP/CMP player are in the package: [io.github.deanalvero.remotecomposeplayer.operation](./remotecomposeplayer/src/commonMain/kotlin/io/github/deanalvero/remotecomposeplayer/operation)
+
+If you want to see the full list of operations supported by the official Android player, check out [Operations.java](https://github.com/androidx/androidx/blob/androidx-main/compose/remote/remote-core/src/main/java/androidx/compose/remote/core/Operations.java).
 
 ## Notes
 Enjoy!
