@@ -10,7 +10,7 @@ data class RcRoundedClipRectModifierOperation(
     val topEnd: Float,
     val bottomStart: Float,
     val bottomEnd: Float
-) : RcOperation {
+) : RcOperation, ModifierOperation {
 
     override val name: String = "RoundedClipRectModifierOperation"
 

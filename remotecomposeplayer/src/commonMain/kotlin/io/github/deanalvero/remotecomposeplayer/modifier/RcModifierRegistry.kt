@@ -9,6 +9,7 @@ import io.github.deanalvero.remotecomposeplayer.operation.RcClickModifierOperati
 import io.github.deanalvero.remotecomposeplayer.operation.RcClipRectModifierOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcHeightModifierOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcPaddingModifierOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcRoundedClipRectModifierOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcScrollModifierOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcVisibilityModifierOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcWidthModifierOperation
@@ -24,6 +25,7 @@ object RcModifierRegistry {
         register(RcWidthModifierOperation::class, WidthApplier)
         register(RcHeightModifierOperation::class, HeightApplier)
         register(RcClipRectModifierOperation::class, ClipRectApplier)
+        register(RcRoundedClipRectModifierOperation::class, RoundedClipRectApplier)
         register(RcScrollModifierOperation::class, ScrollApplier)
         register(RcClickModifierOperation::class, ClickApplier)
         register(RcVisibilityModifierOperation::class, VisibilityApplier)

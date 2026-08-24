@@ -2,6 +2,7 @@ package io.github.deanalvero.remotecomposeplayer.modifier
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clipToBounds
 import io.github.deanalvero.remotecomposeplayer.core.RemoteComposeContext
 import io.github.deanalvero.remotecomposeplayer.operation.RcClipRectModifierOperation
 import io.github.deanalvero.remotecomposeplayer.ui.RcNode
@@ -15,6 +16,6 @@ object ClipRectApplier : RcModifierApplier<RcClipRectModifierOperation> {
         scope: Any?,
         context: RemoteComposeContext
     ): Modifier {
-        return currentModifier
+        return currentModifier.clipToBounds()
     }
 }
