@@ -26,6 +26,7 @@ import io.github.deanalvero.remotecomposeplayer.operation.RcIntegerExpressionOpe
 import io.github.deanalvero.remotecomposeplayer.operation.RcNamedVariableOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcTextDataOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcTextFromFloatOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcTextLookupIntOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcTextLookupOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcTextMergeOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcThemeOperation
@@ -45,6 +46,10 @@ class RemoteComposeContext(
     private val textFromFloatRegistry: Map<Int, RcTextFromFloatOperation> = operations
         .filterIsInstance<RcTextFromFloatOperation>()
         .associate { it.textId to it }
+
+    private val textLookupIntRegistry: Map<Int, RcTextLookupIntOperation> = operations
+        .filterIsInstance<RcTextLookupIntOperation>()
+        .associateBy { it.textId }
 
     private val floatVariables = mutableStateMapOf<Int, Float>()
 
@@ -224,6 +229,12 @@ class RemoteComposeContext(
             val dataList = dataLists[op.dataSetId] ?: return "Err: List ${op.dataSetId}"
             val indexF = resolveFloat(op.index)
             val index = indexF.toInt().coerceIn(0, dataList.ids.lastIndex)
+            return resolveText(dataList.ids[index])
+        }
+
+        textLookupIntRegistry[actualId]?.let { op ->
+            val dataList = dataLists[op.dataSetId] ?: return "Err: List ${op.dataSetId}"
+            val index = resolveInt(op.indexId).coerceIn(0, dataList.ids.lastIndex)
             return resolveText(dataList.ids[index])
         }
         return "Error: Text ID [$actualId] not found"
