@@ -1,5 +1,7 @@
 package io.github.deanalvero.remotecomposeplayer.demoapp.examples
 
+import remotecomposeplayercmp.sample.app.shared.generated.resources.Res
+
 object ExampleCatalog {
     val analogClock: Example.Document = Example.Document(
         id = "analog-clock",
@@ -417,13 +419,7 @@ object ExampleCatalog {
         horizontalScroll
     )
 
-    fun bytesFor(example: Example.Document): ByteArray = when (example.id) {
-        analogClock.id -> SampleDocuments.analogClock()
-        digitalClock.id -> SampleDocuments.digitalClock()
-        verticalScroll.id -> SampleDocuments.verticalScroll()
-        horizontalScroll.id -> SampleDocuments.horizontalScroll()
-        ticTacToe.id -> SampleDocuments.ticTacToe()
-        pieChart.id -> SampleDocuments.pieChart()
-        else -> error("No bundled bytes registered for example '${example.id}'")
+    suspend fun bytesFor(example: Example.Document): ByteArray {
+        return Res.readBytes("files/${example.id}.rc")
     }
 }

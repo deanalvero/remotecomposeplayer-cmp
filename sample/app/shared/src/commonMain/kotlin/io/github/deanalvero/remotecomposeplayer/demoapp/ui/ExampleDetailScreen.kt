@@ -13,6 +13,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Download
 import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -22,10 +23,12 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import io.github.deanalvero.remotecomposeplayer.RemoteComposePlayer
@@ -40,122 +43,138 @@ fun ExampleDetailScreen(
     onDownload: (ByteArray) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val bytes = remember(example) { ExampleCatalog.bytesFor(example) }
+    var bytes by remember(example) { mutableStateOf<ByteArray?>(null) }
+    LaunchedEffect(example) {
+        bytes = ExampleCatalog.bytesFor(example)
+    }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(example.title) },
-                navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back to examples"
-                        )
+    bytes?.let {
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = { Text(example.title) },
+                    navigationIcon = {
+                        IconButton(onClick = onBack) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = "Back to examples"
+                            )
+                        }
+                    },
+                    actions = {
+                        IconButton(onClick = { onDownload(it) }) {
+                            Icon(
+                                imageVector = Icons.Default.Download,
+                                contentDescription = "Download ${example.id}.rc"
+                            )
+                        }
                     }
-                },
-                actions = {
-                    IconButton(onClick = { onDownload(bytes) }) {
-                        Icon(
-                            imageVector = Icons.Default.Download,
-                            contentDescription = "Download ${example.id}.rc"
-                        )
-                    }
-                }
-            )
-        },
-        modifier = modifier
-    ) { padding ->
-        BoxWithConstraints(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .padding(16.dp)
-        ) {
-            val wide = maxWidth >= 800.dp
+                )
+            },
+            modifier = modifier
+        ) { padding ->
+            BoxWithConstraints(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(padding)
+                    .padding(16.dp)
+            ) {
+                val wide = maxWidth >= 800.dp
 
-            if (wide) {
-                Row(
-                    modifier = Modifier.fillMaxSize(),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    LabeledPane(title = "Player", modifier = Modifier.weight(1f)) {
-                        RemoteComposePlayer(
-                            rcBytes = bytes,
-                            modifier = Modifier.fillMaxSize()
-                        )
-                    }
+                if (wide) {
+                    Row(
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        LabeledPane(title = "Player", modifier = Modifier.weight(1f)) {
+                            RemoteComposePlayer(
+                                rcBytes = it,
+                                modifier = Modifier.fillMaxSize()
+                            )
+                        }
 
-                    Card(modifier = Modifier.weight(1f).fillMaxHeight()) {
-                        Column(modifier = Modifier.fillMaxSize()) {
-                            var rightTabIndex by remember { mutableStateOf(0) }
-                            val rightTabs = listOf("Creator", "Operations")
+                        Card(modifier = Modifier.weight(1f).fillMaxHeight()) {
+                            Column(modifier = Modifier.fillMaxSize()) {
+                                var rightTabIndex by remember { mutableStateOf(0) }
+                                val rightTabs = listOf("Creator", "Operations")
 
-                            SecondaryTabRow(selectedTabIndex = rightTabIndex) {
-                                rightTabs.forEachIndexed { index, title ->
-                                    Tab(
-                                        selected = index == rightTabIndex,
-                                        onClick = { rightTabIndex = index }
-                                    ) {
-                                        Text(
-                                            text = title,
-                                            modifier = Modifier.padding(16.dp)
+                                SecondaryTabRow(selectedTabIndex = rightTabIndex) {
+                                    rightTabs.forEachIndexed { index, title ->
+                                        Tab(
+                                            selected = index == rightTabIndex,
+                                            onClick = { rightTabIndex = index }
+                                        ) {
+                                            Text(
+                                                text = title,
+                                                modifier = Modifier.padding(16.dp)
+                                            )
+                                        }
+                                    }
+                                }
+
+                                Box(modifier = Modifier.weight(1f).fillMaxWidth().padding(12.dp)) {
+                                    when (rightTabIndex) {
+                                        0 -> CreatorCodeScreen(
+                                            code = example.creatorDslCode,
+                                            modifier = Modifier.fillMaxSize()
+                                        )
+
+                                        1 -> RemoteComposeOperationsList(
+                                            rcBytes = it,
+                                            modifier = Modifier.fillMaxSize()
                                         )
                                     }
                                 }
                             }
+                        }
+                    }
+                } else {
+                    var selectedTabIndex by remember { mutableStateOf(0) }
 
-                            Box(modifier = Modifier.weight(1f).fillMaxWidth().padding(12.dp)) {
-                                when (rightTabIndex) {
-                                    0 -> CreatorCodeScreen(
-                                        code = example.creatorDslCode,
-                                        modifier = Modifier.fillMaxSize()
-                                    )
-                                    1 -> RemoteComposeOperationsList(
-                                        rcBytes = bytes,
-                                        modifier = Modifier.fillMaxSize()
+                    Column(modifier = Modifier.fillMaxSize()) {
+                        SecondaryTabRow(selectedTabIndex = selectedTabIndex) {
+                            listOf(
+                                "Player",
+                                "Creator",
+                                "Operations"
+                            ).forEachIndexed { index, title ->
+                                Tab(
+                                    selected = index == selectedTabIndex,
+                                    onClick = { selectedTabIndex = index }
+                                ) {
+                                    Text(
+                                        text = title,
+                                        modifier = Modifier.padding(16.dp)
                                     )
                                 }
                             }
                         }
-                    }
-                }
-            } else {
-                var selectedTabIndex by remember { mutableStateOf(0) }
 
-                Column(modifier = Modifier.fillMaxSize()) {
-                    SecondaryTabRow(selectedTabIndex = selectedTabIndex) {
-                        listOf("Player", "Creator", "Operations").forEachIndexed { index, title ->
-                            Tab(
-                                selected = index == selectedTabIndex,
-                                onClick = { selectedTabIndex = index }
-                            ) {
-                                Text(
-                                    text = title,
-                                    modifier = Modifier.padding(16.dp)
+                        Box(modifier = Modifier.weight(1f).fillMaxWidth().padding(top = 12.dp)) {
+                            when (selectedTabIndex) {
+                                0 -> RemoteComposePlayer(
+                                    rcBytes = it,
+                                    modifier = Modifier.fillMaxSize()
+                                )
+
+                                1 -> CreatorCodeScreen(
+                                    code = example.creatorDslCode,
+                                    modifier = Modifier.fillMaxSize()
+                                )
+
+                                2 -> RemoteComposeOperationsList(
+                                    rcBytes = it,
+                                    modifier = Modifier.fillMaxSize()
                                 )
                             }
                         }
                     }
-
-                    Box(modifier = Modifier.weight(1f).fillMaxWidth().padding(top = 12.dp)) {
-                        when (selectedTabIndex) {
-                            0 -> RemoteComposePlayer(
-                                rcBytes = bytes,
-                                modifier = Modifier.fillMaxSize()
-                            )
-                            1 -> CreatorCodeScreen(
-                                code = example.creatorDslCode,
-                                modifier = Modifier.fillMaxSize()
-                            )
-                            2 -> RemoteComposeOperationsList(
-                                rcBytes = bytes,
-                                modifier = Modifier.fillMaxSize()
-                            )
-                        }
-                    }
                 }
             }
+        }
+    } ?: run {
+        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            CircularProgressIndicator()
         }
     }
 }
