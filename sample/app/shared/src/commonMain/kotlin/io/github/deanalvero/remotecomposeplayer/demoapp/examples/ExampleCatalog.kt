@@ -409,12 +409,69 @@ object ExampleCatalog {
             """
     )
 
+    val switch: Example.Document = Example.Document(
+        id = "switch",
+        title = "Switch",
+        subtitle = "An interactive toggle switch driven by Remote Compose state layouts and dynamic text lookups",
+        creatorDslCode = """
+            val checked = remoteNamedInteger("checked", 0)
+            Column(
+                modifier = Modifier.fillMaxSize().padding(20f),
+                horizontal = RcHorizontalPositioning.Center,
+            ) {
+                Box(
+                    modifier = Modifier.padding(4f)
+                        .onClick {
+                            setValue(checked, (checked + 1) % 2)
+                        }
+                ) {
+                    StateLayout(stateIndex = checked, modifier = Modifier) {
+                        Box(
+                            modifier = Modifier.width(60f)
+                                .height(36f)
+                                .clip(RoundedRectShape(20f, 20f, 20f, 20f))
+                                .background(0xFF03A9F4.toInt())
+                                .padding(2f),
+                            horizontal = RcHorizontalPositioning.End,
+                            vertical = RcVerticalPositioning.Center,
+                        ) {
+                            Box(
+                                modifier = Modifier.size(28f)
+                                    .clip(RoundedRectShape(16f, 16f, 16f, 16f))
+                                    .background(0xFFFFFFFF.toInt())
+                            )
+                        }
+            
+                        Box(
+                            modifier = Modifier.width(60f)
+                                .height(36f)
+                                .clip(RoundedRectShape(20f, 20f, 20f, 20f))
+                                .background(0xFF999999.toInt())
+                                .padding(8f),
+                            horizontal = RcHorizontalPositioning.Start,
+                            vertical = RcVerticalPositioning.Center,
+                        ) {
+                            Box(
+                                modifier = Modifier.size(20f)
+                                    .clip(RoundedRectShape(10f, 10f, 10f, 10f))
+                                    .background(0xFFFFFFFF.toInt())
+                            )
+                        }
+                    }
+                }
+                val labels = remoteArrayOf("ON", "OFF")
+                Text(textLookup(labels, checked), fontSize = 20.rsp)
+            }
+            """
+    )
+
     val all: List<Example> = listOf(
         Example.Playground,
         analogClock,
         digitalClock,
         ticTacToe,
         pieChart,
+        switch,
         verticalScroll,
         horizontalScroll
     )
