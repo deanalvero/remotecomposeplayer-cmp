@@ -61,6 +61,7 @@ import io.github.deanalvero.remotecomposeplayer.operation.RcValueStringChangeAct
 import io.github.deanalvero.remotecomposeplayer.operation.RcVisibilityModifierOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcWidthInModifierOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcWidthModifierOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcZIndexModifierOperation
 
 object RcParserRegistry {
     private val decoders = mutableMapOf<Int, RcOpDecoder>()
@@ -127,7 +128,8 @@ object RcParserRegistry {
             RcValueIntegerChangeActionOperation,
             RcValueStringChangeActionOperation,
             RcValueFloatChangeActionOperation,
-            RcVisibilityModifierOperation
+            RcVisibilityModifierOperation,
+            RcZIndexModifierOperation
         ).forEach {
             register(it)
         }

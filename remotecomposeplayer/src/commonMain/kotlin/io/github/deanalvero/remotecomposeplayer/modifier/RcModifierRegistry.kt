@@ -13,6 +13,7 @@ import io.github.deanalvero.remotecomposeplayer.operation.RcRoundedClipRectModif
 import io.github.deanalvero.remotecomposeplayer.operation.RcScrollModifierOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcVisibilityModifierOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcWidthModifierOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcZIndexModifierOperation
 import io.github.deanalvero.remotecomposeplayer.ui.RcNode
 import kotlin.reflect.KClass
 
@@ -29,6 +30,7 @@ object RcModifierRegistry {
         register(RcScrollModifierOperation::class, ScrollApplier)
         register(RcClickModifierOperation::class, ClickApplier)
         register(RcVisibilityModifierOperation::class, VisibilityApplier)
+        register(RcZIndexModifierOperation::class, ZIndexApplier)
     }
 
     private fun <T : RcOperation> register(type: KClass<T>, applier: RcModifierApplier<T>) {
