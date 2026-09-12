@@ -13,6 +13,7 @@ The sample app has a list of Remote Compose examples and shows the creator code,
 - [Example: Digital Clock](https://deanalvero.github.io/remotecomposeplayer-cmp/#digital-clock)
 - [Example: Tic Tac Toe](https://deanalvero.github.io/remotecomposeplayer-cmp/#tic-tac-toe)
 - [Example: Pie Chart](https://deanalvero.github.io/remotecomposeplayer-cmp/#pie-chart)
+- [Example: Switch](https://deanalvero.github.io/remotecomposeplayer-cmp/#switch)
 - [Example: Vertical Scroll](https://deanalvero.github.io/remotecomposeplayer-cmp/#vertical-scroll)
 - [Example: Horizontal Scroll](https://deanalvero.github.io/remotecomposeplayer-cmp/#horizontal-scroll)
 
