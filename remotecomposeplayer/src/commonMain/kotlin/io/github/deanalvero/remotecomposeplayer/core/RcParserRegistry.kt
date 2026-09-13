@@ -39,6 +39,7 @@ import io.github.deanalvero.remotecomposeplayer.operation.RcMatrixScaleOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcMatrixSkewOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcMatrixTranslateOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcNamedVariableOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcOffsetModifierOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcPaddingModifierOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcPaintDataOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcRootLayoutOperation
@@ -129,7 +130,8 @@ object RcParserRegistry {
             RcValueStringChangeActionOperation,
             RcValueFloatChangeActionOperation,
             RcVisibilityModifierOperation,
-            RcZIndexModifierOperation
+            RcZIndexModifierOperation,
+            RcOffsetModifierOperation
         ).forEach {
             register(it)
         }

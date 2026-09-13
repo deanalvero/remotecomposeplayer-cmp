@@ -8,6 +8,7 @@ import io.github.deanalvero.remotecomposeplayer.operation.RcBackgroundModifierOp
 import io.github.deanalvero.remotecomposeplayer.operation.RcClickModifierOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcClipRectModifierOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcHeightModifierOperation
+import io.github.deanalvero.remotecomposeplayer.operation.RcOffsetModifierOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcPaddingModifierOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcRoundedClipRectModifierOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcScrollModifierOperation
@@ -31,6 +32,7 @@ object RcModifierRegistry {
         register(RcClickModifierOperation::class, ClickApplier)
         register(RcVisibilityModifierOperation::class, VisibilityApplier)
         register(RcZIndexModifierOperation::class, ZIndexApplier)
+        register(RcOffsetModifierOperation::class, OffsetApplier)
     }
 
     private fun <T : RcOperation> register(type: KClass<T>, applier: RcModifierApplier<T>) {
