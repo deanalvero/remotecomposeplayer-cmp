@@ -6,14 +6,16 @@ import io.github.deanalvero.remotecomposeplayer.core.RcOperation
 
 data class RcClickModifierOperation(
     override val opCode: Int = OP_CODE,
-    val actions: List<RcOperation> = emptyList()
-) : RcOperation, ModifierOperation {
+    override val actions: List<RcOperation> = emptyList()
+) : ActionModifierOperation {
 
     override val name: String = "ClickModifier"
 
     override fun toString(): String {
         return name
     }
+
+    override fun copyWithActions(actions: List<RcOperation>) = this.copy(actions = actions)
 
     companion object : RcOpDecoder {
         const val OP_CODE: Int = 59

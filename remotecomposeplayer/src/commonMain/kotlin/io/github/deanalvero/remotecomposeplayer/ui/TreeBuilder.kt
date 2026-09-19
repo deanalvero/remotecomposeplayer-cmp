@@ -1,27 +1,21 @@
 package io.github.deanalvero.remotecomposeplayer.ui
 
 import io.github.deanalvero.remotecomposeplayer.core.RcOperation
+import io.github.deanalvero.remotecomposeplayer.operation.ActionModifierOperation
 import io.github.deanalvero.remotecomposeplayer.operation.CanvasScopedOperation
 import io.github.deanalvero.remotecomposeplayer.operation.ModifierOperation
-import io.github.deanalvero.remotecomposeplayer.operation.RcBackgroundModifierOperation
-import io.github.deanalvero.remotecomposeplayer.operation.RcBorderModifierOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcBoxLayoutOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcCanvasContentOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcCanvasLayoutOperation
-import io.github.deanalvero.remotecomposeplayer.operation.RcClickModifierOperation
-import io.github.deanalvero.remotecomposeplayer.operation.RcClipRectModifierOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcColumnLayoutOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcContainerEndOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcDataFloatOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcDataIntOperation
-import io.github.deanalvero.remotecomposeplayer.operation.RcHeightModifierOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcIntegerExpressionOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcLayoutContentOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcNamedVariableOperation
-import io.github.deanalvero.remotecomposeplayer.operation.RcPaddingModifierOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcRootLayoutOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcRowLayoutOperation
-import io.github.deanalvero.remotecomposeplayer.operation.RcScrollModifierOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcStateLayoutOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcTextDataOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcTextLayoutOperation
@@ -30,15 +24,13 @@ import io.github.deanalvero.remotecomposeplayer.operation.RcValueFloatChangeActi
 import io.github.deanalvero.remotecomposeplayer.operation.RcValueIntegerChangeActionOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcValueIntegerExpressionChangeActionOperation
 import io.github.deanalvero.remotecomposeplayer.operation.RcValueStringChangeActionOperation
-import io.github.deanalvero.remotecomposeplayer.operation.RcVisibilityModifierOperation
-import io.github.deanalvero.remotecomposeplayer.operation.RcWidthModifierOperation
 
 fun buildRcTree(operations: List<RcOperation>): RcNode.Layout {
     val root = RcNode.Layout(RcRootLayoutOperation(0, 0))
     val stack = mutableListOf(root)
 
     var lastAddedNode: RcNode = root
-    var activeClickModifier: RcClickModifierOperation? = null
+    var activeClickModifier: ActionModifierOperation? = null
 
     for (op in operations) {
         when (op) {
@@ -51,7 +43,7 @@ fun buildRcTree(operations: List<RcOperation>): RcNode.Layout {
                 }
             }
             is ModifierOperation -> {
-                if (op is RcClickModifierOperation) {
+                if (op is ActionModifierOperation) {
                     activeClickModifier = op
                 }
                 lastAddedNode.modifiers.add(op)
@@ -67,9 +59,9 @@ fun buildRcTree(operations: List<RcOperation>): RcNode.Layout {
             is RcValueIntegerExpressionChangeActionOperation,
             is RcValueStringChangeActionOperation,
             is RcValueFloatChangeActionOperation -> {
-                val currentModifier: RcClickModifierOperation? = activeClickModifier
+                val currentModifier = activeClickModifier
                 if (currentModifier != null) {
-                    val updatedModifier: RcClickModifierOperation = currentModifier.copy(
+                    val updatedModifier = currentModifier.copyWithActions(
                         actions = currentModifier.actions + op
                     )
                     val modifierIndex = lastAddedNode.modifiers.indexOf(currentModifier)

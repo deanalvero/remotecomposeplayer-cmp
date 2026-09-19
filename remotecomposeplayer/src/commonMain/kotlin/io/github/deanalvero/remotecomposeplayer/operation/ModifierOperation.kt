@@ -1,3 +1,5 @@
 package io.github.deanalvero.remotecomposeplayer.operation
 
-interface ModifierOperation
+import io.github.deanalvero.remotecomposeplayer.core.RcOperation
+
+interface ModifierOperation : RcOperation
