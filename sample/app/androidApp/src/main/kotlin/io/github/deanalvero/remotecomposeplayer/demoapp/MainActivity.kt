@@ -7,6 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import io.github.deanalvero.remotecomposeplayer.demoapp.examples.Example
+import io.github.deanalvero.remotecomposeplayer.demoapp.examples.RemoteSourceScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

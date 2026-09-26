@@ -1,4 +1,4 @@
-package io.github.deanalvero.remotecomposeplayer.demoapp
+package io.github.deanalvero.remotecomposeplayer.demoapp.examples
 
 sealed class RemoteSourceUiState {
     data object Loading : RemoteSourceUiState()

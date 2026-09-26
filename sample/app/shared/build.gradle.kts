@@ -30,12 +30,12 @@ kotlin {
     wasmJs {
         browser()
     }
-    
-    androidLibrary {
+
+    android {
        namespace = "io.github.deanalvero.remotecomposeplayer.demoapp.app.shared"
        compileSdk = libs.versions.android.compileSdk.get().toInt()
        minSdk = libs.versions.android.minSdk.get().toInt()
-    
+
        compilerOptions {
            jvmTarget = JvmTarget.JVM_11
        }
@@ -48,9 +48,6 @@ kotlin {
     }
     
     sourceSets {
-        androidMain.dependencies {
-            implementation(libs.compose.uiToolingPreview)
-        }
         commonMain.dependencies {
             api(projects.sample.core)
             api(projects.remotecomposeplayer)
@@ -66,8 +63,17 @@ kotlin {
 
             implementation("org.jetbrains.androidx.navigation:navigation-compose:2.9.2")
             implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.11.0")
-//            implementation(libs.coil.compose)
-//            implementation(libs.coil.network.ktor3)
+
+            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.11.0")
+
+            implementation("io.ktor:ktor-client-core:3.5.0")
+        }
+        androidMain.dependencies {
+            implementation(libs.compose.uiToolingPreview)
+            implementation("io.ktor:ktor-client-okhttp:3.5.0")
+        }
+        iosMain.dependencies {
+            implementation("io.ktor:ktor-client-darwin:3.5.0")
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
