@@ -27,7 +27,7 @@ class RemoteSourceViewModel : ViewModel() {
                     RemoteSourceUiState.Loading
                 }
 
-                val response = client.get("http://10.0.2.2:8080/")
+                val response = client.get(remoteSourceBaseUrl())
                 println(response)
                 _uiState.update {
                     RemoteSourceUiState.Loaded(response.bodyAsBytes())
@@ -38,5 +38,10 @@ class RemoteSourceViewModel : ViewModel() {
                 }
             }
         }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        client.close()
     }
 }
