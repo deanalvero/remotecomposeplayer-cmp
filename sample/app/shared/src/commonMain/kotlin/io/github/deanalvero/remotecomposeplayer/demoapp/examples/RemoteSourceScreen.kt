@@ -27,7 +27,7 @@ import io.github.deanalvero.remotecomposeplayer.RemoteComposeOperationsList
 
 @Composable
 fun RemoteSourceScreen(
-    viewModel: RemoteSourceViewModel = viewModel(),
+    viewModel: RemoteSourceViewModel = viewModel { RemoteSourceViewModel() },
     onBack: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
