@@ -25,6 +25,15 @@ class MainActivity : ComponentActivity() {
                         RemoteSourceScreen(
                             onBack = it
                         )
+                    },
+                    Example.PlatformExample(
+                        id = "compare",
+                        title = "Compare",
+                        subtitle = "Compare the output of the official player with the KMP/CMP one",
+                    ) {
+                        CompareScreen(
+                            onBack = it
+                        )
                     }
                 )
             )
