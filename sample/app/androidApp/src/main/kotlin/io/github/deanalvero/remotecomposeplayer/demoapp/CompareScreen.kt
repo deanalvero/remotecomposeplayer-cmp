@@ -49,7 +49,7 @@ fun CompareScreen(
     onBack: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val documents = remember { ExampleCatalog.all.filterIsInstance<Example.Document>() }
+    val documents = viewModel.documents
 
     Scaffold(
         topBar = {

@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class CompareViewModel : ViewModel() {
-    private val documents = ExampleCatalog.all.filterIsInstance<Example.Document>()
+    val documents = ExampleCatalog.all.filterIsInstance<Example.Document>()
 
     private val _uiState = MutableStateFlow<CompareUiState>(CompareUiState.Loading)
     val uiState = _uiState.asStateFlow()
