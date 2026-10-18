@@ -5,36 +5,52 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuAnchorType
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SecondaryTabRow
+import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.remote.player.view.RemoteComposePlayer
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import io.github.deanalvero.remotecomposeplayer.RemoteComposeOperationsList
+import io.github.deanalvero.remotecomposeplayer.demoapp.examples.Example
+import io.github.deanalvero.remotecomposeplayer.demoapp.examples.ExampleCatalog
+import androidx.compose.remote.player.view.RemoteComposePlayer
 import io.github.deanalvero.remotecomposeplayer.RemoteComposePlayer
 
 @SuppressLint("RestrictedApi")
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CompareScreen(
     viewModel: CompareViewModel = viewModel(),
     onBack: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val documents = remember { ExampleCatalog.all.filterIsInstance<Example.Document>() }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -42,7 +58,7 @@ fun CompareScreen(
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Back"
                         )
                     }
@@ -51,65 +67,93 @@ fun CompareScreen(
         }
     ) { paddingValues ->
         Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues),
+            modifier = Modifier.fillMaxSize().padding(paddingValues),
             contentAlignment = Alignment.Center
         ) {
-            when (uiState) {
+            when (val state = uiState) {
                 is CompareUiState.Loaded -> {
-                    val document = (uiState as CompareUiState.Loaded).data
-                    Column(
-                        modifier = Modifier.fillMaxSize()
-                    ) {
-                        AndroidView(
-                            factory = { context ->
-                                RemoteComposePlayer(context).also {
-                                    it.setDocument(document)
-                                }
-                            },
-                            modifier = Modifier.weight(0.25f)
-                        )
-                        RemoteComposePlayer(
-                            rcBytes = document,
-                            modifier = Modifier.weight(0.25f)
-                        )
-                        RemoteComposeOperationsList(
-                            rcBytes = document,
-                            modifier = Modifier.weight(0.50f)
-                        )
-                    }
-                }
+                    var selectedTab by remember { mutableStateOf(0) }
+                    val tabs = listOf("Official", "KMP+CMP", "Operations")
+                    var expanded by remember { mutableStateOf(false) }
 
-                is CompareUiState.Loading -> {
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        CircularProgressIndicator()
-                    }
-                }
-
-                is CompareUiState.Error -> {
                     Column(
-                        modifier = Modifier.fillMaxSize().padding(24.dp),
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally
+                        modifier = Modifier.fillMaxSize().padding(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        Text(
-                            text = (uiState as CompareUiState.Error).message
-                                ?: "An unknown error occurred"
-                        )
-                        Text(
-                            text = "Run the server using the ./gradlew :sample:server:run command.",
-                            fontSize = 10.sp
-                        )
-                        Button(
-                            onClick = { viewModel.load() },
-                            modifier = Modifier.padding(top = 16.dp)
+                        ExposedDropdownMenuBox(
+                            expanded = expanded,
+                            onExpandedChange = { expanded = it },
+                            modifier = Modifier.fillMaxWidth()
                         ) {
-                            Text(text = "Retry")
+                            OutlinedTextField(
+                                value = state.selectedDocument.title,
+                                onValueChange = {},
+                                readOnly = true,
+                                label = { Text("Select Document") },
+                                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable)
+                            )
+                            ExposedDropdownMenu(
+                                expanded = expanded,
+                                onDismissRequest = { expanded = false }
+                            ) {
+                                documents.forEach { doc ->
+                                    DropdownMenuItem(
+                                        text = { Text(doc.title) },
+                                        onClick = {
+                                            expanded = false
+                                            viewModel.selectDocument(doc)
+                                        }
+                                    )
+                                }
+                            }
                         }
+
+                        SecondaryTabRow(selectedTabIndex = selectedTab) {
+                            tabs.forEachIndexed { index, title ->
+                                Tab(
+                                    selected = index == selectedTab,
+                                    onClick = { selectedTab = index }
+                                ) {
+                                    Text(title, modifier = Modifier.padding(16.dp))
+                                }
+                            }
+                        }
+
+                        Box(modifier = Modifier.weight(1f).fillMaxWidth()) {
+                            when (selectedTab) {
+                                0 -> AndroidView(
+                                    factory = {
+                                        RemoteComposePlayer(it).apply {
+                                            setDocument(state.data)
+                                        }
+                                    },
+                                    update = { it.setDocument(state.data) },
+                                    modifier = Modifier.fillMaxSize()
+                                )
+                                1 -> RemoteComposePlayer(
+                                    rcBytes = state.data,
+                                    modifier = Modifier.fillMaxSize()
+                                )
+                                2 -> RemoteComposeOperationsList(
+                                    rcBytes = state.data,
+                                    modifier = Modifier.fillMaxSize()
+                                )
+                            }
+                        }
+                    }
+                }
+                is CompareUiState.Loading -> CircularProgressIndicator()
+                is CompareUiState.Error -> Column(
+                    modifier = Modifier.fillMaxSize().padding(24.dp),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(state.message ?: "An error occurred")
+                    Button(onClick = { viewModel.load() }, modifier = Modifier.padding(top = 16.dp)) {
+                        Text("Retry")
                     }
                 }
             }
