@@ -5,8 +5,7 @@ import io.github.deanalvero.remotecomposeplayer.demoapp.examples.Example
 sealed class CompareUiState {
     data object Loading : CompareUiState()
     data class Loaded(
-        val selectedDocument: Example.Document,
+        val selectedItem: CompareItem,
         val data: ByteArray
-    ) : CompareUiState()
-    data class Error(val message: String?) : CompareUiState()
+    ) : CompareUiState()data class Error(val message: String?, val isRemoteSource: Boolean = false) : CompareUiState()
 }

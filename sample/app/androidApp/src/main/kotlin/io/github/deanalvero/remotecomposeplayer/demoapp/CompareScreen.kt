@@ -36,9 +36,8 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import io.github.deanalvero.remotecomposeplayer.RemoteComposeOperationsList
-import io.github.deanalvero.remotecomposeplayer.demoapp.examples.Example
-import io.github.deanalvero.remotecomposeplayer.demoapp.examples.ExampleCatalog
 import androidx.compose.remote.player.view.RemoteComposePlayer
+import androidx.compose.ui.unit.sp
 import io.github.deanalvero.remotecomposeplayer.RemoteComposePlayer
 
 @SuppressLint("RestrictedApi")
@@ -49,7 +48,7 @@ fun CompareScreen(
     onBack: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val documents = viewModel.documents
+    val items = viewModel.items
 
     Scaffold(
         topBar = {
@@ -86,7 +85,7 @@ fun CompareScreen(
                             modifier = Modifier.fillMaxWidth()
                         ) {
                             OutlinedTextField(
-                                value = state.selectedDocument.title,
+                                value = state.selectedItem.title,
                                 onValueChange = {},
                                 readOnly = true,
                                 label = { Text("Select Document") },
@@ -99,12 +98,12 @@ fun CompareScreen(
                                 expanded = expanded,
                                 onDismissRequest = { expanded = false }
                             ) {
-                                documents.forEach { doc ->
+                                items.forEach { item ->
                                     DropdownMenuItem(
-                                        text = { Text(doc.title) },
+                                        text = { Text(item.title) },
                                         onClick = {
                                             expanded = false
-                                            viewModel.selectDocument(doc)
+                                            viewModel.selectItem(item)
                                         }
                                     )
                                 }
@@ -152,6 +151,13 @@ fun CompareScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(state.message ?: "An error occurred")
+                    if (state.isRemoteSource) {
+                        Text(
+                            text = "Run the server using the ./gradlew :sample:server:run command.",
+                            fontSize = 10.sp,
+                            modifier = Modifier.padding(top = 8.dp)
+                        )
+                    }
                     Button(onClick = { viewModel.load() }, modifier = Modifier.padding(top = 16.dp)) {
                         Text("Retry")
                     }
